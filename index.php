@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+<title>парсер шахматки</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 </head>
 <pre>
@@ -25,7 +26,7 @@ error_reporting(E_NOTICE);
 #preg_match_all($needle, $page, $matches);
 
 require ("./simple_html_dom.php");
-$html = file_get_html('./k1example_05022014.htm');
+$html = file_get_html('./examples/k1example_05022014.htm');
 /*$sections = $html -> find('table.housemodbigs table.housemod');
 foreach ($sections as $section){
 	$tdElems = array_reverse($html -> find(' td.buildroom,  td.live'));

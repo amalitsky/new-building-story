@@ -1,11 +1,106 @@
 ﻿<!DOCTYPE html>
 <html>
+<head>
+<title>Шахматка новостроек в 9 мкр. г. Реутова от Эксперта и НДВ (ЖК Новокосино)</title>
+</head>
 <body>
 <div id="wrapper" class="wrapper"></div>
 </body>
 <script>
 snapStr = {"date":1391636691,"list":[[126634,2,7133184,1708],[126635,2,9282851,1708],[126638,2,9135176,1708],[126639,2,7081584,1708],[126629,2,9282851,1708],[126623,2,9282851,1708],[126872,2,7162080,1708],[126877,2,7161048,1708],[126646,2,4876008,1708],[127112,2,7161048,1708],[127117,2,7161048,1708],[127000,2,4464390,1708],[126920,2,4100011,1708],[127352,2,7162080,1708],[127613,2,7176528,1708],[127617,2,5014728,1708],[127621,2,8042454,1708],[127547,2,7141758,1708],[127555,2,8003394,1708],[127536,2,7141758,1708],[127538,2,7579152,1708],[127525,2,7141758,1708],[127514,2,7141758,1708],[127522,2,8003394,1708],[127481,2,7106988,1708],[127390,2,7886214,1708],[127365,2,4922248,1708],[127366,2,4922248,1708],[127368,2,7808094,1708],[127669,2,8518718,1708]]};
 
+buildings2 = [
+	{ bId:1, extBid:1708, flatStartExtId: 126496,
+		link:"novokosino.ndv.ru/sale/?build=1708", name:"ЖК Новокосино (мкрн 9) от Эксперта и НДВ, корпус 1" },
+	{	bId:2, extBid:1709, flatStartExtId: 127673,
+		link:"novokosino.ndv.ru/sale/?build=1709", name:"ЖК Новокосино (мкрн 9) от Эксперта и НДВ, корпус 2" },
+	{	bId:3, extBid:1710, flatStartExtId: 128537, isActive:0,
+		link:"novokosino.ndv.ru/sale/?build=1710", name:"ЖК Новокосино (мкрн 9) от Эксперта и НДВ, корпус 3" }
+	]
+	
+sections2 = [
+	{ bId:1, sectId:1, flatsNfrom:1, flatsQ:144, floorsFrom: 2, floorsTo: 25 },
+	{ bId:1, sectId:2, flatsNfrom:145, flatsQ:240, floorsFrom: 2, floorsTo: 25 },
+	{ bId:1, sectId:3, flatsNfrom:385, flatsQ:240, floorsFrom: 2, floorsTo: 25 },
+	{ bId:1, sectId:4, flatsNfrom:625, flatsQ:240, floorsFrom: 2, floorsTo: 25 },
+	{ bId:1, sectId:5, flatsNfrom:865, flatsQ:264, floorsFrom: 2, floorsTo: 25 },
+	{ bId:1, sectId:6, flatsNfrom:1129, flatsQ:49, floorsFrom: 2, floorsTo: 11 },
+
+	{ bId:2, sectId:1, flatsNfrom:1, flatsQ:240, floorsFrom: 2, floorsTo: 25 },
+	{ bId:2, sectId:2, flatsNfrom:241, flatsQ:312, floorsFrom: 2, floorsTo: 25 },
+	{ bId:2, sectId:3, flatsNfrom:553, flatsQ:312, floorsFrom: 2, floorsTo: 25 },
+
+	{ bId:3, sectId:1, flatsNfrom:1, flatsQ:70, floorsFrom: 3, floorsTo: 16 },
+	{ bId:3, sectId:2, flatsNfrom:71, flatsQ:64, floorsFrom: 3, floorsTo: 18 },
+	{ bId:3, sectId:3, flatsNfrom:135, flatsQ:168, floorsFrom: 2, floorsTo: 25 },
+	{ bId:3, sectId:4, flatsNfrom:303, flatsQ:168, floorsFrom: 2, floorsTo: 25 },
+	{ bId:3, sectId:5, flatsNfrom:471, flatsQ:168, floorsFrom: 2, floorsTo: 25 },
+	{ bId:3, sectId:6, flatsNfrom:639, flatsQ:60, floorsFrom: 2, floorsTo: 13 },
+	{ bId:3, sectId:7, flatsNfrom:699, flatsQ:60, floorsFrom: 2, floorsTo: 13 },
+	{ bId:3, sectId:8, flatsNfrom:759, flatsQ:60, floorsFrom: 2, floorsTo: 13 }	
+	]
+
+/*function updateSections(){
+	var arr = [];
+	sections2.forEach(function (section){
+		
+		});
+	return arr;
+	}*/
+	
+plans = [
+	{ planId: 0, plan:[[2,69.12], [3,94.29], [2,63.36], [2,63.33], [3,92.79], [2,68.62]] },
+	{ planId: 1, plan:[[1,30.37],[1,42.5],[2,69.4],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.39],[1,41.2],[1,30.5]] },
+	{ planId: 2, plan:[[1,30.37],[1,42.5],[2,69.39],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.39],[1,42.32],[1,30.37]] },
+	{ planId: 3, plan:[[1,30.36],[1,42.33],[2,69.4],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.31],[1,42.33],[1,30.36]] },
+	{ planId: 4, plan:[[2,69.54],[1,42.37],[2,74.16],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[1,32.72],[3,78.12],[1,33.59],[1,33.59]] },
+	{ planId: 5, plan:[[3,81.85], [1,30.08], [1,30.08], [1,31.13], [1,47.12], [2,57.81]] },
+	{ planId: 6, plan:[[3,83.15], [1,30.05], [1,30.05], [1,31.05], [1,47]] },
+	{ planId: 7, plan:[[3,83.15], [1,30.05], [1,30.05], [1,31.05]] },
+		
+	{ planId: 8, plan:[[2,74.89], [3,89.37], [3,83.58], [2,64.76], [1,45.43], [1,45.43], [1,45.43], [1,45.43], [2,69.53], [2,74.25]] },
+	{ planId: 9, plan:[[1,50.29],[1,48.37],[1,43.55],[1,29.57],[1,28.76],[1,29.14],[1,29.14],[1,29.14],[1,29.14],[1,29.32],[2,64.73],[1,29.43],[1,49.25]] },
+	{ planId: 10, plan:[[1,50.13],[1,49.46],[1,43.08],[1,29.57],[1,28.76],[1,29.14],[1,29.14],[1,29.14],[1,29.14],[1,29.32],[2,64.73],[1,30.18],[1,49.9]] },
+	
+	{ planId: 11, plan:[[2,71.5], [1,44.5], [1,30.9], [1,44.5], [3,94.8]] },
+	{ planId: 12, plan:[[2,57.4], [1,38.9], [1,44.6], [2,75.66]] },
+	{ planId: 13, plan:[[3,85], [2,75.8], [1,46.25], [1,28.7], [1,28.7], [1,28.73], [3,90.7]] },
+	{ planId: 14, plan:[[3,95.19], [1,29.16], [1,30], [1,30], [1,30], [1,29.16], [3,94.19]] },
+	{ planId: 15, plan:[[3,93.5], [1,27.83], [1,28.7], [1,28.7], [1,47.05], [2,63.4], [1,41.1]] },
+	{ planId: 16, plan:[[4,120.42], [1,28.95], [1,43.2], [1,44.9], [3,84.31]] },
+	{ planId: 17, plan:[[3,100.1], [1,46.4], [1,46.4], [1,32.05], [3,90.17]] },
+	{ planId: 18, plan:[[2,68.57], [1,30.85], [1,46.45], [1,31], [3,78.97]] }
+	]
+	
+// ! update plans array with flats quantity on each floor
+	
+// to escape sex with full matrix of [planId, bId, sectId, floor] set array indexes hardly
+// 	result sec2plans format: { bId:x, sectId:c, floorId:v, planId: b }
+function getPlanId(bId, sectId, floor){
+	var planId = sectId;
+	switch (bId){
+		case 1: 
+			planId--;
+			if(sectId === 6) { if(floor >= 7) planId += 2; else if(floor === 6) planId += 1; }
+			break;
+		case 2: planId += 7; break;
+		case 3: planId += 10; break;
+		default: return false;
+		}
+	return planId;
+	}
+
+function sec2plans(){
+	var arr = [];
+	sections2.forEach( function(section){
+		var i;
+		for (i = section.floorsFrom; i <= section.floorsTo; i++){
+			arr.push({ bId: section.bId, sectId: section.sectId, floorId: i, planId: getPlanId(section.bId, section.sectId, i) });
+			}
+		});
+	return arr;
+	}
+	
 buildings = []; sections = [];
 buildings [1708] = { flatStartId: 126496, sectionsQ: 6 }
 buildings [1709] = { flatStartId: 127673, sectionsQ: 3 }
@@ -50,41 +145,39 @@ sections[1710] = [
 	function () { this.floorsFrom = 3; this.floorsTo = 16; this.plans = [ [[2,71.5], [1,44.5], [1,30.9], [1,44.5], [3,94.8]] ] },
 	function () { this.floorsFrom = 3; this.floorsTo = 18; this.plans = [ [[2,57.4], [1,38.9], [1,44.6], [2,75.66]] ] },
 	function () { this.plans = [ [[3,85], [2,75.8], [1,46.25], [1,28.7], [1,28.7], [1,28.73], [3,90.7]] ]	},
-	function () { this.plans = [ [[3,95.19], [1,29.16], [1,30], [1,30], [1,30], [1,30], [1,29.16], [3,94.19]] ] },
+	function () { this.plans = [ [[3,95.19], [1,29.16], [1,30], [1,30], [1,30], [1,29.16], [3,94.19]] ] },
 	function () { this.plans = [ [[3,93.5], [1,27.83], [1,28.7], [1,28.7], [1,47.05], [2,63.4], [1,41.1]] ] }, //differs from documents
 	function () { this.floorsTo = 13; this.plans = [ [[4,120.42], [1,28.95], [1,43.2], [1,44.9], [3,84.31]] ]},
 	function () { this.floorsTo = 13; this.plans = [ [[3,100.1], [1,46.4], [1,46.4], [1,32.05], [3,90.17]] ] },
 	function () { this.floorsTo = 13; this.plans = [ [[2,68.57], [1,30.85], [1,46.45], [1,31], [3,78.97]] ] }
 	];
 	
+/*function countFlatsStartId(objArr, bId){
+	objArr.forEach( function(section, i, arr){
+		for (j = section.floorsFrom; j <= section.floorsTo; j++){
+			plan = 
+			}
+		section.firstFlatId = buildings[bId].flatStartId;
+		section.flatsQ = ;
+		});
+	};*/
 	
 function addSectionPrototype(objArr){ objArr.forEach( function(section){ section.prototype = sectionPrototype; }); }
 sections.forEach(addSectionPrototype);
+//sections.forEach(countFlatsStartId);
 
-/*	
-floorPlans[1708] = []; floorPlans[1709] = []; floorPlans[1710] = [];
-floorPlans[1708][0] = [[2,69.12],[3,94.29],[2,63.36],[2,63.33],[3,92.79],[2,68.62]];
-floorPlans[1708][1] = [[1,30.37],[1,42.5],[2,69.4],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.39],[1,41.2],[1,30.5]];
-floorPlans[1708][2] = [[1,30.37],[1,42.5],[2,69.39],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.39],[1,42.32],[1,30.37]];
-floorPlans[1708][3] = [[1,30.36],[1,42.33],[2,69.4],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.31],[1,42.33],[1,30.36]];
-floorPlans[1708][4] = [[2,69.54],[1,42.37],[2,74.16],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[1,32.72],[3,78.12],[1,33.59],[1,33.59]];
-floorPlans[1708][5] = [[3,81.85],[1,30.08],[1,30.08],[1,31.13],[1,47.12],[2,57.81]];//1-5 floor of 6th section
-floorPlans[1708][6] = [[3,83.15],[1,30.05],[1,30.05],[1,31.05],[1,47]];//6-th floor of 6th section
-floorPlans[1708][7] = [[3,83.15],[1,30.05],[1,30.05],[1,31.05]];//7-th floor of 6th section
-
-floorPlans[1709][0] = [[2,74.89],[3,89.37],[3,83.58],[2,64.76],[1,45.43],[1,45.43],[1,45.43],[1,45.43],[2,69.53],[2,74.25]];
-floorPlans[1709][1] = [[1,50.29],[1,48.37],[1,43.55],[1,29.57],[1,28.76],[1,29.14],[1,29.14],[1,29.14],[1,29.14],[1,29.32],[2,64.73],[1,29.43],[1,49.25]];
-floorPlans[1709][2] = [[1,50.13],[1,49.46],[1,43.08],[1,29.57],[1,28.76],[1,29.14],[1,29.14],[1,29.14],[1,29.14],[1,29.32],[2,64.73],[1,30.18],[1,49.9]];
-*/
 /*
 flatId
-floor
-numberOnFloor
-numberOfRooms
++extFaltId
+floor(?)
+numberOnPlan
+roomsQ
 square
 building
 section
-status: [[date, status,price4meter]]
+?curStatus
+?curPrice
+-link
 */
 
 function repeatePlease(str, quantity){
@@ -93,29 +186,17 @@ function repeatePlease(str, quantity){
 	return res;
 	}
 
-/*function section2k(secId){ this.getPlan = function (floorNumber){	return floorPlans[1709][secId]; } }	
-section2k.prototype = secPrototype;
-
-function section1k(secId){ this.getPlan = function (floorNumber){	return floorPlans[1708][secId]; } }
-section1k.prototype = secPrototype;
-	
-function section1k6s(){
-	this.floorsTo = 11;
-	this.getPlan = function (floorNumber) {
-		var res = floorPlans[1708][5];
-		if(floorNumber === 6) res = floorPlans[1708][6];
-		else if(floorNumber >= 7) res = floorPlans[1708][7];
-		return res;
-		}
-	}*/
-	
-function drawTable(bId){
 	/*function maxNumberFlatsOfSection(sectionId){
 		function max (prev, elem){ return Math.max(prev, elem.length); }
 		var columns = floorPlans[buildingId][sectionId].length;
 		console.log("columns: " + columns);
 		return columns;
 		}*/
+		
+function drawTable(bId){
+	function countFlatIdAnchor(){
+		
+		}
 	function floorBuilder(base, elem){
 		function spellRoomNumber(type){
 			var res = "";
@@ -132,9 +213,6 @@ function drawTable(bId){
 		flatType = (elem[0] === 1 && elem[1] < 34)? 0 : elem[0]; //zero for studio
 		str = base + "<td class='flat roomsNum_" + flatType + "'>";
 		str += "<div class='popup'>" + spellRoomNumber(flatType) + ", " + elem[1] + "<br>цена: " + "<br>номер: " +  "</div></td>";
-		//"<font title='площадь:" + elem[1] + "'>&nbsp;";
-		//str += (elem[0] === 1 && elem[1] < 34)?"C":elem[0];
-		//str += "</font></td>";
 		return str;
 		}
 	function buildSectionColumnsLegend(plan){
@@ -150,21 +228,18 @@ function drawTable(bId){
 		plan, i, j, str = "<table class='building'><tr>",
 		section, rows = sectionPrototype.floorsTo, columns;
 	for (i = 0; i<buildings[bId].sectionsQ; i++){
-		//if(buildingId === 1709) section = new section2k(i);
-		//else if(buildingId === 1708) section = new ((i === 5)?section1k6s:section1k)(i);
 		section = new sections[bId][i];
 		columns = section.plans[0].length; // надо вычислить максимальный
 		str += "<td class='section'><table class='section'>";
 		str += buildSectionColumnsLegend(section.getPlan(section.floorsFrom));
-		//for (j = rows; j > section.floorsTo; j--)
-		//	str += "<tr><td colspan='" + columns + "'>&nbsp;</td></tr>"
 		for (j = section.floorsTo; j >= section.floorsFrom; j--){
+			flatIdAnchor = countFlatIdAnchor();
 			plan = section.getPlan(j);
 			str += "<tr>" + "<td class='floor'>" + j + "</td>" + plan.reduce(floorBuilder,"");
 			str += (columns>plan.length)?("<td colspan='" + (columns - plan.length) + "'>&nbsp;</td>"):"";
 			str += "</tr>";
 			}
-		for (;j >= 1; j--){//добавляем нежилые этажи чтобы с первого
+		for (;j >= 1; j--){// добавляем нежилые этажи чтобы с первого
 			if(j === 1) str += buildSectionColumnsLegend(section.getPlan(section.floorsFrom));
 			else str += "<tr class='emptyFloor'>" + "<td class='floor'>&nbsp;</td>" + "<td colspan='" + columns + "'>&nbsp;</td></tr>";
 			}
@@ -173,37 +248,47 @@ function drawTable(bId){
 	return str+"</tr></table>";
 	}
 	
-
+// 	sec2plans format: { bId:x, sectId:c, floorId:v, planId: b }
 function buildTable(bId){
 	var
-		table = [], plan,
-		i, j, section,
-		flatId = buildings[bId].flatStartId;
-	for (i = 0; i < buildings[bId].sectionsQ; i++){
-		section = new sections[bId][i];
-		for(j = section.floorsFrom; j <= section.floorsTo; j++){
-			plan = section.getPlan(j);
-			plan.forEach(function(elem, elemId){
-				table[flatId] = {
+		table = [], planId, plan, i, j, section,
+		flatExtId = buildings2.filter( function(building) { return building.bId === bId} )[0].flatStartExtId,
+		flatId = 0,
+		sections = sections2.filter( function(section) { return section.bId === bId; });
+	for (i = 0; i < sections.length; i++){
+		for(j = sections[i].floorsFrom; j <= sections[i].floorsTo; j++){
+			planId = sections2plans.filter( function(entity) {
+				//console.log("bId=" + bId + ", sectId=" + sections[i].sectId + ", floorId=" + j);
+				//if(entity.bId == 1) console.log(entity);
+				return (entity.bId === bId && entity.sectId === sections[i].sectId && entity.floorId === j)
+				})[0].planId;
+			plan = plans.filter( function(plan) { return plan.planId === planId })[0].plan;
+			plan.forEach( function(flat, flatNonPlan) {
+				table.push({
+					flatId:flatId,
+					flatExtId:flatExtId + flatId,//change?
 					floor:j,
-					numberOnFloor:elemId+1,
-					numberOfRooms:elem[0],
-					square:elem[1],
+					numberOnFloor: flatNonPlan + 1,
+					numberOfRooms:flat[0],
+					square:flat[1],
 					building:bId,
-					section:i,
-					status:[]
-					};
+					section:i
+					});
 				flatId++;
 				});
 			} 
 		}
 	return table;
 	}
-
-//table = buildTable(1709)
+	
+console.time("default");
+sections2plans = sec2plans();
+table = buildTable(1);
+console.timeEnd("default");
+//console.log(table);
 //console.log(table.filter(function(value) { return value.building !== undefined }).length);
-tableStr = drawTable(1710);
-document.getElementById('wrapper').innerHTML = tableStr;
+//tableStr = drawTable(1710);
+//document.getElementById('wrapper').innerHTML = tableStr;
 </script>
 <style>
 html{
