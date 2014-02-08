@@ -1,0 +1,107 @@
+﻿html{
+	font-family:Tahoma;
+	font-size:14px;
+	}
+	
+div.wrapper{ width:100%; }
+	
+table.building{
+	border-collapse:separate;
+	border-spacing:5px 0;
+	margin:3em auto;
+	}
+
+table.building td.section { vertical-align:bottom }
+
+table.section{
+	border-collapse:separate;
+	border-spacing:0px;
+	margin:0;
+	vertical-align:bottom;
+	background-color:#eee
+	}
+	
+table.section td {
+	text-align:center;
+	font-size:10px;
+	}
+	
+table.section td.flat{
+	color:white;
+	width:18px;
+	height:16px;
+	border:1px solid #ddd;
+	background-color:white;
+	}
+
+table.section td.flat div.window{
+	width:6px;height:6px;
+	background-color:#fff99d;
+	//background-color:#333;
+	border:1px solid #aaa;
+	margin: 0 auto;
+	border-radius:2px
+	}
+	
+table.section td.flat div.popup {
+	display: none;
+	padding:0.5em .75em;
+	margin:1.2em 0 0 1.2em;
+	color:black;
+	font-size:16px;
+	background-color:white;
+	text-align:left;
+	border:1px solid grey;
+	border-radius:.4em;
+	}
+	
+table.section td.flat:hover div.popup {
+	display: block;
+	position: absolute;
+	}
+	
+table.section td.floor{
+	text-align:right;
+	vertical-align:top;
+	font-size:12px;
+	padding-right:2px;
+	width:16px;height:14px;
+	background-color:white !important
+	}
+
+table.section td.roomsNum_0{
+	//border-bottom:1px solid #0047ff;
+	//border-left:1px solid #0047ff;
+	//border-right:1px solid #0047ff;
+	background-color:#fffcd5;
+	}
+table.section td.roomsNum_1{
+	//border-bottom:1px solid #0085ff;
+	//border-left:1px solid #0085ff;	
+	//border-right:1px solid #0047ff;
+	background-color:#cbdff2;
+	}
+table.section td.roomsNum_2{	
+	//border-bottom:1px solid #e37300;
+	//border-left:1px solid #e37300;
+	//border-right:1px solid #e37300;
+	background-color:#ffd8b9;
+	}
+table.section td.roomsNum_3{
+	//border-bottom:1px solid #65cb3a;
+	//border-left:1px solid #65cb3a;
+	//border-right:1px solid #65cb3a;
+	background-color:#d8f3cb;
+	}
+table.section td.roomsNum_4{
+	//border-bottom:1px solid #ff97ad;
+	//border-left:1px solid #ff97ad;
+	//border-right:1px solid #ff97ad;
+	background-color:#ffd0d3;
+	}
+	
+table.section tr.sectionColumnsLegend td{
+	background-color:#eee;
+	color:black;
+	font-size:12px;
+	}
