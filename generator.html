@@ -7,7 +7,7 @@
 <body><div id="wrapper" class="wrapper"></div></body>
 <script src="./generator.js"></script>
 <script>
-//snapStr = {"date":1391636691,"list":[[126634,2,7133184,1708],[126635,2,9282851,1708],[126638,2,9135176,1708],[126639,2,7081584,1708],[126629,2,9282851,1708],[126623,2,9282851,1708],[126872,2,7162080,1708],[126877,2,7161048,1708],[126646,2,4876008,1708],[127112,2,7161048,1708],[127117,2,7161048,1708],[127000,2,4464390,1708],[126920,2,4100011,1708],[127352,2,7162080,1708],[127613,2,7176528,1708],[127617,2,5014728,1708],[127621,2,8042454,1708],[127547,2,7141758,1708],[127555,2,8003394,1708],[127536,2,7141758,1708],[127538,2,7579152,1708],[127525,2,7141758,1708],[127514,2,7141758,1708],[127522,2,8003394,1708],[127481,2,7106988,1708],[127390,2,7886214,1708],[127365,2,4922248,1708],[127366,2,4922248,1708],[127368,2,7808094,1708],[127669,2,8518718,1708]]};
+snapStr = '{"date":1391636691, "buildId":1, "list":[[126634,2,7133184,1708],[126635,2,9282851,1708],[126638,2,9135176,1708],[126639,2,7081584,1708],[126629,2,9282851,1708],[126623,2,9282851,1708],[126872,2,7162080,1708],[126877,2,7161048,1708],[126646,2,4876008,1708],[127112,2,7161048,1708],[127117,2,7161048,1708],[127000,2,4464390,1708],[126920,2,4100011,1708],[127352,2,7162080,1708],[127613,2,7176528,1708],[127617,2,5014728,1708],[127621,2,8042454,1708],[127547,2,7141758,1708],[127555,2,8003394,1708],[127536,2,7141758,1708],[127538,2,7579152,1708],[127525,2,7141758,1708],[127514,2,7141758,1708],[127522,2,8003394,1708],[127481,2,7106988,1708],[127390,2,7886214,1708],[127365,2,4922248,1708],[127366,2,4922248,1708],[127368,2,7808094,1708],[127669,2,8518718,1708]]}';
 
 buildings2 = [
 	{ bId:1, extBid:1708, flatStartExtId: 126496,
@@ -16,9 +16,9 @@ buildings2 = [
 		link:"novokosino.ndv.ru/sale/?build=1709", name:"ЖК Новокосино (мкрн 9) от Эксперта и НДВ, корпус 2" },
 	{	bId:3, extBid:1710, flatStartExtId: 128537, isActive:0,
 		link:"novokosino.ndv.ru/sale/?build=1710", name:"ЖК Новокосино (мкрн 9) от Эксперта и НДВ, корпус 3" }
-	]
+	];
 	
-sections2 = [// add order to section list
+sections2 = [//no need in flatsNfrom and flatsQ yet
 	{ bId:1, sectId:1, flatsNfrom:1, flatsQ:144, floorsFrom: 2, floorsTo: 25 },
 	{ bId:1, sectId:2, flatsNfrom:145, flatsQ:240, floorsFrom: 2, floorsTo: 25 },
 	{ bId:1, sectId:3, flatsNfrom:385, flatsQ:240, floorsFrom: 2, floorsTo: 25 },
@@ -38,9 +38,15 @@ sections2 = [// add order to section list
 	{ bId:3, sectId:6, flatsNfrom:639, flatsQ:60, floorsFrom: 2, floorsTo: 13 },
 	{ bId:3, sectId:7, flatsNfrom:699, flatsQ:60, floorsFrom: 2, floorsTo: 13 },
 	{ bId:3, sectId:8, flatsNfrom:759, flatsQ:60, floorsFrom: 2, floorsTo: 13 }	
-	]
+	];
+sections2.sort(function (a, b){ return a.sectId - b.sectId; });
+//function addSectionPrototype(objArr){ objArr.forEach( function(section){ section.prototype = sectionPrototype; }); }
+//sections.forEach(addSectionPrototype);
 
-plans = [ // update plans array with flats quantity on each floor ?
+//expected format { flatId, date, status, price }
+flats = [];
+
+plans = [
 	{ planId: 0, plan:[[2,69.12], [3,94.29], [2,63.36], [2,63.33], [3,92.79], [2,68.62]] },
 	{ planId: 1, plan:[[1,30.37],[1,42.5],[2,69.4],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.39],[1,41.2],[1,30.5]] },
 	{ planId: 2, plan:[[1,30.37],[1,42.5],[2,69.39],[1,46.24],[1,46.24],[1,46.24],[1,46.24],[2,69.39],[1,42.32],[1,30.37]] },
@@ -62,21 +68,21 @@ plans = [ // update plans array with flats quantity on each floor ?
 	{ planId: 16, plan:[[4,120.42], [1,28.95], [1,43.2], [1,44.9], [3,84.31]] },
 	{ planId: 17, plan:[[3,100.1], [1,46.4], [1,46.4], [1,32.05], [3,90.17]] },
 	{ planId: 18, plan:[[2,68.57], [1,30.85], [1,46.45], [1,31], [3,78.97]] }
-	]	
+	];
 
 n = +window.location.search.substring(1);
-if (!n) { n = 1; }
-//console.log(n);
-//n =1;
-console.time("default");
+if (n !== 1 && n !== 2 && n !== 3) { n = 1; }
+//console.time("default");
 sections2plans = sec2plans();
-flats = buildTable(n);
+snapObj = JSON.parse(snapStr);
+flats = makeFlatsArray(n);
+//console.log(flats);
+//parseSnapShot(snapStr);
 tableStr = drawTable(n);
+//console.timeEnd("default");
 document.getElementById('wrapper').innerHTML = tableStr;
-console.timeEnd("default");
 
 //console.log(table);
 //console.log(table.filter(function(value) { return value.building !== undefined }).length);
-//tableStr = drawTable(1710);
 </script>
 </html>

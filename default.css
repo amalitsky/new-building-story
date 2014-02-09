@@ -1,4 +1,5 @@
 ﻿html{
+	width:100%;
 	font-family:Tahoma;
 	font-size:14px;
 	}
@@ -6,37 +7,71 @@
 div.wrapper{ width:100%; }
 	
 table.building{
-	border-collapse:separate;
-	border-spacing:5px 0;
+	border-collapse:collapse;
+	//border-spacing:0px 0;
 	margin:3em auto;
 	}
-
-table.building td.section { vertical-align:bottom }
-
-table.section{
-	border-collapse:separate;
-	border-spacing:0px;
-	margin:0;
+	
+table.building td.section, table.building td.floors {
 	vertical-align:bottom;
-	background-color:#eee
+	padding:0; 
+	}
+
+table.section {
+	border-collapse:collapse;
+	border-spacing:0;
+	margin:0;padding:0;
+	vertical-align:bottom;
+	}
+
+table.floorsIdColumn{
+	border-collapse:collapse;
+	margin:0  3px; padding:0;
+	vertical-align:bottom !important;
+	}
+
+table.floorsIdColumn td{
+	text-align:center;
+	vertical-align:top;
+	font-size:12px;
+	width:16px; height:17px;
+	color:#666;
+	background:#fff !important;
 	}
 	
-table.section td {
-	text-align:center;
-	font-size:10px;
-	}
+table.section td { text-align:center; font-size:10px; }
 	
 table.section td.flat{
 	color:white;
-	width:18px;
-	height:16px;
-	border:1px solid #ddd;
-	background-color:white;
+	width:18px; height:16px;
+	border-bottom:1px solid #ddd;
+	border-right:1px solid #ddd;
 	}
+
+/*table.section tbody.flats td.flat:last-child { border-right:2px solid #ccc; }
+table.section td[colspan] { border-left:2px solid #ccc; }
+table.section tbody.flats tr td:nth-of-type(2) { border-left:2px solid #ccc; }
+table.section tbody.flats tr:nth-of-type(1) td.flat { border-top:2px solid #ccc; }
+table.section tbody.flats tr:nth-last- of-type td { border-bottom:2px solid #ccc; }*/
+
+table.section tbody.flats{
+	background-color:#eee;
+	border:2px solid #ccc;
+	border-bottom:none;
+	}
+
+table.section td.flat img{
+	width:11px;height:8px;
+	padding:0;margin:0;
+	}
+	
+table.section td.flat img.notAvail{ background-color:; }
+table.section td.flat img.sold{ background-color:#fcff64; }
+table.section td.flat img.avail{ background-color:#0f0; }
 
 table.section td.flat div.window{
 	width:6px;height:6px;
-	background-color:#fff99d;
+	background-color:#3ee506;
 	//background-color:#333;
 	border:1px solid #aaa;
 	margin: 0 auto;
@@ -55,53 +90,36 @@ table.section td.flat div.popup {
 	border-radius:.4em;
 	}
 	
-table.section td.flat:hover div.popup {
-	display: block;
-	position: absolute;
-	}
-	
-table.section td.floor{
-	text-align:right;
-	vertical-align:top;
-	font-size:12px;
-	padding-right:2px;
-	width:16px;height:14px;
-	background-color:white !important
-	}
+table.section td.flat:hover div.popup { display: block; position: absolute; }
 
 table.section td.roomsNum_0{
-	//border-bottom:1px solid #0047ff;
-	//border-left:1px solid #0047ff;
-	//border-right:1px solid #0047ff;
-	background-color:#fffcd5;
+	background-color:#c6dff2;
 	}
 table.section td.roomsNum_1{
-	//border-bottom:1px solid #0085ff;
-	//border-left:1px solid #0085ff;	
-	//border-right:1px solid #0047ff;
-	background-color:#cbdff2;
+	background-color:#cbd0f2;
 	}
 table.section td.roomsNum_2{	
-	//border-bottom:1px solid #e37300;
-	//border-left:1px solid #e37300;
-	//border-right:1px solid #e37300;
-	background-color:#ffd8b9;
+	background-color:#ffd5a0;
 	}
 table.section td.roomsNum_3{
-	//border-bottom:1px solid #65cb3a;
-	//border-left:1px solid #65cb3a;
-	//border-right:1px solid #65cb3a;
 	background-color:#d8f3cb;
 	}
 table.section td.roomsNum_4{
-	//border-bottom:1px solid #ff97ad;
-	//border-left:1px solid #ff97ad;
-	//border-right:1px solid #ff97ad;
 	background-color:#ffd0d3;
 	}
-	
-table.section tr.sectionColumnsLegend td{
-	background-color:#eee;
-	color:black;
-	font-size:12px;
+
+table.section tbody.sectionColumnsLegend{
+	border:2px solid #ccc;
+	border-top:1px solid #ccc;
 	}
+	
+table.section tbody.sectionColumnsLegend td {
+	background-color:#eee;
+	padding:2px 0;
+	color:#666;
+	font-size:12px;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	}
+
+	table.section tr.emptyFloor td {	background-color:#eee; }

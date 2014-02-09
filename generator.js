@@ -1,11 +1,4 @@
-﻿function repeatePlease(str, quantity){
-	"use strict";
-	var res = "";
-	while(quantity > 0) { res += str; quantity--; }
-	return res;
-	}
-
-// to escape sex with full matrix of [planId, bId, sectId, floor] set array indexes hardly
+﻿//to avoid hardcoding of full matrix [planId, bId, sectId, floor]. 
 //result sec2plans format: { bId:x, sectId:c, floorId:v, planId: b }
 function sec2plans(){
 	"use strict";
@@ -32,18 +25,61 @@ function sec2plans(){
 	return arr;
 	}
 
-//function addSectionPrototype(objArr){ objArr.forEach( function(section){ section.prototype = sectionPrototype; }); }
-//sections.forEach(addSectionPrototype);
+//flat status: 0 - never available, 1 - available, 2 - fixed, 3 - sold out
+//sec2plans format: { bId:x, sectId:c, floorId:v, planId: b }
+function makeFlatsArray(bId){
+	var
+		table = [], planId, plan, i, flatId = 0, flatExtId, flatLog = [];
+		sections = sections2.filter( function(section) { return section.bId === bId; });
+	flatExtId = buildings2.filter( function(building) { return building.bId === bId; })[0].flatStartExtId
+	for (i = 0; i < sections.length; i++){
+		for(j = sections[i].floorsFrom; j <= sections[i].floorsTo; j++){
+			planId = sections2plans.filter( function(entity) {
+				return entity.bId === bId && entity.sectId === sections[i].sectId && entity.floorId === j;
+				})[0].planId;
+			plan = plans.filter( function(plan) { return plan.planId === planId; })[0].plan;
+			plan.forEach( function(flat, flatNonPlan) {
+				flatLog = snapObj.list.filter( function (entity) {  return entity[0] === (flatExtId + flatId); });
+				//if(flatLog.length > 0) { console.log(flatLog); }
+				curStatus = (flatLog.length > 0)? flatLog[flatLog.length - 1][1]:0;
+				curPrice = (flatLog.length > 0)? flatLog[flatLog.length - 1][2]:0;
+				//if (flatLog.length > 0) console.log(curStatus + ", " + curPrice);
+				table.push({
+					flatId:flatId,
+					flatExtId:flatExtId + flatId,
+					flatNumber:flatId+1,
+					floor:j,
+					numberOnFloor: flatNonPlan + 1,
+					roomsQ:flat[0],
+					square:flat[1],
+					bId:bId,
+					sectId:sections[i].sectId,
+					curStatus:curStatus,
+					curPrice:curPrice
+					});
+				flatId++;
+				});
+			} 
+		}
+	return table;
+	}
 
-	/*function maxNumberFlatsOfSection(sectionId){
-		function max (prev, elem){ return Math.max(prev, elem.length); }
-		var columns = floorPlans[buildingId][sectionId].length;
-		console.log("columns: " + columns);
-		return columns;
-		}*/
+function parseSnapShot(text){
+	var snapObj = JSON.parse(text);	
+	}
+	
 //sec2plans format: { bId:x, sectId:c, floorId:v, planId: b }
 function drawTable(bId){
 	"use strict";
+	function formatPrice(val){
+		
+		}
+		
+	function buildFloorsColumn(floorNumOfNextSection){
+		var i, str = "<table class='floorsIdColumn'>";
+		for(i = floorNumOfNextSection; i > 1; i--){ str += "<tr><td>" + i + "</td></tr>"; }
+		return str + "<tr><td>&nbsp;</td></tr></table>";
+		}
 	function getPlanOfCurrSection(sectId, floorId){
 		var planId = sections2plans.filter( function (entity){
 			return entity.bId === bId && entity.sectId === sectId && entity.floorId === floorId;
@@ -61,14 +97,6 @@ function drawTable(bId){
 				}
 			return res;
 			}
-	/*function floorBuilder(base, elem){
-		
-		var str,
-		flatType = (elem[0] === 1 && elem[1] < 34)? 0 : elem[0]; //zero for studio
-		str = base + "<td class='flat roomsNum_" + flatType + "'>";
-		str += "<div class='popup'>" + spellRoomNumber(flatType) + ", " + elem[1] + "<br>цена: " + "<br>номер: " +  "</div></td>";
-		return str;
-		}*/
 	function buildSectionColumnsLegend(plan){
 		function builder(base, elem){
 			var str = base + "<td><font>";
@@ -76,103 +104,58 @@ function drawTable(bId){
 			str += "</font></td>";
 			return str;
 			}
-		return "<tr class='sectionColumnsLegend'><td class='floor'>&nbsp;</td>" + plan.reduce(builder,"") + "</tr>";
+		var str = "<tbody class='sectionColumnsLegend'><tr>" + plan.reduce(builder,"") + "</tr></tbody>";
+		return str;
+		}
+	function floorBuilder(base, flat){
+		var str,
+		flatType = (flat.roomsQ === 1 && flat.square < 34)? 0 : flat.roomsQ; //zero for studios
+		str = base + "<td class='flat roomsNum_" + flatType + "'><img src='./window.gif' class='";
+		//switch(Math.round((Math.random()*2))){
+		switch(flat.curStatus){
+			case 0: str += "notAvail"; break;
+			case 1: str += "sold"; break;
+			case 2: str += "avail";
+			}
+		str += "' />"; //"<div class='window'></div>"
+		str += "<div class='popup'>" + spellRoomNumber(flatType) + ", " + flat.square + "м<br>цена: " + flat.curPrice + "<br>цена за метр: " + (flat.curPrice/flat.square).toFixed(0) + "<br>номер: " + flat.flatNumber + "</div></td>";
+		return str;
 		}
 	var
-		plan, i, str = "<table class='building'><tr>", rows, columns, planIdsOfSection, plansOfSection,
-		flatsOnFloor = [],
+		plan, i, str = "<table class='building'><tr>", rows, columns, planIdsOfSection,
+		flatsOnFloor = [], uniquePlanIdsOfSection, alreadyHaveThisPlanId,
 		sections = sections2.filter( function(section) { return section.bId === bId; });//add order of sections
 		rows = sections.reduce( function (prevValue, section){ return Math.max(prevValue, section.floorsTo); }, 0);
 	sections.forEach( function (section) {
-		
+		uniquePlanIdsOfSection = [];
+		alreadyHaveThisPlanId = [];
 		planIdsOfSection = sections2plans.filter( function (entity) { //not unique, a lot of same planIds here
 			return entity.bId === bId && entity.sectId === section.sectId; });
-			
-		//need try so save only unique planIds of this section for speeding up next function
-			
-		columns = planIdsOfSection.reduce( function (tmpVal, entity){
-			var roomsOnPlanQ = plans.filter( function (plan) {
-				return plan.planId === entity.planId; } )[0].plan.length;
+		planIdsOfSection.forEach( function (entity){//select only unique plans for current section
+			if(!alreadyHaveThisPlanId[entity.planId]){
+				alreadyHaveThisPlanId[entity.planId] = true;
+				uniquePlanIdsOfSection.push(entity);
+				}
+			});
+		columns = uniquePlanIdsOfSection.reduce( function (tmpVal, entity){//max flatQonPlan in this section
+			var roomsOnPlanQ = plans.filter( function (plan) { return plan.planId === entity.planId; })[0].plan.length;
 			return Math.max(tmpVal, roomsOnPlanQ);
-			},0);//max flatQonPlan in this section
-		
-		str += "<td class='section'><table class='section'>";
-		str += buildSectionColumnsLegend(getPlanOfCurrSection(section.sectId, section.floorsFrom));
-		
-		
+			},0);
+		if(section.sectId > 1) { str += "<td class='floors'>" + buildFloorsColumn(section.floorsTo) + "</td>"; }
+		str += "<td class='section'><table class='section'><tbody class='flats'>";
 		for (i = section.floorsTo; i >= section.floorsFrom; i--){
-			plan = getPlanOfCurrSection(section.sectId,  i);
+			plan = getPlanOfCurrSection(section.sectId, i);
 			flatsOnFloor = flats.filter( function (flat) { //ordering?
 				return flat.bId === bId && flat.sectId === section.sectId && flat.floor === i;
 				});
-			str += "<tr><td class='floor'>" + i + "</td>";
-			str += flatsOnFloor.reduce( function(base, flat) {
-				var str,
-				flatType = (flat.roomsQ === 1 && flat.square < 34)? 0 : flat.roomsQ; //zero for studios
-				str = base + "<td class='flat roomsNum_" + flatType + "'><img src='./window" + ((flat.flatNumber%4.25)?"_darkgrey":"") + "_2.gif' />"; //"<div class='window'></div>"
-				str += "<div class='popup'>" + spellRoomNumber(flatType) + ", " + flat.square + "м<br>цена: " + "<br>номер: " + flat.flatNumber + "</div></td>";
-				return str;
-				}, "");
-			//str += "<tr>" + "<td class='floor'>" + i + "</td>" + plan.reduce(floorBuilder,"");
-			str += (columns>plan.length)?("<td colspan='" + (columns - plan.length) + "'>&nbsp;</td>"):"";
+			flatsOnFloor.sort( function (a, b) { return a.numberOnFloor - b.numberOnFloor; });
+			str += "<tr>" + flatsOnFloor.reduce(floorBuilder, ""); //"<td class='floor'>" + i + "</td>";
+			str += (columns > plan.length)?("<td colspan='" + (columns - plan.length) + "'>&nbsp;</td>"):"";
 			str += "</tr>";
 			}
-		for (i; i >= 1; i--){// добавляем нежилые этажи чтобы с первого
-			if(i === 1) { str += buildSectionColumnsLegend(getPlanOfCurrSection(section.sectId, section.floorsFrom)); }
-			else { str += "<tr class='emptyFloor'>" + "<td class='floor'>&nbsp;</td>" + "<td colspan='" + columns + "'>&nbsp;</td></tr>"; }
-			}
-		str += "</table></td>";
+		for (i; i > 1; i--){ //adding empty floors
+			str += "<tr class='emptyFloor'><td colspan='" + columns + "'>&nbsp;</td></tr>"; } //<td class='floor'>" + i + "</td>" + "
+		str += "</tbody>" + buildSectionColumnsLegend(getPlanOfCurrSection(section.sectId, section.floorsFrom)) + "</table></td>";
 		});
-	return str+"</tr></table>";
-	}
-	
-/*
-0 - never available
-1 - available
-2 - fixed
-3 - sold out
-*/
-/*
-flatId
-+extFaltId
-floor(?)
-numberOnPlan
-roomsQ
-square
-building
-section
-?curStatus
-?curPrice
--link
-*/
-//sec2plans format: { bId:x, sectId:c, floorId:v, planId: b }
-function buildTable(bId){
-	var
-		table = [], planId, plan, i, j,
-		flatExtId = buildings2.filter( function(building) { return building.bId === bId; })[0].flatStartExtId,
-		flatId = 0,
-		sections = sections2.filter( function(section) { return section.bId === bId; });
-	for (i = 0; i < sections.length; i++){
-		for(j = sections[i].floorsFrom; j <= sections[i].floorsTo; j++){
-			planId = sections2plans.filter( function(entity) {
-				return entity.bId === bId && entity.sectId === sections[i].sectId && entity.floorId === j;
-				})[0].planId;
-			plan = plans.filter( function(plan) { return plan.planId === planId; })[0].plan;
-			plan.forEach( function(flat, flatNonPlan) {
-				table.push({
-					flatId:flatId,
-					flatExtId:flatExtId + flatId,
-					flatNumber:flatId+1,//???
-					floor:j,
-					numberOnFloor: flatNonPlan + 1,
-					roomsQ:flat[0],
-					square:flat[1],
-					bId:bId,
-					sectId:sections[i].sectId,
-					});
-				flatId++;
-				});
-			} 
-		}
-	return table;
+	return str + "</tr></table>";
 	}
