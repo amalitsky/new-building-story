@@ -65,7 +65,7 @@ table.section td.flat img{
 	padding:0;margin:0;
 	}
 	
-table.section td.flat img.notAvail{ background-color:; }
+table.section td.flat img.notAvail{ background-color; }
 table.section td.flat img.sold{ background-color:#fcff64; }
 table.section td.flat img.avail{ background-color:#0f0; }
 
