@@ -94,7 +94,7 @@ $buildings = array(
 	//array (1, './examples/k1example_10022014.htm'),
 	//array (1, './examples/k1example_11022014.htm'),
 	//array (1, './examples/k1example_12022014.htm'),
-	array (1, './examples/k1example_13022014.htm'),
+	//array (1, './examples/k1example_13022014.htm'),
 	//array (1, './examples/k1example_14022014.htm'),
 	//array (1, 'http://novokosino.ndv.ru/sale/?build=1708'),
 	//array (2, './examples/k2example_05022014.htm'),
@@ -104,13 +104,16 @@ $buildings = array(
 	//array (2, './examples/k2example_10022014.htm'),
 	//array (2, './examples/k2example_11022014.htm'),
 	//array (2, './examples/k2example_12022014.htm'),
-	array (2, './examples/k2example_13022014.htm'),
-	//array (2, './examples/k2example_14022014.htm'),
+	//array (2, './examples/k2example_13022014.htm'),
+	array (2, './examples/k2example_14022014.htm'),
 	//array (2, 'http://novokosino.ndv.ru/sale/?build=1709'),
 	//array (3, 'http://novokosino.ndv.ru/sale/?build=1710')
 	);
 	
 $i = 0;
+$getReqContext = stream_context_create( array('http' => array( 'method' => 'GET',
+		'header' => "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n".
+			"Accept-Encoding: gzip, deflate\r\n"."Accept-Language:	ru-ru,en-us;q=0.8,ru;q=0.5,en;q=0.3\r\n"."Connection: keep-alive\r\n"."Referer: http://novokosino.ndv.ru/sale/\r\n"."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0")));
 $soldFlats = array();
 $newFlatsOnSale = array();
 $flatsPricesUpd = array();
@@ -119,14 +122,12 @@ $backupArr = array();
 $db = new mysqli("localhost", 'root', '', 'bcrawler');
 if ($db->connect_errno) {
 	echo "<p>Error: Failed to connect to MySQL: (" . $db->connect_errno . ") " . $db->connect_error ."</p>\r\n"; }
-
-//flat status: 0 - never available, 1 - available(on Sale), 2 - fixed, 3 - sold out
 if(!($selectStmt = $db->prepare("SELECT extFlatId, flStatus, flPrice FROM `snapshots` WHERE snapId IN (SELECT MAX(snapId) FROM `snapshots` WHERE bId=? GROUP BY extFlatId) AND flStatus='1';"))) {
 	echo "<p>Error: selectStmt prepare failed: (" . $selectStmt->errno . ") " . $selectStmt->error ."<p>\r\n";
 	}
 
 foreach ($buildings as $building){//parsing, saving copy and counting differences between snapshots
-	if(!($file = file_get_contents($building[1]))){
+	if(!($file = file_get_contents($building[1], false. $getReqContext))){
 		echo "<p>".gmdate("Y-m-d H:i:s T")." Error: File on address '".$building[1]."' for building '".$building[0]."' can't be even loaded.</p>\r\n";
 		continue;
 		};
