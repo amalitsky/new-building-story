@@ -1,3 +1,6 @@
 /logs/
+/apLogs/
 /jsdb/
 /dumps/
+/.idea/
+/tests/temp.html
