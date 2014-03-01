@@ -17,7 +17,7 @@ class snapshotsComparePrepareTest extends PHPUnit_Framework_TestCase{
      */
     public function testSnapshotsCompare($db, $web, $expRes){
            $this->assertEquals($expRes,
-                array_map('array_values',snapshotsComparePrepare($db,$web)));
+                array_map('array_values',r9mkSnapsComparePrepare($db,$web)));
     }
 
     public function provider(){

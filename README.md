@@ -1,4 +1,4 @@
 new-buildings-story
 ===================
 
-new appartments complexes interactive story
+new apartments complexes interactive story
