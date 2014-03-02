@@ -9,7 +9,7 @@
  * @author   Malitsky Alexander <a.malitsky@gmail.com>
  * @license  GNU GENERAL PUBLIC LICENSE
  */
-require_once (dirname(__FILE__)."/../crawler_lb.php");
+require_once dirname(__FILE__)."/../crawler_lb.php";
 
 function fingerprints($table){
     /*$dom = new DOMDocument();
