@@ -30,8 +30,8 @@ $buildings = array(
 	array (1, './examples/k1example_12022014.htm'),
 	array (1, './examples/k1example_13022014.htm'),*/
 	//array (1, './examples/k1example_14022014.htm'),
-    array (1, './examples/k1example_26022014.htm'),
-    //array (1, './examples/k1example_28022014.htm'),
+    //array (1, './examples/k1example_26022014.htm'),
+    array (1, './examples/k1example_28022014.htm'),
 	/*array (2, './examples/k2example_05022014.htm'),
 	array (2, './examples/k2example_06022014.htm'),
 	array (2, './examples/k2example_07022014.htm'),
@@ -41,8 +41,8 @@ $buildings = array(
 	array (2, './examples/k2example_12022014.htm'),
     //array (2, './examples/k2example_13022014.htm'),*/
 	//array (2, './examples/k2example_14022014.htm'),
-    array (2, './examples/k2example_26022014.htm'),
-    //array (2, './examples/k2example_28022014.htm'),
+    //array (2, './examples/k2example_26022014.htm'),
+    array (2, './examples/k2example_28022014.htm'),
     //array (1, 'http://novokosino.ndv.ru/sale/?build=1708'),
 	//array (2, 'http://novokosino.ndv.ru/sale/?build=1709'),
 	//array (3, 'http://novokosino.ndv.ru/sale/?build=1710')

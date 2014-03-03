@@ -12,11 +12,6 @@
 require_once dirname(__FILE__)."/../crawler_lb.php";
 
 function fingerprints($table){
-    /*$dom = new DOMDocument();
-    $text = $table->C14N();
-    $dom -> loadHTML(mb_convert_encoding($text,"HTML-ENTITIES","UTF-8"));
-    $xpath = new DOMXPath($dom);
-    echo $xpath -> evaluate('count(//table)')." ".$xpath -> evaluate('count(//tr)')." ".$xpath -> evaluate('count(//td)')." | ";*/
     $q['tables'] = $table -> getElementsByTagName('table') -> length;
     $q['tr'] = $table -> getElementsByTagName('tr') -> length;
     $q['td'] = $table -> getElementsByTagName('td') -> length;
@@ -40,7 +35,7 @@ class r9mkLoadFileAndGetTableTest extends PHPUnit_Framework_TestCase{
         libxml_use_internal_errors(false);
         $xpath = new DOMXPath($dom);
         $expTable = $xpath -> query('//table[@class="housemodbigs"]') -> item(0);
-        if($expFail){ $this->expectOutputRegex('/.*Error: File on address.*/'); }
+        if($expFail){ $this -> expectOutputRegex('/.*Error: File on address.*/'); }
         $table = r9mkLoadFileAndGetTable($link, $getReqContext);
         if(!$expFail){ $this -> assertEquals(fingerprints($expTable), fingerprints($table)); }
         else{ $this -> assertEquals(null, $table); }
