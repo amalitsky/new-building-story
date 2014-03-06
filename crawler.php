@@ -11,18 +11,21 @@
  */
 date_default_timezone_set("UTC");
 $currHour = date("G"); $currMinute = date("m");
-//if($currHour >= 21 OR $currHour < 03) { exit('MSS'); } //Moscow sometimes sleep, let's stop bothering
-//usleep (mt_rand(0,600)*1000000);  //we don't need english courtesy to be just in time
+$nbsCrConf = array();
+require_once dirname(__FILE__)."/nbs_conf.php";
+if($nbsCrConf['stealthMode']){
+    if($currHour >= 21 OR $currHour < 03) { exit('MSS'); } //Moscow sometimes sleep, let's stop bothering
+    usleep (mt_rand(0,600)*1000000);  //we don't need english courtesy to be just in time
+}
 $time_start = microtime(true);
 error_reporting(E_ALL);
 ob_start();
-require_once "./nbs_conf.php";
-require_once "./crawler_lb.php";
-require_once "./db.php";
-require_once "./output.php";
+require_once dirname(__FILE__)."/crawler_lb.php";
+require_once dirname(__FILE__)."/db.php";
+require_once dirname(__FILE__)."/output.php";
 
 $buildings = array(
-	array (1, './examples/k1example_05022014.htm'),
+	/*array (1, './examples/k1example_05022014.htm'),
 	array (1, './examples/k1example_06022014.htm'),
 	array (1, './examples/k1example_07022014.htm'),
 	array (1, './examples/k1example_08022014.htm'),
@@ -32,9 +35,9 @@ $buildings = array(
 	array (1, './examples/k1example_13022014.htm'),
 	array (1, './examples/k1example_14022014.htm'),
     array (1, './examples/k1example_26022014.htm'),
-    array (1, './examples/k1example_28022014.htm'),
+    array (1, './examples/k1example_28022014.htm'),*/
     array (1, 'http://novokosino.ndv.ru/sale/?build=1708'),
-    array (2, './examples/k2example_05022014.htm'),
+    /*array (2, './examples/k2example_05022014.htm'),
 	array (2, './examples/k2example_06022014.htm'),
 	array (2, './examples/k2example_07022014.htm'),
 	array (2, './examples/k2example_08022014.htm'),
@@ -44,14 +47,13 @@ $buildings = array(
     array (2, './examples/k2example_13022014.htm'),
 	array (2, './examples/k2example_14022014.htm'),
     array (2, './examples/k2example_26022014.htm'),
-    array (2, './examples/k2example_28022014.htm'),
+    array (2, './examples/k2example_28022014.htm'),*/
     array (2, 'http://novokosino.ndv.ru/sale/?build=1709'),
 	//array (3, 'http://novokosino.ndv.ru/sale/?build=1710')
 	);
 $snaps = array(); $fromdb = array(); $fromWeb = array();
 $db = mysqli_init();
-$db -> options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
-$db -> real_connect('localhost', $nbsCrConf['dbLogin'], $nbsCrConf['dbPassword'], $nbsCrConf['dbName']);
+$db -> real_connect($nbsCrConf['dbServer'], $nbsCrConf['dbLogin'], $nbsCrConf['dbPassword'], $nbsCrConf['dbName']);
 if ($db -> connect_errno) {
 	echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
 

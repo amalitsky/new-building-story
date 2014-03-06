@@ -20,7 +20,7 @@ function r9mkLoadSnapFromDB($db, $bId){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
     }
-    $fromdb = $res -> fetch_all(MYSQLI_ASSOC);
+    for ($fromdb = array(); $tmp = $res -> fetch_assoc();) { $fromdb[] = $tmp; }
     $res -> close();
     return $fromdb;
 }

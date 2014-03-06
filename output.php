@@ -36,8 +36,10 @@ function exportSnapJSON($db, $bId){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
     }
-    $fromdb = $res -> fetch_all();
+    //$fromdb = $res -> fetch_all();
+    for ($fromdb = array(); $tmp = $res -> fetch_assoc();) { $fromdb[] = $tmp; }
     $res -> close();
+    unset($tmp);
     if($fromdb){ echo "<p class='subresult'>Exported ".count($fromdb)." apartments of building $bId to JSON.</p>\r\n";}
     else {
         echo "<p class='error'>Error: Empty result returned from DB while making JSON export, building $bId. [".__FUNCTION__."]</p>\r\n";
@@ -86,9 +88,9 @@ function sendMailNotice($str, $hadErrors = false){
 function saveLog($text){
     $text = "<div class='logEntity'>$text</div>\r\n";
     $i = 0;
-    while(file_exists("./logs/log$i.html") && filesize("./logs/log$i.html") > 5242880){ $i++; }
-    if(!file_put_contents("./logs/log$i.html", $text, FILE_APPEND | LOCK_EX)){
-        echo "<p class='error'>Error: Can't save output to log file.".__FUNCTION__."</p>\r\n";
+    while(file_exists(dirname(__FILE__)."/logs/log$i.html") && filesize(dirname(__FILE__)."/logs/log$i.html") > 5242880){ $i++; }
+    if(!file_put_contents(dirname(__FILE__)."/logs/log$i.html", $text, FILE_APPEND | LOCK_EX)){
+        echo "<p class='error'>Error: Can't save output to log file. [".__FUNCTION__."]</p>\r\n";
         return false;
     }
     return true;
