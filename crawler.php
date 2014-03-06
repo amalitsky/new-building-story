@@ -16,42 +16,42 @@ $currHour = date("G"); $currMinute = date("m");
 $time_start = microtime(true);
 error_reporting(E_ALL);
 ob_start();
+require_once "./nbs_conf.php";
 require_once "./crawler_lb.php";
 require_once "./db.php";
 require_once "./output.php";
 
 $buildings = array(
-	/*array (1, './examples/k1example_05022014.htm'),
+	array (1, './examples/k1example_05022014.htm'),
 	array (1, './examples/k1example_06022014.htm'),
 	array (1, './examples/k1example_07022014.htm'),
 	array (1, './examples/k1example_08022014.htm'),
 	array (1, './examples/k1example_10022014.htm'),
 	array (1, './examples/k1example_11022014.htm'),
 	array (1, './examples/k1example_12022014.htm'),
-	array (1, './examples/k1example_13022014.htm'),*/
-	//array (1, './examples/k1example_14022014.htm'),
-    //array (1, './examples/k1example_26022014.htm'),
+	array (1, './examples/k1example_13022014.htm'),
+	array (1, './examples/k1example_14022014.htm'),
+    array (1, './examples/k1example_26022014.htm'),
     array (1, './examples/k1example_28022014.htm'),
-	/*array (2, './examples/k2example_05022014.htm'),
+    array (1, 'http://novokosino.ndv.ru/sale/?build=1708'),
+    array (2, './examples/k2example_05022014.htm'),
 	array (2, './examples/k2example_06022014.htm'),
 	array (2, './examples/k2example_07022014.htm'),
 	array (2, './examples/k2example_08022014.htm'),
 	array (2, './examples/k2example_10022014.htm'),
 	array (2, './examples/k2example_11022014.htm'),
 	array (2, './examples/k2example_12022014.htm'),
-    //array (2, './examples/k2example_13022014.htm'),*/
-	//array (2, './examples/k2example_14022014.htm'),
-    //array (2, './examples/k2example_26022014.htm'),
+    array (2, './examples/k2example_13022014.htm'),
+	array (2, './examples/k2example_14022014.htm'),
+    array (2, './examples/k2example_26022014.htm'),
     array (2, './examples/k2example_28022014.htm'),
-    //array (1, 'http://novokosino.ndv.ru/sale/?build=1708'),
-	//array (2, 'http://novokosino.ndv.ru/sale/?build=1709'),
+    array (2, 'http://novokosino.ndv.ru/sale/?build=1709'),
 	//array (3, 'http://novokosino.ndv.ru/sale/?build=1710')
 	);
-
 $snaps = array(); $fromdb = array(); $fromWeb = array();
 $db = mysqli_init();
 $db -> options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
-$db -> real_connect('localhost', 'app_crawler', 'Hja72_sdW', 'bcrawler');
+$db -> real_connect('localhost', $nbsCrConf['dbLogin'], $nbsCrConf['dbPassword'], $nbsCrConf['dbName']);
 if ($db -> connect_errno) {
 	echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
 

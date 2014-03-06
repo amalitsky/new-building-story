@@ -35,17 +35,8 @@ class TestCrawlerIntegration extends PHPUnit_Framework_TestCase {
             echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
         $this -> expectOutputRegex('~.*?Exported '.$echo[0].' apartments of building '.$bId.' to JSON.</p>.*?<b>'.$echo[1].'</b> flats were found .*? for building '.$bId.'.*?'.$echo[2].' flats were loaded from last snapshot.*?<b>'.$echo[3].'</b> records will be saved.*~s');
         crawlerR9mk($db, $link, $bId);
-        //$this -> assertTrue(ifDBsnapsAreEqual($db, 'snapshots', 'snapshots'.$expTableNamePostfix, $bId));
-        //$this -> assertTrue(ifDBsnapsAreEqual($db, 'snapbackup', 'snapbackup'.$expTableNamePostfix, $bId));
-        //mb_language("RU"); mb_internal_encoding("UTF-8");
-        $expDump = file_get_contents(dirname(__FILE__)."/crawler/table_".$bId.$expTableNamePostfix.".html");
-        $files = glob(dirname(__FILE__)."/../dumps/".$bId."/".date("Ymd")."_*.html.gz");
-        $files = array_combine($files, array_map("filemtime", $files));
-        arsort($files);
-        $lastFile = key($files);
-        $dump = file_get_contents($lastFile);
-        $dump = mb_convert_encoding($dump, 'UTF-8', 'HTML-ENTITIES');
-        $dump = '';
+        $this -> assertTrue(ifDBsnapsAreEqual($db, 'snapshots', 'snapshots'.$expTableNamePostfix, $bId));
+        $this -> assertTrue(ifDBsnapsAreEqual($db, 'snapbackup', 'snapbackup'.$expTableNamePostfix, $bId));
         //check JSON and dump files
     }
 
@@ -60,11 +51,11 @@ class TestCrawlerIntegration extends PHPUnit_Framework_TestCase {
         $db -> close();
         return array (
             array(1, dirname(__FILE__)."/../examples/k1example_05022014.htm", '_050214', array(30,30,0,30)),
-            //array(2, dirname(__FILE__)."/../examples/k2example_05022014.htm", '_050214', array(53,53,0,53)),
-            //array(1, dirname(__FILE__)."/../examples/k1example_14022014.htm", '_140214', array(34,17,30,21)),
-            //array(2, dirname(__FILE__)."/../examples/k2example_14022014.htm", '_140214', array(57,43,53,18)),
-            //array(1, dirname(__FILE__)."/../examples/k1example_26022014.htm", '_260214', array(34,11,17,16)),
-            //array(2, dirname(__FILE__)."/../examples/k2example_26022014.htm", '_260214', array(61,33,43,47)),
+            array(2, dirname(__FILE__)."/../examples/k2example_05022014.htm", '_050214', array(53,53,0,53)),
+            array(1, dirname(__FILE__)."/../examples/k1example_14022014.htm", '_140214', array(34,17,30,21)),
+            array(2, dirname(__FILE__)."/../examples/k2example_14022014.htm", '_140214', array(57,43,53,18)),
+            array(1, dirname(__FILE__)."/../examples/k1example_26022014.htm", '_260214', array(34,11,17,16)),
+            array(2, dirname(__FILE__)."/../examples/k2example_26022014.htm", '_260214', array(61,33,43,47)),
         );
     }
 }
