@@ -64,7 +64,7 @@ function exportSnapJSON($db, $bId){
  * @param bool $hadErrors Flag for importance headers
  * @return bool
  */
-function sendMailNotice($str, $hadErrors = false){
+function sendMailNotice($str, $hadErrors = false){//TODO add ability to send through SMTP server
     //mb_language('uni'); mb_internal_encoding('UTF-8');
     $subject = 'New buildings apartments parser report';
     $headers = "From: Icode Alerting Service<alert@icode.ru>\r\nMime-Version: 1.0\r\nContent-Type: text/html;charset=UTF-8\r\n";

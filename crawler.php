@@ -10,7 +10,7 @@
  *
  */
 date_default_timezone_set("UTC");
-$currHour = date("G"); $currMinute = date("m");
+$currHour = date("G"); $currMinute = date("i");
 $nbsCrConf = array();
 require_once dirname(__FILE__)."/nbs_conf.php";
 if($nbsCrConf['stealthMode']){
