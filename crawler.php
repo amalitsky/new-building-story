@@ -10,7 +10,7 @@
  *
  */
 date_default_timezone_set("UTC");
-$currHour = date("G"); $currMinute = date("i");
+$currHour = date("G");
 $nbsCrConf = array();
 require_once dirname(__FILE__)."/nbs_conf.php";
 if($nbsCrConf['stealthMode']){
@@ -38,6 +38,7 @@ for ($i = 0; $i < count($buildings); $i++){ crawlerR9mk($db, $buildings[$i][1], 
 $db -> close();
 $output = ob_get_contents();
 $ifErrors = stripos($output , 'error') || stripos($output, 'warning');
+$currMinute = date("i");
 if($ifErrors !== false || ($currHour === 20 && $currMinute >= 30 && $currMinute < 45)){ sendMailNotice($output, $ifErrors); };
 $time_end = microtime(true); echo "<p class='execTime'>Execution time: ".round($time_end - $time_start, 2)." s.</p>";
 saveLog(ob_get_contents());
