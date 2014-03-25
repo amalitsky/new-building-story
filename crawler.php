@@ -14,7 +14,6 @@ $currHour = date("G");
 $nbsCrConf = array();
 require_once dirname(__FILE__)."/nbs_conf.php";
 if($nbsCrConf['stealthMode']){
-    if($currHour >= 21 OR $currHour < 03) { exit(); }
     usleep (mt_rand(0,600)*1000000);  //we don't need english courtesy to be just in time
 }
 $time_start = microtime(true);
@@ -27,7 +26,7 @@ require_once dirname(__FILE__)."/output.php";
 $buildings = array(
     array (1, 'http://novokosino.ndv.ru/sale/?build=1708'),
     array (2, 'http://novokosino.ndv.ru/sale/?build=1709'),
-	//array (3, 'http://novokosino.ndv.ru/sale/?build=1710')
+	array (3, 'http://novokosino.ndv.ru/sale/?build=1710')
 	);
 $snaps = array(); $fromdb = array(); $fromWeb = array();
 $db = mysqli_init();
@@ -39,7 +38,7 @@ $db -> close();
 $output = ob_get_contents();
 $ifErrors = stripos($output , 'error') || stripos($output, 'warning');
 $currMinute = date("i");
-if($ifErrors !== false || ($currHour === 20 && $currMinute >= 30 && $currMinute < 45)){ sendMailNotice($output, $ifErrors); };
+if($ifErrors !== false || ($currHour == 20 && $currMinute >= 30 && $currMinute < 45)){ sendMailNotice($output, $ifErrors, $nbsCrConf['pearMail']); };
 $time_end = microtime(true); echo "<p class='execTime'>Execution time: ".round($time_end - $time_start, 2)." s.</p>";
 saveLog(ob_get_contents());
 ob_end_clean();

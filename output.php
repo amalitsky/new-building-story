@@ -64,20 +64,46 @@ function exportSnapJSON($db, $bId){
  * @param bool $hadErrors Flag for importance headers
  * @return bool
  */
-function sendMailNotice($str, $hadErrors = false){//TODO add ability to send through SMTP server
-    //mb_language('uni'); mb_internal_encoding('UTF-8');
-    $subject = 'New buildings apartments parser report';
-    $headers = "From: Icode Alerting Service<alert@icode.ru>\r\nMime-Version: 1.0\r\nContent-Type: text/html;charset=UTF-8\r\n";
-    if($hadErrors) {
-        $subject .= "with errors";
-        $headers .= "X-Priority: 1 (Highest)\r\nX-MSMail-Priority: High\r\nImportance: High";
+function sendMailNotice($str, $hadErrors = false, $ifPearMail = false){
+    $failMsg = "<p class='error'>Error: Email notice can't be send. [".__FUNCTION__."]</p>\r\n";
+    $succMsg = "<p class='subresult'>Email has been sent. [".__FUNCTION__."]</p>\r\n";
+    if (!$ifPearMail){
+        ini_set('SMTP', 'mail.icode.ru');
+        ini_set('sendmail_from', 'alert@icode.ru');
+        $subject = 'New buildings apartments parser report';
+        $headers = "From: icode Alerting Service<alert@icode.ru>\r\nMime-Version: 1.0\r\nContent-Type: text/html;charset=UTF-8\r\n";
+        if($hadErrors) {
+            $subject .= ' with errors';
+            $headers .= "X-Priority: 1 (Highest)\r\nX-MSMail-Priority: High\r\nImportance: High";
+        }
+        if(!mb_send_mail('support@icode.ru', $subject, "<html><body>$str</body></html>", $headers)){ echo $failMsg; return false; }
+        else { echo $succMsg; }
+        return true;
     }
-    if(!mb_send_mail('support@icode.ru', $subject, "<html><body>$str</body></html>", $headers)){
-        echo "<p class='error'>Error: Email notice can't be send. [".__FUNCTION__."]</p>\r\n";
-        return false;
+    else {//pear Mail where sendmail is disabled
+        require_once 'Mail.php';
+        $params = array();
+        $headers = array();
+        $params['host'] = 'mail.icode.ru';
+        $params['port'] = '587';
+        $params['auth'] = true;
+        $params['username'] = 'alert@icode.ru';
+        $params['password'] = 'fakcPa5$w0rd';
+        $recipients = 'a.malitsky@gmail.com';
+        $headers['From'] = 'icode Alerting Service <alert@icode.ru>';
+        $headers['To'] = 'a.malitsky@gmail.com';
+        $headers['Subject'] = 'New buildings apartments parser report';
+        $headers['Content-Type'] = 'text/html;charset=UTF-8';
+        if($hadErrors) {
+            $headers['Subject'] .= ' with errors';
+            $headers['X-Priority'] = '1 (Highest)';
+            $headers['X-MSMail-Priority'] = 'High';
+        }
+        $mailObj = @Mail::factory('smtp', $params);
+        if(!($mailObj -> send($recipients, $headers, "<html><body>$str</body></html>"))){ echo $failMsg; return false; }
+        else { echo $succMsg; }
+        return true;
     }
-    else { echo "<p class='subresult'>Email has been sent. [".__FUNCTION__."]</p>\r\n"; }
-    return true;
 }
 
 /**
@@ -88,7 +114,7 @@ function sendMailNotice($str, $hadErrors = false){//TODO add ability to send thr
 function saveLog($text){
     $text = "<div class='logEntity'>$text</div>\r\n";
     $i = 0;
-    while(file_exists(dirname(__FILE__)."/logs/log$i.html") && filesize(dirname(__FILE__)."/logs/log$i.html") > 5242880){ $i++; }
+    while(file_exists(dirname(__FILE__)."/logs/log$i.html") && filesize(dirname(__FILE__)."/logs/log$i.html") > 1024*1024){ $i++; }
     if(!file_put_contents(dirname(__FILE__)."/logs/log$i.html", $text, FILE_APPEND | LOCK_EX)){
         echo "<p class='error'>Error: Can't save output to log file. [".__FUNCTION__."]</p>\r\n";
         return false;
