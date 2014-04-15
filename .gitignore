@@ -5,3 +5,5 @@
 /.idea/
 /tests/temp.html
 /phpinfo.php
+.htaccess
+jquery.js
