@@ -1,0 +1,19 @@
+'use strict';
+
+// Declare app level module which depends on filters, and services
+angular.module('nbsApp', [
+        'ngRoute',
+        'nbsApp.controllers',
+        'nbsApp.filters',
+        'nbsApp.services',
+        'nbsApp.directives'
+    ])
+    .config(['$routeProvider', function($routeProvider) {
+        $routeProvider.when('/r9mk/:bId',{
+            templateUrl: function (params) {
+                return 'partials/building' + params.bId + '.html';
+                },
+            controller: 'buildCtrl'
+        });
+        $routeProvider.otherwise({redirectTo: '/r9mk/3'});
+    }]);

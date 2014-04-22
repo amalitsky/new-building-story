@@ -1,0 +1,17 @@
+{
+  "name": "new-buling-story",
+  "description": "History of selling flats in new constructed buildings",
+  "version": "1.0.0",
+  "homepage": "https://github.com/amalitsky/new-buildings-story/",
+  "license": "GNU v2",
+  "private": true,
+  "dependencies": {
+    "jquery": "~1.11",
+    "bootstrap": "~3.1.1",
+    "angular": "1.2.x",
+    "angular-route": "~1.2.16",
+    "angular-bootstrap": "~0.10.0",
+    "eonasdan-bootstrap-datetimepicker": "~3.0.0",
+    "momentjs": ">=2.4.0"
+  }
+}

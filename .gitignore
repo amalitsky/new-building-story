@@ -2,6 +2,9 @@
 /apLogs/
 /jsdb/
 /dumps/
+/bower_components/
 /.idea/
 /tests/temp.html
 /phpinfo.php
+.htaccess
+jquery.js

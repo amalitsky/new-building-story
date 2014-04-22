@@ -61,7 +61,7 @@ function r9mkExtractFlatsOnSale($tableObj, $bId){
         echo "<p class='error'>Error: Expected TABLE element is broken for building ".$bId.". [".__FUNCTION__."]</p>\r\n";
         return null;
     }
-    $expTdQ = array(1 => 1378, 2 => 981);
+    $expTdQ = array(1 => 1378, 2 => 981, 3 => 1024);
     $flatsOnSale = array();
     $tdQ = $tableObj -> getElementsByTagName('td') -> length;
     if($tdQ !== $expTdQ[$bId]){

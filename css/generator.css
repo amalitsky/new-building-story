@@ -1,0 +1,115 @@
+﻿html{
+    width:100%;
+    font-family:Tahoma;
+    font-size:14px;
+}
+
+div.wrapper{ width:100%; }
+
+table.building{
+    border-collapse:collapse;
+    margin:2em auto;
+}
+
+table.building td.section, table.building td.floors {
+    vertical-align:bottom;
+    padding:0;
+}
+
+table.section {
+    border-collapse:collapse;
+    border-spacing:0;
+    margin:0;padding:0;
+    vertical-align:bottom;
+}
+
+table.floorsIdColumn{
+    width:18px;
+    font-size:11px;
+    color:#666;
+    text-align:center;
+    margin:0 3px 5px 3px;
+    border-collapse:collapse;
+    vertical-align:bottom !important;
+}
+
+table.floorsIdColumn td{
+    padding:0;
+    height:16px;
+}
+
+table.section td { text-align:center; font-size:10px; }
+
+table.section td.flat{
+    padding:0;
+    border:1px solid white;
+    width:18px; height:16px;
+}
+
+table.section td.flat:hover{
+    background-color:white;
+    cursor:pointer;
+}
+
+table.section tbody.flats{
+    background-color:#eee;
+}
+
+table.section td.flat img{
+    width:13px; height:11px;
+    padding:0;
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+table.section td.flat.notAvail img{ display:none; }
+table.section td.flat.sold img{ background-color:#ff0; }
+table.section td.flat.avail img{ background-color: #81f174; }
+
+table.section td.flat div.popup {
+    display: none;
+    z-index:2;
+    padding:0.5em .75em;
+    margin:1.2em 0 0 1.2em;
+    color:black;
+    font-size:16px;
+    background-color:white;
+    text-align:left;
+    border:1px solid grey;
+    border-radius:.4em;
+}
+
+table.section td.flat:hover div.popup { display: block; position: absolute; }
+
+table.section td.roomsNum_0{
+    background-color:#b9e1FF;
+}
+table.section td.roomsNum_1{
+    background-color:#e1e0ff;
+}
+table.section td.roomsNum_2{
+    background-color:#ffd299;
+}
+table.section td.roomsNum_3{
+    background-color:#d8f3cb;
+}
+table.section td.roomsNum_4{
+    background-color:#ffd0d3;
+   }
+
+table.section tbody.sectionColumnsLegend{
+    //border:1px solid #ccc;
+    border-top:none;
+}
+
+table.section tbody.sectionColumnsLegend td {
+    padding:2px 0;
+    color:#666;
+    font-size:12px;
+    border:1px solid white;
+}
+
+table.section tr.emptyFloor td {
+    height:16px;
+    background-color:#eee;
+    border:1px solid white;
+}

@@ -1,0 +1,21 @@
+@import "/../bower_components/bootstrap/less/bootstrap.less";
+@import "/../bower_components/bootstrap/less/variables.less";
+@import "/../bower_components/eonasdan-bootstrap-datetimepicker/src/less/bootstrap-datetimepicker.less";
+@import "variables.less";
+
+body {
+  padding-bottom:50px;
+}
+
+.navbar-inverse {
+  border-radius: @navbar-border-radius;
+  #gradient.vertical(#c73d00; #900; 25%; 85%);
+}
+
+.navbar-default {
+  border-radius: (@navbar-border-radius * 2);
+}
+
+.btn-inverse {
+  .button-variant(lighten(@navbar-inverse-color, 25%); lighten(@navbar-inverse-bg, 10%); @navbar-inverse-border);
+}
