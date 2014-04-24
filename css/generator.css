@@ -56,14 +56,20 @@ table.section tbody.flats{
 }
 
 table.section td.flat img{
+    display:none;
     width:13px; height:11px;
     padding:0;
     background-color: rgba(255, 255, 255, 0.25);
 }
 
-table.section td.flat.notAvail img{ display:none; }
-table.section td.flat.sold img{ background-color:#ff0; }
-table.section td.flat.avail img{ background-color: #81f174; }
+table.section td.flat.notAvail img{ }
+table.section td.flat.sold img{
+    display:inline;
+    background-color:#ff0;
+}
+table.section td.flat.avail img{
+    display:inline;
+    background-color: #81f174; }
 
 table.section td.flat div.popup {
     display: none;

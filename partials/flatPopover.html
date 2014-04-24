@@ -1,0 +1,16 @@
+<div class="popover {{placement}}" flat="hoveredFlat" ng-class="{ in: isOpen(), fade: animation() }">
+    <div class="arrow"></div>
+    <div class="popover-inner">
+        <h3 class="popover-title">
+            {{ flat.type | flTypeName }}, {{ flat.square }} м2
+        </h3>
+        <div class="popover-content">
+            {{ flat.status | flStatus:'output' }} <br/>
+            цена: {{ flat.price | number }}<br />
+            или: {{ (flat.price/flat.square) | number:0 }} р/м2 <br />
+            номер квартиры: {{ flat.flatNumber }} {{ baz }}<br />
+            этаж: {{ flat.floor }} <br />
+            секция: {{ flat.section }}
+        </div>
+    </div>
+</div>

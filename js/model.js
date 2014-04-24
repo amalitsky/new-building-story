@@ -39,8 +39,8 @@ function R9mkModel(bId){
     this.loadSnap = function(xhrObj){
         xhrObj.forEach(function(row){
             if(this.flats[row.extFlatId] !== undefined){
-                this.flats[row.extFlatId].curPrice = +row.flPrice;
-                this.flats[row.extFlatId].curStatus = +row.flStatus;
+                this.flats[row.extFlatId].price = +row.flPrice;
+                this.flats[row.extFlatId].status = +row.flStatus;
             }
         }, this);
 
