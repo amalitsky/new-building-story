@@ -21,3 +21,26 @@ body {
 }
 
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+// Flat information popovers
+
+.popover p {
+  margin:0.1em 0;
+  //border:1px solid red;
+}
+
+.popover-title {
+  white-space: nowrap;
+  }
+
+.label-notAvail{
+  &:extend(.label-default);
+}
+
+.label-avail{
+  &:extend(.label-success);
+}
+
+.label-sold{
+  &:extend(.label-warning);
+}

@@ -31,8 +31,9 @@ function saveSiteDump($str, $bId){
  * @param string $bId Internal building ID
  * @return bool
  */
+
 function exportSnapJSON($db, $bId){
-    if(!($res = $db -> query("SELECT extFlatId, flStatus, flPrice, UNIX_TIMESTAMP(snapDate) FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY extFlatId) ORDER BY extFlatId;"))){
+    if(!($res = $db -> query("SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY extFlatId) ORDER BY extFlatId;"))){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
     }
@@ -46,11 +47,11 @@ function exportSnapJSON($db, $bId){
         return false;
     }
     $str = json_encode($fromdb);
-    if(!file_put_contents(dirname(__FILE__)."/jsdb/bd".$bId."_full.json", $str)) {
+    if(!file_put_contents(dirname(__FILE__)."/jsdb/bd".$bId."_dump_recent.json", $str)) {
         echo "<p class='error'>Error: JSON snapshot file for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
         return false;
     }
-    if(!file_put_contents("compress.zlib://".dirname(__FILE__)."/jsdb/bd".$bId."_full.json.gz", $str)) {
+    if(!file_put_contents("compress.zlib://".dirname(__FILE__)."/jsdb/bd".$bId."_dump_recent.json.gz", $str)) {
         echo "<p class='error'>Error: JSON GZ snapshot file for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
         return false;
     }

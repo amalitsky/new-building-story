@@ -6,14 +6,14 @@
 </head>
 <body><div id="wrapper" class="wrapper"></div></body>
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="js/buildings.js"></script>
+<script src="js/generator.js"></script>
 <script>
 "use strict";
 console.time("default");
 var n, snapObj, tableStr;
 n = +window.location.search.slice(1,2);
 if (n < 1 || n > 3) { n = 1; }
-r9mk.init();
+r9mk.init(n);
 tableStr = r9mk.drawTable(n - 1);
 document.getElementById('wrapper').innerHTML = tableStr;
 console.log(JSON.stringify(r9mk.buildings[n-1].flats4export));

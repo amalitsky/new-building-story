@@ -38,6 +38,8 @@ table.floorsIdColumn td{
     height:16px;
 }
 
+table.section tbody.sNumber td { font-size:12px  }
+
 table.section td { text-align:center; font-size:10px; }
 
 table.section td.flat{
@@ -118,4 +120,16 @@ table.section tr.emptyFloor td {
     height:16px;
     background-color:#eee;
     border:1px solid white;
+}
+
+.rouble {
+    display: inline-block;
+    position: relative;
+}
+
+.rouble:before {
+    display: block;
+    content: "–";
+    position: absolute;
+    top: 0.12em;
 }

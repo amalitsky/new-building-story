@@ -7,7 +7,7 @@ angular.module('nbsApp.controllers', [])
                 $scope.hoveredFlat = { hovered:0 };
                 $scope.setHoveredFlat = function(flId, popupPos){
                     var flat = { hovered:0, popupPos:0 };
-                    if(flId && popupPos){
+                    if(flId && popupPos && $scope.r9mk.flats){
                         flat = $scope.r9mk.flats[flId];
                         flat.hovered = 1;
                         flat.popupPos = popupPos;
@@ -27,8 +27,8 @@ angular.module('nbsApp.controllers', [])
             }])
     .controller('nbsGui', ['$scope', '$http', '$routeParams', 'nbsR9mk',
         function($scope, $http, $routeParams, nbsR9mk){
-            $scope.toDateObj = angular.element("#datePicker")[0].value;
+            /*$scope.toDateObj = angular.element("#datePicker")[0].value;
             $scope.$watch('$scope.toDateObj.value',
                 function(val){
-                    $scope.toDate = val; });
+                    $scope.toDate = val; });*/
         }]);

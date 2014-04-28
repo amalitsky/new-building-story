@@ -5,35 +5,27 @@ angular.module('nbsApp.directives', [])
     function link(scope, elem, attr){
         var overTimeout;
         elem.mouseover(function (event){
-            //console.log("over: " + event.target.nodeName + ' ' +event.relatedTarget.nodeName);
-            if(event.target.parentNode.isEqualNode(event.relatedTarget)) {
-                console.log('perehvat');
-                event.stopPropagation();
-                return;
-            }
-            //console.log("over:" + event.target.nodeName + ' ' +event.relatedTarget.nodeName);
+            if(event.relatedTarget && (event.target.isEqualNode(event.relatedTarget.parentNode) ||
+                event.relatedTarget.isEqualNode(event.target.parentNode))
+                ) { return; }
             var position = $position.offset( $(event.target) );
             if(overTimeout) {
                 $timeout.cancel(overTimeout);
             }
             overTimeout = $timeout(function (){
-                scope.setHoveredFlat(flatN, position);
-            }, 50);
+            scope.setHoveredFlat(flatN, position);
+            });
         });
         elem.mouseout(function(event){
-            //console.log("out: " + event.target.nodeName + ' ' +event.relatedTarget.nodeName);
-            if(event.target.parentNode.isEqualNode(event.relatedTarget)) {
-                console.log('perehvat');
-                event.stopPropagation();
-                return;
-            }
-            //console.log("out: " + event.target.nodeName + ' ' +event.relatedTarget.nodeName);
+            if(event.relatedTarget && (event.target.isEqualNode(event.relatedTarget.parentNode) ||
+                event.relatedTarget.isEqualNode(event.target.parentNode))
+                ) { return; }
             if(overTimeout) {
                 $timeout.cancel(overTimeout);
             }
-            if(scope.hoveredFlat.hovered){
-               scope.setHoveredFlat(undefined);
-            }
+            //if(scope.hoveredFlat.hovered){
+            scope.setHoveredFlat(undefined);
+            //}
         });
         var flatN = attr.nbsFlat, flat = {};
 

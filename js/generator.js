@@ -26,33 +26,46 @@ var r9mk = {
         },
         getPlanId: function(sectId, floor){ return sectId; },
         makeFlats: function (){
-            var flatId = 0;
+            var flatId, flatStartId = 0;
             this.flats = [];
             this.flats4export = {};
+            //console.log(this.n);
+            /*switch (+this.bId){
+                case 2:
+                    flatStartId = 1177;
+                    break;
+                case 3:
+                    flatStartId = 2041;
+                    break;
+                default:
+                    flatStartId = 0;
+                }*/
+            flatId = flatStartId;
             this.sections.forEach(function(section, key, sections){
                 var floor, flatObj;
                 sections[key].flats = [];
                 for(floor = section.floorsFrom; floor <= section.floorsTo; floor++){
                     section.floorPlans[floor].forEach(function(flat, numberOnPlan) {
                         flatObj = {
-                            bId: this.bId,
+                            id: flatId,
+                            extId: this.flatStartExtId + flatId - flatStartId,
                             floor: floor,
-                            //flatId:flatId,
-                            flatExtId: this.flatStartExtId + flatId,
-                            flatNumber: flatId+1,
-                            numberOnFloor: numberOnPlan + 1,
-                            roomsQ: flat[0],
+                            sectId: key,
+                            bId: this.bId,
+                            num: flatId + 1,
+                            nOnFloor: numberOnPlan + 1,
+                            roomQ: flat[0],
                             square: flat[1],
-                            type:(flat[0] === 1 && flat[1] < 34)? 0 : flat[0],
-                            curStatus: undefined,
-                            curPrice: undefined
+                            type: (flat[0] === 1 && flat[1] < 34)? 0 : flat[0],
+                            //status: undefined,
+                            //price: undefined
                         };
-                        this.flats[this.flatStartExtId + flatId] = flatObj;
-                        this.flats4export[this.flatStartExtId + flatId] = flatObj;
+                        this.flats[this.flatStartExtId + flatId - flatStartId] = flatObj;
+                        this.flats4export[flatId] = flatObj;
                         sections[key].flats.push(flatObj);
                         flatId++;
                     }, this);
-                };
+                }
             }, this);
         }
     },
@@ -148,7 +161,7 @@ var r9mk = {
     ],
     n:0,
     init:function(bId){
-        this.n = bId;
+        this.n = +bId;
         this.buildings.forEach(function(building, key, buildings){
             buildings[key] = $.extend({}, this.buildingProto, building);
             buildings[key].fillFloorPlans();
@@ -187,17 +200,15 @@ var r9mk = {
         }
         function floorBuilder(base, flat){
             var str;
-            str = base + "<td id='flat_" + flat.flatExtId + "' class='flat roomsNum_" + flat.type + "'><img src='img/window.png' class='";
-            //switch(Math.round((Math.random()*2))){
-            switch(flat.curStatus){
+            str = base + "<td nbs-flat='" + flat.id + "' class='flat roomsNum_" + flat.type + " {{flat.status|flStatus}}'><img src='img/window.png'/></td>";
+            /*switch(flat.curStatus){
                 case 0: str += "notAvail"; break;
                 case 1: str += "sold"; break;
                 case 2: str += "avail"; break;
                 default: str += "notAvail";
             }
-            str += "' />"; //"<div class='window'></div>"
-            //str += "<div class='popup'>" + spellRoomNumber(flat.type) + ", " + flat.square + "м<br>цена: " + flat.curPrice + "<br>цена за метр: " + (flat.curPrice/flat.square).toFixed(0) + "<br>номер: " + flat.flatNumber + "</div>";
-            str += "</td>";
+            str += "' />";
+            str += "</td>";*/
             return str;
         }
         var str = "<table class='building'><tr>";
@@ -217,6 +228,7 @@ var r9mk = {
                 str += "<td class='floors'>" + buildFloorsColumn(section.floorsTo) + "</td>";
             }
             str += "<td class='section'><table class='section'>";
+            str += "<tbody class='sNumber'><tr><td colspan='" + maxColumnsNum + "'>секция " + (key + 1) + "</td></tr></tbody>"
             str += "<tbody class='flats'>";
 
             for (floor = section.floorsTo; floor >= section.floorsFrom; floor--){

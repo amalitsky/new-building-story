@@ -13,7 +13,7 @@ angular.module('nbsApp.filters', [])
                 'output':{
                     1:'в продаже',
                     3:'продана',
-                    'undefined':'в продаже не было'
+                    'undefined':'не было'
                 }
             };
             type = type || 'class';
@@ -24,10 +24,10 @@ angular.module('nbsApp.filters', [])
         return function (flType){
             var table = {
                 0:'студия',
-                1:'однушка',
-                2:'двушка',
-                3:'трёшка',
-                4:'четырёх комнатная',
+                1:'однокомнатная',
+                2:'двухкомнатная',
+                3:'трёхкомнатная',
+                4:'четырёхкомнатная',
                 'undefined':'неизвестно что'
             };
             return table[flType] || table['undefined'];

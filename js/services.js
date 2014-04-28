@@ -4,24 +4,6 @@ angular.module('nbsApp.services', [])
     .factory('nbsR9mk', function nbsR9mk() {
     return function(bId){ return new R9mkModel(bId); };
     })
-    .factory('smallFlatBallon', function(){
-        return function (event){
-
-        }
-    })
-    .factory('hoveredFlat',function(){
-        return function (){
-            this.flatId = 0;
-            this.isActive = 0;
-            this.pos = {x:0, y:0};
-            this.mouseenter = function(){
-
-            };
-            this.mouseleave = function(){
-
-            }
-        };
-    })
     .provider( '$nbsTooltip', function () {
         // The default options tooltip and popover.
         var defaultOptions = {
@@ -129,19 +111,20 @@ angular.module('nbsApp.services', [])
                             var tooltip;
                             var transitionTimeout;
                             var popupTimeout;
+                            var watchTimeout;
                             var appendToBody = angular.isDefined( options.appendToBody ) ? options.appendToBody : false;
                             var triggers = getTriggers( undefined );
                             var hasRegisteredTriggers = false;
                             var hasEnableExp = angular.isDefined(attrs[prefix+'Enable']);
-                            //var hoveredFlat = {};
                             var positionTooltip = function (){
                                 var position,
                                     ttWidth,
                                     ttHeight,
                                     ttPosition;
                                 // Get the position of the directive element.
-                                position = scope.hoveredFlat.popupPos;
+                                position = scope.hoveredFlatCached.popupPos;
 
+                                if(!tooltip){ return; }
                                 // Get the height and width of the tooltip so we can center it.
                                 ttWidth = tooltip.prop( 'offsetWidth' );
                                 ttHeight = tooltip.prop( 'offsetHeight' );
@@ -183,60 +166,48 @@ angular.module('nbsApp.services', [])
 
                             };
 
-                            // By default, the tooltip is not open.
-                            // TODO add ability to start tooltip opened
                             scope.tt_isOpen = false;
+                            scope.tt_animation =  options.animation;
+                            scope.tt_content = type;
+                            scope.tt_placement = options.placement;
+                            scope.tt_popupDelay = options.popupDelay;
 
-                            function toggleTooltipBind () {
+                            /*function toggleTooltipBind () {
                                 console.log('isOpen:' + scope.tt_isOpen);
                                 if ( ! scope.tt_isOpen ) {
                                     showTooltipBind();
                                 } else {
                                     hideTooltipBind();
                                 }
-                            }
+                            }*/
 
                             // Show the tooltip with delay if specified, otherwise show it immediately
                             function showTooltipBind() {
                                 if ( scope.tt_popupDelay ) {
+                                    if(popupTimeout){ $timeout.cancel(popupTimeout); }
                                     popupTimeout = $timeout( show, scope.tt_popupDelay, false );
                                     popupTimeout.then(function(reposition){reposition();});
-                                } else {
-                                    show()();
-                                }
+                                } else { show()(); }
                             }
 
-                            function hideTooltipBind () {
-                                scope.$apply(function () {
-                                    hide();
-                                });
-                            }
+                            function hideTooltipBind () { scope.$apply(function () { hide(); }); }
 
                             // Show the tooltip popup element.
                             function show() {
-                                // Don't show empty tooltips.
-                                if ( ! scope.tt_content ) {
-                                    return angular.noop;
-                                }
-
+                                if ( ! scope.tt_content ) { return angular.noop; }
                                 createTooltip();
 
                                 // If there is a pending remove transition, we must cancel it, lest the
                                 // tooltip be mysteriously removed.
-                                if ( transitionTimeout ) {
-                                    $timeout.cancel( transitionTimeout );
-                                }
+                                if ( transitionTimeout ) { $timeout.cancel( transitionTimeout ); }
 
                                 // Set the initial positioning.
                                 tooltip.css({ top: 0, left: 0, display: 'block' });
 
                                 // Now we add it to the DOM because need some info about it. But it's not
                                 // visible yet anyway.
-                                if ( appendToBody ) {
-                                    $document.find( 'body' ).append( tooltip );
-                                } else {
-                                    element.after( tooltip );
-                                }
+                                if ( appendToBody ) { $document.find( 'body' ).append( tooltip ); }
+                                else { element.after( tooltip ); }
 
                                 positionTooltip();
 
@@ -258,19 +229,16 @@ angular.module('nbsApp.services', [])
 
                                 // And now we remove it from the DOM. However, if we have animation, we
                                 // need to wait for it to expire beforehand.
-                                // FIXME: this is a placeholder for a port of the transitions library.
                                 //if ( scope.tt_animation ) {
-                                    transitionTimeout = $timeout(removeTooltip, 100);
+                                  //  transitionTimeout = $timeout(removeTooltip, 50);
                                 //} else {
-                                    removeTooltip();
+                                removeTooltip();
                                 //}
                             }
 
                             function createTooltip() {
                                 // There can only be one tooltip element per directive shown at once.
-                                if (tooltip) {
-                                    removeTooltip();
-                                }
+                                if (tooltip) { removeTooltip(); }
                                 tooltip = tooltipLinker(scope, function () {});
                                 // Get contents rendered into the tooltip
                                 scope.$digest();
@@ -283,17 +251,28 @@ angular.module('nbsApp.services', [])
                                 }
                             }
 
-                            scope.$watch('hoveredFlat', function (hovFlat){
-                                if(hovFlat.hovered === 1){ $timeout(showTooltipBind); }
-                                else { $timeout(hideTooltipBind); }
+                            scope.$watch('hoveredFlat', function (hovFlat , prev){
+                                if(prev.extFlatId !== hovFlat.extFlatId || prev.hovered !== hovFlat.hovered){
+                                    var show2 = function(){
+                                        scope.hoveredFlatCached = hovFlat;
+                                        if(hovFlat.status !== 3) { scope.hoveredFlatCached.updDate = false; }
+                                        showTooltipBind();
+                                        };
+                                    if(hovFlat.hovered === 1){
+                                        if (watchTimeout){ watchTimeout.then(show2); }
+                                        else { watchTimeout = $timeout(show2); }
+                                    }
+                                    else {
+                                        if (watchTimeout){ $timeout.cancel(watchTimeout); }
+                                        watchTimeout = $timeout(hideTooltipBind);
+                                    }
+                                }
                             });
 
                              /**
                              * Observe the relevant attributes.
                              */
-
                             //attrs.$observe( type, function ( val ) {
-                            scope.tt_content = type;
                             //if (!val && scope.tt_isOpen ) { hide(); }});
 
                             /*attrs.$observe( prefix+'Title', function ( val ) {
@@ -301,21 +280,19 @@ angular.module('nbsApp.services', [])
                             });*/
 
                             //attrs.$observe( prefix+'Placement', function ( val ) {
-                            scope.tt_placement = options.placement;
                             //});
 
                             //attrs.$observe( prefix+'PopupDelay', function ( val ) {
                             //var delay = parseInt( prefix+'PopupDelay', 10 );
-                            scope.tt_popupDelay = options.popupDelay;
                             //});
 
 
-                            var unregisterTriggers = function() {
+                            /*var unregisterTriggers = function() {
                                 if (hasRegisteredTriggers) {
                                     element.unbind( triggers.show, showTooltipBind );
                                     element.unbind( triggers.hide, hideTooltipBind );
                                 }
-                            };
+                            };*/
                             /*
                             attrs.$observe( prefix+'Trigger', function ( val ) {
                                 unregisterTriggers();
@@ -332,8 +309,7 @@ angular.module('nbsApp.services', [])
                                 hasRegisteredTriggers = true;
                             });*/
 
-                            var animation = scope.$eval(attrs[prefix + 'Animation']);
-                            scope.tt_animation = angular.isDefined(animation) ? !!animation : options.animation;
+                            //var animation = scope.$eval(attrs[prefix + 'Animation']);
 
                             /*attrs.$observe( prefix+'AppendToBody', function ( val ) {
                                 appendToBody = angular.isDefined( val ) ? $parse( val )( scope ) : appendToBody;
@@ -354,7 +330,7 @@ angular.module('nbsApp.services', [])
                             scope.$on('$destroy', function onDestroyTooltip() {
                                 $timeout.cancel( transitionTimeout );
                                 $timeout.cancel( popupTimeout );
-                                unregisterTriggers();
+                                //unregisterTriggers();
                                 removeTooltip();
                             });
                         };

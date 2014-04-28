@@ -19,7 +19,7 @@ function R9mkModel(bId){
 
     this.init = function(){
         return $.ajax({
-            url:"/jsdb/bd" + bId + "_flats_recent.json",
+            url:"/jsdb/bd" + bId + "_flats.json",
             dataType: "json",
             context: self
         })
@@ -30,7 +30,7 @@ function R9mkModel(bId){
         };
     this.loadRecent = function(){
         return $.ajax({
-            url:'jsdb/bd' + bId + '_full.json.gz',
+            url:'jsdb/bd' + bId + '_dump_recent.json',
             dataType: "json",
             context: self
         })
@@ -38,9 +38,10 @@ function R9mkModel(bId){
     };
     this.loadSnap = function(xhrObj){
         xhrObj.forEach(function(row){
-            if(this.flats[row.extFlatId] !== undefined){
-                this.flats[row.extFlatId].price = +row.flPrice;
-                this.flats[row.extFlatId].status = +row.flStatus;
+            if(this.flats[row.id] !== undefined){
+                this.flats[row.id].price = +row.price;
+                this.flats[row.id].status = +row.status;
+                this.flats[row.id].updDate = +row.updDate;
             }
         }, this);
 

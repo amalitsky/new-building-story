@@ -4273,7 +4273,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   position: relative;
   top: -1px;
 }
-.label-default {
+.label-default,
+.label-notAvail {
   background-color: #999999;
 }
 .label-default[href]:hover,
@@ -4287,7 +4288,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .label-primary[href]:focus {
   background-color: #3071a9;
 }
-.label-success {
+.label-success,
+.label-avail {
   background-color: #5cb85c;
 }
 .label-success[href]:hover,
@@ -4301,7 +4303,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .label-info[href]:focus {
   background-color: #31b0d5;
 }
-.label-warning {
+.label-warning,
+.label-sold {
   background-color: #f0ad4e;
 }
 .label-warning[href]:hover,
@@ -5288,7 +5291,7 @@ button.close {
   left: 0;
   z-index: 1010;
   display: none;
-  max-width: 276px;
+  max-width: 360px;
   padding: 1px;
   text-align: left;
   background-color: #ffffff;
@@ -6002,4 +6005,10 @@ fieldset[disabled] .btn-inverse.active {
 .carousel,
 .panel-title a {
   cursor: pointer;
+}
+.popover p {
+  margin: 0.1em 0;
+}
+.popover-title {
+  white-space: nowrap;
 }

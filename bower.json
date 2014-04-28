@@ -12,6 +12,7 @@
     "angular-route": "~1.2.16",
     "angular-bootstrap": "~0.10.0",
     "eonasdan-bootstrap-datetimepicker": "~3.0.0",
-    "momentjs": ">=2.4.0"
+    "momentjs": ">=2.4.0",
+    "d3": "~3.4.6"
   }
 }
