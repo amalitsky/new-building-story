@@ -2,18 +2,22 @@ function R9mkModel(bId){
     "use strict";
     var self = this;
     this.flLoaded = false;
+    this.flatsStat = [];
     this.buildings = {
         1:{
-            name:"Novokosino, building 2",
-            nameRu:"Первый корпус ЖК Новокосино"
+            name:"Novokosino, building 1",
+            nameRu:"Первый корпус ЖК Новокосино",
+            flatsQ:1177
         },
         2:{
             name:"Novokosino, building 2",
-            nameRu:"Второй корпус ЖК Новокосино"
+            nameRu:"Второй корпус ЖК Новокосино",
+            flatsQ:864
         },
         3:{
             name:"Novokosino, building 3",
-            nameRu:"Третий корпус ЖК Новокосино"
+            nameRu:"Третий корпус ЖК Новокосино",
+            flatsQ:817
         }
     };
 
@@ -37,14 +41,21 @@ function R9mkModel(bId){
         .done(function(data) { this.loadSnap(data); });
     };
     this.loadSnap = function(xhrObj){
-        xhrObj.forEach(function(row){
-            if(this.flats[row.id] !== undefined){
-                this.flats[row.id].price = +row.price;
-                this.flats[row.id].status = +row.status;
-                this.flats[row.id].updDate = +row.updDate;
+        this.flatsStat = { 1:0, 3:0 };
+        xhrObj.forEach(function(flat){
+            if(this.flats[flat.id] !== undefined){
+                this.flats[flat.id].price = +flat.price;
+                this.flats[flat.id].status = +flat.status;
+                this.flats[flat.id].updDate = +flat.updDate;
+                this.flatsStat[this.flats[flat.id].status]++;
             }
+        this.flatsStat = [
+            {stat:1, q:172, name:"в продаже" },
+            {stat:3, q:151, name:"продано" },
+            {stat:0, q:494, name:"не было" }
+        ];
         }, this);
-
+        //console.log(this.flatsStat);
     };
 
     //init(bId);

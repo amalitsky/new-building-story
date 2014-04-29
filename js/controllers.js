@@ -2,9 +2,12 @@
 
 angular.module('nbsApp.controllers', [])
     .controller('buildCtrl',
-        ['$scope', '$http', '$routeParams', 'nbsR9mk',
-            function($scope, $http, $routeParams, nbsR9mk) {
+        ['$scope', '$http', '$routeParams', 'nbsR9mk', 'Commute',
+            function($scope, $http, $routeParams, nbsR9mk, Commute) {
                 $scope.hoveredFlat = { hovered:0 };
+                $scope.flatsStat = Commute;
+                $scope.flatsStat.test = true;
+                console.log(Commute);
                 $scope.setHoveredFlat = function(flId, popupPos){
                     var flat = { hovered:0, popupPos:0 };
                     if(flId && popupPos && $scope.r9mk.flats){
@@ -21,14 +24,20 @@ angular.module('nbsApp.controllers', [])
                 $scope.r9mk.init().done(function(){
                     $scope.r9mk.loadRecent().
                         done(function(){
+                            $scope.flatsStat = {arr:[7,8,9]};
+                            //console.log($scope.flatsStat);
+                            //console.log(commute.flatsStat);
                             $scope.$apply(); });
                 });
 
             }])
-    .controller('nbsGui', ['$scope', '$http', '$routeParams', 'nbsR9mk',
-        function($scope, $http, $routeParams, nbsR9mk){
-            /*$scope.toDateObj = angular.element("#datePicker")[0].value;
-            $scope.$watch('$scope.toDateObj.value',
+    .controller('nbsGui', ['$scope', '$http', '$routeParams', 'nbsR9mk', 'Commute', '$timeout',
+        function($scope, $http, $routeParams, nbsR9mk, Commute, $timeout){
+            $scope.flatsStat = Commute;
+            $timeout(function(){console.log('me');console.log($scope.flatsStat)}, 100);
+            //$scope.toDateObj = angular.element("#datePicker")[0].value;
+            $scope.$watch('flatsStat',
                 function(val){
-                    $scope.toDate = val; });*/
+                    console.log(val);
+                });
         }]);

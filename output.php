@@ -33,7 +33,7 @@ function saveSiteDump($str, $bId){
  */
 
 function exportSnapJSON($db, $bId){
-    if(!($res = $db -> query("SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY extFlatId) ORDER BY extFlatId;"))){
+    if(!($res = $db -> query("SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY flatId) ORDER BY flatId;"))){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
     }
@@ -122,3 +122,17 @@ function saveLog($text){
     }
     return true;
 };
+
+/**
+ * Export JSON with statistics of available/not on sale/sold flats
+ *
+ * @param Object $db Connection to MySQL database
+ * @param integer $bId Internal id of the building
+ */
+function exportStatusStatsJSON($db, $bId){
+    $flatsNum = [1177, 864, 817];
+    if(!($res = $db -> query("SELECT status, COUNT(*) FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY flatId) GROUP BY status;"))){
+        echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
+        return false;
+    }
+}

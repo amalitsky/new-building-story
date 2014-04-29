@@ -133,3 +133,12 @@ table.section tr.emptyFloor td {
     position: absolute;
     top: 0.12em;
 }
+
+//flat sales pie chart
+.arc path { stroke: #fff; }
+
+.pieChartLabels{
+    font-family: Georgia;
+    font-weight: bold;
+    font-size:1em;
+}
