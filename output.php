@@ -124,15 +124,36 @@ function saveLog($text){
 };
 
 /**
- * Export JSON with statistics of available/not on sale/sold flats
  *
  * @param Object $db Connection to MySQL database
  * @param integer $bId Internal id of the building
  */
-function exportStatusStatsJSON($db, $bId){
-    $flatsNum = [1177, 864, 817];
-    if(!($res = $db -> query("SELECT status, COUNT(*) FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY flatId) GROUP BY status;"))){
+function exportAvMeterPriceJSON($db, $bId){
+    if(!($res = $db -> query("SELECT f.rooms AS rooms, DATE(s.snapDate) AS week, ROUND(AVG(s.flPrice/f.square)) AS price4meter, COUNT(DISTINCT f.id) AS flatsQ FROM `snapbackup` AS s JOIN `flats` AS f ON (s.flatId=f.id AND s.bId=f.bId)
+WHERE s.bId='$bId' GROUP BY week, rooms ORDER BY week ASC, rooms;"))){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
     }
+    for ($fromdb = array(); $tmp = $res -> fetch_assoc();) {
+        $fromdb[] = $tmp;
+    }
+    $res -> close();
+    unset($tmp);
+    if($fromdb){
+        echo "<p class='subresult'>Exported ".count($fromdb)." flat price stat records of building $bId to JSON.</p>\r\n";
+    }
+    else {
+        echo "<p class='error'>Error: Empty result returned from DB while making JSON parse stat export, building $bId. [".__FUNCTION__."]</p>\r\n";
+        return false;
+    }
+    $str = json_encode($fromdb);
+    if(!file_put_contents(dirname(__FILE__)."/jsdb/bd".$bId."_price_stat.json", $str)) {
+        echo "<p class='error'>Error: JSON flat price stat file for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
+        return false;
+    }
+    if(!file_put_contents("compress.zlib://".dirname(__FILE__)."/jsdb/bd".$bId."_price_stat.json.gz", $str)) {
+        echo "<p class='error'>Error: JSON GZ flat price stat file for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
+        return false;
+    }
+    return true;
 }

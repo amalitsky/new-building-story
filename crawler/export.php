@@ -22,6 +22,7 @@ if ($db -> connect_errno) {
     echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
 $bIds = [1, 2, 3];
 for ($i = 0; $i < count($bIds); $i++){
-    exportSnapJSON($db, $bIds[$i]);
+    //exportSnapJSON($db, $bIds[$i]);
+    exportAvMeterPriceJSON($db,$bIds[$i]);
 }
 $db -> close();

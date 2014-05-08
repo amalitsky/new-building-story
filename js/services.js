@@ -1,9 +1,7 @@
 "use strict";
 
 angular.module('nbsApp.services', [])
-    .factory('nbsR9mk', function nbsR9mk() {
-    return function(bId){ return new R9mkModel(bId); };
-    })
+    .service('nbsR9mk', R9mkModel)
     .provider('$nbsTooltip', function () {
         // The default options tooltip and popover.
         var defaultOptions = {
@@ -339,8 +337,9 @@ angular.module('nbsApp.services', [])
             };
         }];
     })
-    .factory('Commute', function() {
-        return { arr: [] }});
-        //{stat:1, q:172, name:"в продаже" },
-        //{stat:3, q:151, name:"продано" },
-        //{stat:0, q:494, name:"не было" }
+    .value('Commute',
+        {
+            flatsStat: [],
+            priceStat: []
+        }
+    );

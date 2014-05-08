@@ -28,7 +28,7 @@ var r9mk = {
         makeFlats: function (){
             var flatId, flatStartId = 0;
             this.flats = [];
-            this.flats4export = {};
+            this.flats4export = [];
             //console.log(this.n);
             /*switch (+this.bId){
                 case 2:
@@ -47,12 +47,12 @@ var r9mk = {
                 for(floor = section.floorsFrom; floor <= section.floorsTo; floor++){
                     section.floorPlans[floor].forEach(function(flat, numberOnPlan) {
                         flatObj = {
+                            bId: this.bId,
                             id: flatId,
                             extId: this.flatStartExtId + flatId - flatStartId,
-                            floor: floor,
                             sectId: key,
-                            bId: this.bId,
                             num: flatId + 1,
+                            floor: floor,
                             nOnFloor: numberOnPlan + 1,
                             roomQ: flat[0],
                             square: flat[1],
@@ -61,7 +61,7 @@ var r9mk = {
                             //price: undefined
                         };
                         this.flats[this.flatStartExtId + flatId - flatStartId] = flatObj;
-                        this.flats4export[flatId] = flatObj;
+                        this.flats4export.push(flatObj);
                         sections[key].flats.push(flatObj);
                         flatId++;
                     }, this);

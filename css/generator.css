@@ -44,7 +44,7 @@ table.section td { text-align:center; font-size:10px; }
 
 table.section td.flat{
     padding:0;
-    border:1px solid white;
+    border:1px solid #ffffff;
     width:18px; height:16px;
 }
 
@@ -58,7 +58,9 @@ table.section tbody.flats{
 }
 
 table.section td.flat img{
-    display:none;
+    display:block;
+    margin-left:2px;
+    visibility: hidden;
     width:13px; height:11px;
     padding:0;
     background-color: rgba(255, 255, 255, 0.25);
@@ -66,11 +68,11 @@ table.section td.flat img{
 
 table.section td.flat.notAvail img{ }
 table.section td.flat.sold img{
-    display:inline;
+    visibility:visible;
     background-color:#ff0;
 }
 table.section td.flat.avail img{
-    display:inline;
+    visibility:visible;
     background-color: #81f174; }
 
 table.section td.flat div.popup {
@@ -141,4 +143,30 @@ table.section tr.emptyFloor td {
     font-family: Georgia;
     font-weight: bold;
     font-size:1em;
+}
+
+//flat price history chart
+div.graph{ font-size:8px; }
+
+.axis path, .axis line {
+    fill: none;
+    shape-rendering: crispEdges;
+}
+
+.line {
+    fill: none;
+    stroke-width: 2px;
+}
+
+.grid .tick {
+    stroke-width: 1px;
+    stroke: #dddddd;
+}
+.grid path { stroke-width: 1px; }
+
+.axis path { stroke:#999; }
+
+.axis line {
+    fill: none;
+    stroke: #ddd;
 }

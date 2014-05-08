@@ -71,28 +71,20 @@
 
     <div class="row" style="min-height: 500px">
         <div class="col-lg-12" ng-view="building">&nbsp;</div>
-        <!--<div class="col-lg-12" nbs-build-scheme="1710"></div>-->
     </div>
-
-    <!--<div class="row">
-        <div flat-popup class="col-lg-12">
-            блабла
-        </div>
-    </div>-->
 
     <div class="row">
         <div class="col-lg-4">
-            <h3>Расположение</h3>
-            <img class='img-thumbnail' src="img/graph_map.png">
-        </div>
-        <div class="col-lg-4">
-            <h3>Цена за метр</h3>
+            <h3>Квартир в продаже</h3>
             <img class='img-thumbnail' src="img/graph_prices.png">
         </div>
+        <div class="col-lg-4 graph">
+            <h3>Цена за метр</h3>
+            <div price-history-chart data="commute.priceStat"></div>
+        </div>
         <div class="col-lg-4">
-            <h3>Квартиры</h3>
-            <div sale-status-chart data="flatsStat.arr">{{flatsStat.test}}</div>
-            <!--<img class='img-circle' src="img/graph_sale.png" height="160" width="160" style="display:block;margin:auto;position:relative">-->
+            <h3>Этап продажи</h3>
+            <div sale-status-chart data="commute.flatsStat"></div>
         </div>
     </div>
 
@@ -109,12 +101,12 @@
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
-<script src="bower_components/d3/d3.js"></script>
+
 <script src="js/app.js"></script>
 <script src="js/controllers.js"></script>
 <script src="js/directives.js"></script>
 <script src="js/filters.js"></script>
-<script src="js/services.js"></script>
 <script src="js/model.js"></script>
+<script src="js/services.js"></script>
 </body>
 </html>

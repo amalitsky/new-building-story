@@ -16,10 +16,26 @@ if (n < 1 || n > 3) { n = 1; }
 r9mk.init(n);
 tableStr = r9mk.drawTable(n - 1);
 document.getElementById('wrapper').innerHTML = tableStr;
-console.log(JSON.stringify(r9mk.buildings[n-1].flats4export));
-/*$.ajax('http://nbs.loc/jsdb/bd' + n + '_full.json.gz', {
-    complete: function(xhrObj) { r9mk.loadSnaps(xhrObj); }
-});*/
+//console.log(JSON.stringify(r9mk.buildings[n-1].flats4export));
+$.ajax('http://nbs.loc/jsdb/bd' + n + '_price_stat.json', {
+    complete: function(xhrObj) {
+       var key, tmp, res = {}, res2 = [];
+       console.log(xhrObj);
+       xhrObj.responseJSON.forEach(function(val, key){
+           if(!res[val.week]){
+               res[val.week] = {};
+           }
+           res[val.week][val.rooms] = val.price4meter;
+           res[val.week][val.rooms + "q"] = val.flatsQ;
+       });
+       for (key in res){
+           tmp = res[key];
+           tmp.week = key;
+           res2.push(tmp);
+       }
+
+       console.log(JSON.stringify(res2)); }
+});
 //console.log(table);
 console.timeEnd("default");
 </script>
