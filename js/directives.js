@@ -210,8 +210,7 @@ angular.module('nbsApp.directives', ['d3'])
                             .map(function(d) {
                                 return {
                                     week: periods[d.period],
-                                    price: Math.round(d.price4meter / 1000),
-                                    flatsQ: d.flatsQ
+                                    price: Math.round(d.price / 1000)
                                 };
                             })
                     };

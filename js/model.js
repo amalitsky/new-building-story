@@ -32,7 +32,7 @@ function R9mkModel(){
                 dataType: "json"
             }),
             $.ajax({
-                url:'jsdb/bd' + this.bId + '_dump_recent.json',
+                url:'jsdb/bd' + this.bId + '_dump_recent.json.gz',
                 dataType: "json"
             })
         ).done(function(flats, dump){
@@ -44,7 +44,7 @@ function R9mkModel(){
 
     this.loadPriceHistory = function(){
         return $.ajax({
-            url:'jsdb/bd' + this.bId + '_price_hist.json',
+            url:'jsdb/bd' + this.bId + '_price_hist.json.gz',
             dataType: "json",
             context: self
         }).done(function(data){
@@ -54,7 +54,7 @@ function R9mkModel(){
 
     this.loadAvailFlatsQhistory = function(){
         return $.ajax({
-            url:'jsdb/bd' + this.bId + '_availFlatsQ_hist.json',
+            url:'jsdb/bd' + this.bId + '_availFlatsQ_hist.json.gz',
             dataType: "json",
             context: self
         }).done(function(data){

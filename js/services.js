@@ -129,6 +129,14 @@ angular.module('nbsApp.services', [])
 
                                 // Calculate the tooltip's top and left coordinates to center it with
                                 // this directive.
+
+                                if(position.left + ttWidth + 30 > $(window).innerWidth()){
+                                    scope.tt_placement = "left";
+                                }
+                                else {
+                                    scope.tt_placement = "right";
+                                }
+
                                 switch ( scope.tt_placement ) {
                                     case 'right':
                                         ttPosition = {

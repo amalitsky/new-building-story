@@ -11,7 +11,7 @@ angular.module('nbsApp', [
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/r9mk/:bId',{
             templateUrl: function (params) {
-                return 'partials/building' + params.bId + '.html';
+                return 'partials/bd' + params.bId + '.html';
                 },
             controller: 'buildCtrl'
         });

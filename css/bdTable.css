@@ -1,12 +1,4 @@
-﻿html{
-    width:100%;
-    font-family:Tahoma;
-    font-size:14px;
-}
-
-div.wrapper{ width:100%; }
-
-table.building{
+﻿table.building{
     border-collapse:collapse;
     margin:2em auto;
 }
@@ -75,21 +67,6 @@ table.section td.flat.avail img{
     visibility:visible;
     background-color: #81f174; }
 
-table.section td.flat div.popup {
-    display: none;
-    z-index:2;
-    padding:0.5em .75em;
-    margin:1.2em 0 0 1.2em;
-    color:black;
-    font-size:16px;
-    background-color:white;
-    text-align:left;
-    border:1px solid grey;
-    border-radius:.4em;
-}
-
-table.section td.flat:hover div.popup { display: block; position: absolute; }
-
 table.section td.roomsNum_0{
     background-color:#b9e1FF;
 }
@@ -122,75 +99,4 @@ table.section tr.emptyFloor td {
     height:16px;
     background-color:#eee;
     border:1px solid white;
-}
-
-.rouble {
-    display: inline-block;
-    position: relative;
-}
-
-.rouble:before {
-    display: block;
-    content: "–";
-    position: absolute;
-    top: 0.12em;
-}
-
-/* flat sales pie chart */
-div.graph-sales .arc path { stroke: #fff; }
-
-div.graph-sales .pieChartLabels{
-    font-family: Georgia;
-    font-weight: bold;
-    font-size:1em;
-}
-
-/* flat price history chart */
-div.graph-price{ font-size:12px; }
-
-div.graph-price .axis path, .axis line {
-    fill: none;
-    shape-rendering: crispEdges;
-}
-
-div.graph-price .line {
-    fill: none;
-    stroke-width: 2px;
-}
-
-div.graph-price .grid .tick {
-    stroke-width: 1px;
-    stroke: #dddddd;
-}
-
-div.graph-price .grid path { stroke-width: 1px; }
-
-div.graph-price .axis path { stroke:#999; }
-
-div.graph-price .y.axis line {
-    fill: none;
-    stroke: #eee;
-}
-
-/* available flats quantity graph */
-div.graph-availFlatsQ{
-    font-size:12px;
-}
-div.graph-availFlatsQ .axis path,
-div.graph-availFlatsQ .axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-
-div.graph-availFlatsQ .bar {
-    fill: steelblue;
-}
-
-div.graph-availFlatsQ .tick {
-}
-
-div.graph-availFlatsQ .axis path,
-div.graph-availFlatsQ .axis line{
-    stroke: #999;
 }

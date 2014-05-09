@@ -1,8 +1,17 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>New apartments interactive list with history</title>
-    <link rel="stylesheet" type="text/css" href="css/generator.css">
+    <title>building tables generator</title>
+    <link rel="stylesheet" type="text/css" href="css/bdTable.css">
+<style>
+    html{
+    width:100%;
+    font-family:Tahoma;
+    font-size:14px;
+    }
+
+    div.wrapper{ width:100%; }
+</style>
 </head>
 <body><div id="wrapper" class="wrapper"></div></body>
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -17,7 +26,8 @@ r9mk.init(n);
 tableStr = r9mk.drawTable(n - 1);
 document.getElementById('wrapper').innerHTML = tableStr;
 //console.log(JSON.stringify(r9mk.buildings[n-1].flats4export));
-$.ajax('http://nbs.loc/jsdb/bd' + n + '_price_stat.json', {
+/*
+$.ajax('http://nbs.loc/jsdb/bd' + n + '_dump_recent.json', {
     complete: function(xhrObj) {
        var key, tmp, res = {}, res2 = [];
        console.log(xhrObj);
@@ -35,7 +45,7 @@ $.ajax('http://nbs.loc/jsdb/bd' + n + '_price_stat.json', {
        }
 
        console.log(JSON.stringify(res2)); }
-});
+});*/
 //console.log(table);
 console.timeEnd("default");
 </script>

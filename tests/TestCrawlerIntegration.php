@@ -1,5 +1,6 @@
 <?php
 /**
+ * Integrational test for parsing R9mk source and saving snapshots to database
  * Created by PhpStorm.
  * User: amalitsky
  * Date: 01/03/14
@@ -10,12 +11,12 @@ require_once dirname(__FILE__)."/../db.php";
 require_once dirname(__FILE__)."/../output.php";
 
 function ifDBsnapsAreEqual($db, $tbName, $expTbName, $bId){
-    if(!($res = $db -> query("SELECT extFlatId, flStatus as status, flPrice as price FROM $tbName WHERE bId=$bId ORDER BY extFlatId;"))){
+    if(!($res = $db -> query("SELECT extFlatId, flatId as id, flStatus as status, flPrice as price FROM $tbName WHERE bId=$bId ORDER BY extFlatId;"))){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
     }
     $countedFlats = $res -> fetch_all(MYSQLI_ASSOC);
     $res -> free();
-    if(!($res = $db -> query("SELECT extFlatId, flStatus as status, flPrice as price FROM $expTbName WHERE bId=$bId ORDER BY extFlatId;"))){
+    if(!($res = $db -> query("SELECT extFlatId, flatId as id, flStatus as status, flPrice as price FROM $expTbName WHERE bId=$bId ORDER BY extFlatId;"))){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
     }
     $expFlats = $res -> fetch_all(MYSQLI_ASSOC);
@@ -32,8 +33,14 @@ class TestCrawlerIntegration extends PHPUnit_Framework_TestCase {
         $db -> options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
         $db -> real_connect('localhost', 'app_crawler', 'Hja72_sdW', 'bcrawler_test');
         if ($db -> connect_errno) {
-            echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
-        $this -> expectOutputRegex('~.*?Exported '.$echo[0].' apartments of building '.$bId.' to JSON.</p>.*?<b>'.$echo[1].'</b> flats were found .*? for building '.$bId.'.*?'.$echo[2].' flats were loaded from last snapshot.*?<b>'.$echo[3].'</b> records will be saved.*~s');
+            echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n";
+        }
+        $this -> expectOutputRegex(
+            '~.*?Exported '.$echo[0].' records of building '.$bId.' to JSON.*?'
+            .'<b>'.$echo[1].'</b> flats were found .*? for building '.$bId.'.*?'
+            .$echo[2].' flats were loaded from last snapshot.*?'
+            .'<b>'.$echo[3].'</b> records will be saved.*~s'
+        );
         crawlerR9mk($db, $link, $bId);
         $this -> assertTrue(ifDBsnapsAreEqual($db, 'snapshots', 'snapshots'.$expTableNamePostfix, $bId));
         $this -> assertTrue(ifDBsnapsAreEqual($db, 'snapbackup', 'snapbackup'.$expTableNamePostfix, $bId));
