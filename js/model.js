@@ -5,6 +5,7 @@ function R9mkModel(){
     this.flats = [];
     this.flatsStat = [];
     this.priceStat = [];
+    this.availFlatsQhist = [];
     this.buildings = {
         1:{
             name:"Novokosino, building 1",
@@ -43,13 +44,24 @@ function R9mkModel(){
 
     this.loadPriceHistory = function(){
         return $.ajax({
-            url:'jsdb/bd' + this.bId + '_price_stat.json',
+            url:'jsdb/bd' + this.bId + '_price_hist.json',
             dataType: "json",
             context: self
         }).done(function(data){
             this.priceStat = data;
         });
     };
+
+    this.loadAvailFlatsQhistory = function(){
+        return $.ajax({
+            url:'jsdb/bd' + this.bId + '_availFlatsQ_hist.json',
+            dataType: "json",
+            context: self
+        }).done(function(data){
+            this.availFlatsQhist = data;
+        });
+    };
+
 
     this.loadSnap = function(xhrObj){
         this.flatsStatNum = { 1:0, 3:0 };
@@ -85,6 +97,7 @@ function R9mkModel(){
         this.flatsStat = [];
         this.priceStat = [];
         this.flats = [];
+        this.availFlatsQhist = [];
     }
 }
 

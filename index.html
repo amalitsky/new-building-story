@@ -69,32 +69,32 @@
         </div>
     </div>
 
-    <div class="row" style="min-height: 500px">
+    <div class="row" style="min-height: 600px">
         <div class="col-lg-12" ng-view="building">&nbsp;</div>
     </div>
 
     <div class="row">
-        <div class="col-lg-4">
-            <h3>Квартир в продаже</h3>
-            <img class='img-thumbnail' src="img/graph_prices.png">
+        <div class="col-lg-4 graph-availFlatsQ">
+            <h3>История предложения</h3>
+            <div avail-flats-q-chart></div>
         </div>
-        <div class="col-lg-4 graph">
-            <h3>Цена за метр</h3>
-            <div price-history-chart data="commute.priceStat"></div>
+        <div class="col-lg-4 graph-price">
+            <h3>Средняя цена за метр</h3>
+            <div price-history-chart></div>
         </div>
-        <div class="col-lg-4">
-            <h3>Этап продажи</h3>
-            <div sale-status-chart data="commute.flatsStat"></div>
+        <div class="col-lg-4 graph-sales">
+            <h3>Состояние продажи</h3>
+            <div sale-status-chart></div>
         </div>
     </div>
 
-    <div class="navbar-wrapper" style="position:fixed; bottom:0;background-color:#FFF">
-    <div class="nabar navbar-default" style="margin-bottom:1em">
-        <div class="container">
-            <p class="navbar-text">&copy; Malitsky Alexander 2014</p>
+    <!--<div class="navbar-wrapper" style="position:fixed; bottom:0;background-color:#FFF">
+        <div class="nabar navbar-default" style="margin-bottom:1em">
+            <div class="container">
+                <p class="navbar-text">&copy; Malitsky Alexander 2014</p>
+            </div>
         </div>
-    </div>
-        </div>
+    </div>-->
 </div>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>

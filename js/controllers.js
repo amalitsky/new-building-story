@@ -19,6 +19,7 @@ angular.module('nbsApp.controllers', [])
                         $scope.hoveredFlat = flat;
                     });
                 };
+
                 $scope.r9mk.init($routeParams.bId)
                 .done(function(){
                     $scope.commute.flatsStat = $scope.r9mk.flatsStat;
@@ -30,18 +31,19 @@ angular.module('nbsApp.controllers', [])
                         $scope.commute.priceStat = $scope.r9mk.priceStat;
                         $scope.$apply();
                     });
+                })
+                .done(function(){
+                    $scope.r9mk.loadAvailFlatsQhistory()
+                    .done(function(){
+                        $scope.commute.availFlatsQhist = $scope.r9mk.availFlatsQhist;
+                        $scope.$apply();
+                    });
                 });
+
                 $scope.$on('$destroy', function () {
                     $scope.r9mk.destroy();
                 });
             }])
     .controller('nbsGui', ['$scope', '$http', '$routeParams', 'nbsR9mk', 'Commute',
         function($scope, $http, $routeParams, nbsR9mk, Commute){
-            //$scope.commute = Commute;
-            //$timeout(function(){console.log('me');console.log($scope.flatsStat)}, 100);
-            //$scope.toDateObj = angular.element("#datePicker")[0].value;
-            /*$scope.$watch('flatsStat',
-                function(val){
-                    console.log(val);
-                });*/
         }]);

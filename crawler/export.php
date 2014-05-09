@@ -24,5 +24,6 @@ $bIds = [1, 2, 3];
 for ($i = 0; $i < count($bIds); $i++){
     //exportSnapJSON($db, $bIds[$i]);
     exportAvMeterPriceJSON($db,$bIds[$i]);
+    exportAvailFlatsQuantityHistoryJSON($db,$bIds[$i]);
 }
 $db -> close();

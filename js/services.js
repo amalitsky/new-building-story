@@ -340,6 +340,7 @@ angular.module('nbsApp.services', [])
     .value('Commute',
         {
             flatsStat: [],
-            priceStat: []
+            priceStat: [],
+            availFlatsQhist: []
         }
     );

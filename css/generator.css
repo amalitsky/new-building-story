@@ -107,7 +107,7 @@ table.section td.roomsNum_4{
    }
 
 table.section tbody.sectionColumnsLegend{
-    //border:1px solid #ccc;
+    /* border:1px solid #ccc; */
     border-top:none;
 }
 
@@ -136,37 +136,61 @@ table.section tr.emptyFloor td {
     top: 0.12em;
 }
 
-//flat sales pie chart
-.arc path { stroke: #fff; }
+/* flat sales pie chart */
+div.graph-sales .arc path { stroke: #fff; }
 
-.pieChartLabels{
+div.graph-sales .pieChartLabels{
     font-family: Georgia;
     font-weight: bold;
     font-size:1em;
 }
 
-//flat price history chart
-div.graph{ font-size:8px; }
+/* flat price history chart */
+div.graph-price{ font-size:12px; }
 
-.axis path, .axis line {
+div.graph-price .axis path, .axis line {
     fill: none;
     shape-rendering: crispEdges;
 }
 
-.line {
+div.graph-price .line {
     fill: none;
     stroke-width: 2px;
 }
 
-.grid .tick {
+div.graph-price .grid .tick {
     stroke-width: 1px;
     stroke: #dddddd;
 }
-.grid path { stroke-width: 1px; }
 
-.axis path { stroke:#999; }
+div.graph-price .grid path { stroke-width: 1px; }
 
-.axis line {
+div.graph-price .axis path { stroke:#999; }
+
+div.graph-price .y.axis line {
     fill: none;
-    stroke: #ddd;
+    stroke: #eee;
+}
+
+/* available flats quantity graph */
+div.graph-availFlatsQ{
+    font-size:12px;
+}
+div.graph-availFlatsQ .axis path,
+div.graph-availFlatsQ .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+div.graph-availFlatsQ .bar {
+    fill: steelblue;
+}
+
+div.graph-availFlatsQ .tick {
+}
+
+div.graph-availFlatsQ .axis path,
+div.graph-availFlatsQ .axis line{
+    stroke: #999;
 }
