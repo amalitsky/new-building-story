@@ -33,12 +33,17 @@ $db = mysqli_init();
 $db -> real_connect($nbsCrConf['dbServer'], $nbsCrConf['dbLogin'], $nbsCrConf['dbPassword'], $nbsCrConf['dbName']);
 if ($db -> connect_errno) {
 	echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
-for ($i = 0; $i < count($buildings); $i++){ crawlerR9mk($db, $buildings[$i][1], $buildings[$i][0]); }
+for ($i = 0; $i < count($buildings); $i++){
+    crawlerR9mk($db, $buildings[$i][1], $buildings[$i][0]);
+}
 $db -> close();
 $output = ob_get_contents();
 $ifErrors = stripos($output , 'error') || stripos($output, 'warning');
 $currMinute = date("i");
-if($ifErrors !== false || ($currHour == 20 && $currMinute >= 30 && $currMinute < 45)){ sendMailNotice($output, $ifErrors, $nbsCrConf['pearMail']); };
-$time_end = microtime(true); echo "<p class='execTime'>Execution time: ".round($time_end - $time_start, 2)." s.</p>";
+if($ifErrors !== false || ($currHour == 20 && $currMinute >= 30 && $currMinute < 45)){
+    sendMailNotice($output, $ifErrors, $nbsCrConf['pearMail'], $nbsCrConf['serverName']);
+};
+$time_end = microtime(true);
+echo "<p class='execTime'>Execution time: ".round($time_end - $time_start, 2)." s.</p>";
 saveLog(ob_get_contents());
 ob_end_clean();

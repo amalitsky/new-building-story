@@ -1,0 +1,14 @@
+<div class="popover {{placement}}" flat="hoveredFlatCached" ng-class="{ in: isOpen(), fade: animation() }">
+    <div class="arrow"></div>
+    <div class="popover-inner">
+        <h3 class="popover-title">
+            {{ flat.type|flTypeName }}, {{ flat.square }}м<sup>2</sup>
+            <span class="label label-{{flat.status|flStatus}}">{{ flat.status | flStatus:'output' }}</span>
+        </h3>
+        <div class="popover-content">
+            <p ng-if="flat.price">{{ flat.price | number }} <span class="rouble">Р</span> или {{ (flat.price/flat.square) | number:0 }} <span class="rouble">Р</span>/м<sup>2</sup> </p>
+            <p ng-if="flat.updDate">дата продажи: {{flat.updDate+'000'|date:'mediumDate'}}</p>
+            <p>#{{flat.num}}, этаж {{flat.floor}}, секция {{ flat.sectId + 1 }}</p>
+        </div>
+    </div>
+</div>

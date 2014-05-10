@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="nbsApp">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>New buildings story</title>
+
+    <link href="css/styles.css" rel="stylesheet">
+    <link href="css/justified-nav.css" rel="stylesheet">
+    <script src="//yandex.st/jquery/1.11.0/jquery.min.js"></script>
+    <!--<script src="bower_components/momentjs/moment.js"></script>-->
+</head>
+<body>
+<div class="container" ng-controller="nbsGui">
+
+    <div class="navbar-wrapper">
+        <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <div class="navbar-brand">New Building Profile</div>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown">ЖК Новокосино <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li class="dropdown-header">Корпуса</li>
+                                    <li><a href="#/r9mk/1">первый</a></li>
+                                    <li><a href="#/r9mk/2">второй</a></li>
+                                    <li><a href="#/r9mk/3">третий</a></li>
+                                </ul>
+                        </li>
+                        <!--<li><a href="#about">About</a></li>-->
+                    </ul>
+                    <!--<form class="navbar-form form-inline navbar-right">
+                        <div class="form-group" style="width:9em">
+                            <div class='input-group date' id='datetimepicker7'>
+                                <input type='text' id='datePicker' class="form-control" style="width:7em" value="04/13/2014"/>
+                                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                            </div>
+                        </div>
+                    </form>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#datetimepicker7').datetimepicker({
+                                disabledDates: [
+                                    moment("12/25/2013"),
+                                    new Date(2013, 11 - 1, 21),
+                                    "11/22/2013 00:53"
+                                ]
+                            });
+                        });
+                    </script>
+                    <div class="btn-group navbar-right" data-toggle="buttons">
+                        <label class="btn btn-inverse navbar-btn btn-sm active">
+                            <input type="radio" name="options" id="option1"> RUS
+                        </label>
+                        <label class="btn btn-inverse navbar-btn btn-sm">
+                            <input type="radio" name="options" id="option2"> ENG
+                        </label>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" style="min-height: 500px">
+        <div class="col-lg-12" ng-view="building">&nbsp;</div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 graph-availFlatsQ">
+            <h3>История предложения</h3>
+            <div avail-flats-q-chart></div>
+        </div>
+        <div class="col-lg-4 graph-price">
+            <h3>Средняя цена за метр</h3>
+            <div price-history-chart></div>
+        </div>
+        <div class="col-lg-4 graph-sales">
+            <h3>Состояние продажи</h3>
+            <div sale-status-chart></div>
+        </div>
+    </div>
+
+    <!--<div class="navbar-wrapper" style="position:fixed; bottom:0;background-color:#FFF">
+        <div class="nabar navbar-default" style="margin-bottom:1em">
+            <div class="container">
+                <p class="navbar-text">&copy; Malitsky Alexander 2014</p>
+            </div>
+        </div>
+    </div>-->
+</div>
+<script src="//yandex.st/angularjs/1.2.16/angular.min.js"></script>
+<!--<script src="//yandex.st/bootstrap/3.1.1/js/bootstrap.min.js"></script>-->
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+<!--<script src="bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"></script>-->
+<script src="js/angular-route.min.js"></script>
+
+<script src="js/app.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/directives.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/model.js"></script>
+<script src="js/services.js">
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">(function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter23352268 = new Ya.Metrika({id:23352268, webvisor:true, clickmap:true, accurateTrackBounce:true}); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="//mc.yandex.ru/watch/23352268" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-1437407-7', 'icode.ru');
+    ga('send', 'pageview');
+</script>
+</body>
+</html>
