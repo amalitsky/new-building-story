@@ -70,7 +70,7 @@ function sendMailNotice($str, $hadErrors = false, $ifPearMail = false, $serverNa
             $headers['X-MSMail-Priority'] = 'High';
         }
         $mailObj = @Mail::factory('smtp', $params);
-        if(!($mailObj -> send($recipients, $headers, "<html><body>$str</body></html>"))){ echo $failMsg; return false; }
+        if(!($mailObj -> send($recipients, $headers, "<html><body>$str<p>From <strong>$serverName</strong></p></body></html>"))){ echo $failMsg; return false; }
         else { echo $succMsg; }
         return true;
     }

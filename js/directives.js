@@ -51,7 +51,7 @@ angular.module('nbsApp.directives', ['d3'])
             restrict: 'EA',
             replace: true,
             scope: { flat: '=', placement: '@', animation: '&', isOpen: '&' },
-            templateUrl: '/partials/flatPopover.html'
+            templateUrl: 'partials/flatPopover.html'
         };
     })
     .directive('saleStatusChart', ['d3Service', 'Commute', function (d3, commute) {

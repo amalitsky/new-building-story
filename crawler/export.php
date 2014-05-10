@@ -10,6 +10,7 @@
  *
  */
 $time_start = microtime(true);
+ob_start();
 date_default_timezone_set("UTC");
 $nbsCrConf = array();
 error_reporting(E_ALL);
@@ -24,7 +25,7 @@ $db -> real_connect($nbsCrConf['dbServer'], $nbsCrConf['dbLogin'], $nbsCrConf['d
 if ($db -> connect_errno) {
     echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
 
-$bIds = [1, 2, 3];
+$bIds = array(1, 2, 3);
 
 for ($i = 0; $i < count($bIds); $i++){
     //exportSnapJSON($db, $bIds[$i]);
@@ -35,7 +36,8 @@ for ($i = 0; $i < count($bIds); $i++){
 $db -> close();
 
 $output = ob_get_contents();
-sendMailNotice($output, false, $nbsCrConf['pearMail'], $nbsCrConf['serverName']);
+$ifErrors = stripos($output , 'error') || stripos($output, 'warning');
+sendMailNotice($output, $ifErrors, $nbsCrConf['pearMail'], $nbsCrConf['serverName']);
 $time_end = microtime(true);
 echo "<p class='execTime'>Execution time: ".round($time_end - $time_start, 2)." s.</p>";
 saveLog(ob_get_contents());

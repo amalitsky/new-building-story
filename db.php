@@ -34,7 +34,7 @@ function r9mkLoadSnapFromDB($db, $bId){
  * @return bool
  */
 function updateSnapDB($db, $flats, $bId){
-    $flatIdShift = [1 => -126496, 2 => -127673, 3 => -188761];//to count flatId from extFlatId
+    $flatIdShift = array(1 => -126496, 2 => -127673, 3 => -188761);//to count flatId from extFlatId
     if(!($updStmt = $db -> prepare("INSERT INTO snapshots(bId, extFlatId, flatId, flStatus, flPrice) VALUES ($bId, ?, ?, ?, ?);"))){
         echo "<p class='error'>Error: UPDATE statement preparation for building $bId failed : (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
@@ -60,7 +60,7 @@ function updateSnapDB($db, $flats, $bId){
  * @return bool
  */
 function saveBackupSnapDB($db, $flats, $bId){
-    $flatIdShift = [1 => -126496, 2 => -127673, 3 => -188761];//to count flatId from extFlatId
+    $flatIdShift = array(1 => -126496, 2 => -127673, 3 => -188761);//to count flatId from extFlatId
     if(!($updStmt  = $db -> prepare("INSERT INTO snapbackup(bId, extFlatId, flatId, flStatus, flPrice) VALUES ($bId, ?, ?, ?, ?);"))){
         echo "<p class='error'>Error: UPDATE statement prepare for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
