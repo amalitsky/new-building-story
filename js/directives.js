@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('nbsApp.directives', ['d3'])
+angular.module('nbsApp.directives', ['ui.bootstrap'])
     .directive('nbsFlat', ['$position', '$timeout', function($position, $timeout) {
         function link(scope, elem, attr){
             var overTimeout;
@@ -54,7 +54,7 @@ angular.module('nbsApp.directives', ['d3'])
             templateUrl: 'partials/flatPopover.html'
         };
     })
-    .directive('saleStatusChart', ['d3Service', 'Commute', function (d3, commute) {
+    .directive('saleStatusChart', ['Commute', function (commute) {
         function link(scope, elem){
             function countFlats(data){
                 var key, res = 0;
@@ -133,7 +133,7 @@ angular.module('nbsApp.directives', ['d3'])
             link:link
         };
     }])
-    .directive('priceHistoryChart', ['d3Service', 'Commute', function(d3, commute){
+    .directive('priceHistoryChart', ['Commute', function(commute){
         function link(scope, elem){
             scope.data = commute;
             var margin = {top: 10, right: 30, bottom: 20, left: 40},
@@ -311,7 +311,7 @@ angular.module('nbsApp.directives', ['d3'])
             link:link
         };
     }])
-    .directive('availFlatsQChart', ['d3Service', 'Commute', function(d3, commute){
+    .directive('availFlatsQChart', ['Commute', function(commute){
         function link(scope, elem){
             scope.data = commute;
             function hoverText(roomsQ, num){

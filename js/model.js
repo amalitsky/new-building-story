@@ -28,7 +28,7 @@ function R9mkModel(){
         this.bId = bId;
         return $.when(
             $.ajax({
-                url:"jsdb/bd" + this.bId + "_flats.json",
+                url:"jsdb/bd" + this.bId + "_flats.json.gz",
                 dataType: "json"
             }),
             $.ajax({

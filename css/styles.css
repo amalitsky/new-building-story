@@ -6077,3 +6077,13 @@ div.graph-availFlatsQ .axis path,
 div.graph-availFlatsQ .axis line {
   stroke: #999;
 }
+/* date picker in header */
+div.nbsDateSelector .dropdown-menu {
+  min-width: 18em;
+}
+div.nbsDateSelector .dropdown-menu table {
+  width: 100%;
+}
+div.nbsDateSelector .dropdown-menu button {
+  border: none;
+}

@@ -44,6 +44,26 @@ angular.module('nbsApp.controllers', [])
                     $scope.r9mk.destroy();
                 });
             }])
-    .controller('nbsGui', ['$scope', '$http', '$routeParams', 'nbsR9mk', 'Commute',
-        function($scope, $http, $routeParams, nbsR9mk, Commute){
-        }]);
+    .controller('DatepickerDemoCtrl', ['$scope', function($scope){
+        $scope.today = function() {
+            $scope.dt = new Date();
+        };
+        $scope.today();
+
+        $scope.open = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.opened = true;
+        };
+
+        $scope.dateOptions = {
+            showWeeks:0,
+            startingDay: 1,
+            showButtonBar: 0,
+            maxMode:'day'
+        };
+
+        $scope.maxDate = new Date();
+        $scope.minDate = new Date(2014,2,3);
+        $scope.format = 'dd.MM.yyyy';
+    }]);
