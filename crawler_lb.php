@@ -135,6 +135,7 @@ function r9mkSnapsComparePrepare($db, $web){
  * @return bool
  */
 function crawlerR9mk($db, $link, $bId){
+    $hour = date("H");
     $getReqContext = stream_context_create( array('http' => array( 'method' => 'GET',
         'header' => "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n".
             "Accept-Encoding: gzip, deflate\r\n"."Accept-Language:	ru-ru,en-us;q=0.8,ru;q=0.5,en;q=0.3\r\n"."Connection: keep-alive\r\n"."Referer: http://novokosino.ndv.ru/sale/\r\n"."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0")));
@@ -152,8 +153,8 @@ function crawlerR9mk($db, $link, $bId){
         saveSiteDump($table -> C14N(), $bId);
         updateSnapDB($db, array_merge($snaps["sold"], $snaps["newOnSale"], $snaps["prevOnSaleUpdPrice"]), $bId);
         saveBackupSnapDB($db, $fromWeb, $bId);
-        exportSnapJSON($db, $bId);
+        exportDateSnapJSON($db, $bId);
     }
-    echo "<p class='result'>".date("Y-m-d H:i:s T ")."<b>".count($fromWeb)."</b> flats were found by parser on page <i>".$link."</i> for building $bId.<br>\r\n".count($fromdb)." flats were loaded from last snapshot. <b>$updQ</b> records will be saved: $soldQ as sold, $newOnSaleQ as just put up on sale, $prevOnSaleUpdPriceQ as with changed price.</p>\r\n";
+    echo "<p class='result'>".date("Y-m-d H:i:s T")." <b>".count($fromWeb)."</b> flats were found by parser on page <i>".$link."</i> for building $bId.<br>\r\n".count($fromdb)." flats were loaded from last snapshot. <b>$updQ</b> records will be saved: $soldQ as sold, $newOnSaleQ as just put up on sale, $prevOnSaleUpdPriceQ as with changed price.</p>\r\n";
     return true;
 }
