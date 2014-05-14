@@ -1,5 +1,5 @@
-<h2>{{ header }}</h2>
-<div class="alert alert-warning"><strong>Недостаточно данных.</strong> Сохранение информации началось почти через год после старта продаж.</div>
+<h2>{{ header }} <small ng-if="commute.selDate"> на {{commute.selDate|date}}</small></h2>
+<div class="alert alert-warning"><strong>Недостаточно данных.</strong> Сохранение информации началось почти через год после старта продаж. </div>
 <table class="building">
     <tbody>
     <tr>

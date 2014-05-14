@@ -22,13 +22,13 @@
                         </div>
 
                         <ul class="nav navbar-nav">
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown">ЖК Новокосино <b class="caret"></b></a>
-                                <ul class="dropdown-menu">
+                            <li dropdown is-open="isOpen">
+                                <a class="dropdown-toggle">ЖК Новокосино <b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu">
                                     <li class="dropdown-header">Корпуса</li>
-                                    <li><a href="#/r9mk/1">первый</a></li>
-                                    <li><a href="#/r9mk/2">второй</a></li>
-                                    <li><a href="#/r9mk/3">третий</a></li>
+                                    <li><a ng-click="isOpen=false" href="#/r9mk/1">первый</a></li>
+                                    <li><a ng-click="isOpen=false" href="#/r9mk/2">второй</a></li>
+                                    <li><a  ng-click="isOpen=false" href="#/r9mk/3">третий</a></li>
                                 </ul>
                             </li>
                             <li><a href="#about">About</a></li>
@@ -40,8 +40,8 @@
                             <div class="input-group navbar-right nbsDateSelector">
 
                                 <input type="text" class="form-control navbar-right" style="width:8em"
-                                       datepicker-popup="{{format}}" ng-model="dt" is-open="opened"
-                                       max-date="maxDate" min-date="minDate" show-button-bar="0"
+                                       datepicker-popup="{{format}}" ng-model="commute.selDate" is-open="opened"
+                                       max-date="commute.stopDate" min-date="commute.startDate" show-button-bar="0"
                                        datepicker-options="dateOptions"/>
                                   <span class="input-group-btn">
                                     <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
@@ -84,10 +84,11 @@
 </div>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="bower_components/bootstrap/js/dropdown.js"></script>
 <!--<script src="bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"></script>-->
 <script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/momentjs/moment.js"></script>
 <script src="bower_components/d3/d3.js"></script>
+
 
 <script src="js/app.js"></script>
 <script src="js/controllers.js"></script>

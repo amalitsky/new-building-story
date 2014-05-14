@@ -347,8 +347,11 @@ angular.module('nbsApp.services', [])
     })
     .value('Commute',
         {
-            flatsStat: [],
+            flatsStat: [], //graphs options
             priceStat: [],
-            availFlatsQhist: []
+            availFlatsQhist: [],
+            selDate: undefined, //date picker options
+            startDate: undefined,
+            stopDate: undefined
         }
     );

@@ -9,7 +9,7 @@ angular.module('nbsApp', [
         'ui.bootstrap'
     ])
     .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/r9mk/:bId',{
+        $routeProvider.when('/r9mk/:bId/:date?',{
             templateUrl: function (params) {
                 return 'partials/bd' + params.bId + '.html';
                 },

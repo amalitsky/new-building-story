@@ -45,9 +45,9 @@ for ($tstamp = $startDays[$i] -> format('U'); $tstamp < $now; $tstamp += 86400){
 */
 
 for ($i = 0; $i < count($bIds); $i++){
-    exportDateSnapJSON($db, $bIds[$i], time());
-    exportAvMeterPriceJSON($db, $bIds[$i]);
-    exportAvailFlatsQuantityHistoryJSON($db, $bIds[$i]);
+    exportDateSnapJSON($db, $bIds[$i]);
+    //exportAvMeterPriceJSON($db, $bIds[$i]);
+    //exportAvailFlatsQuantityHistoryJSON($db, $bIds[$i]);
 }
 
 $db -> close();

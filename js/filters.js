@@ -17,6 +17,7 @@ angular.module('nbsApp.filters', [])
                 }
             };
             type = type || 'class';
+            //if(!flStatus) { return table[type]['undefined']; }
             return table[type][flStatus] || table[type]['undefined'];
         };
     })
