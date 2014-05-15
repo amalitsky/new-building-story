@@ -4,6 +4,33 @@ angular.module('nbsApp.controllers', [])
     .controller('buildCtrl',
         ['$scope', '$http', '$routeParams', '$timeout', 'nbsR9mk', 'Commute',
             function($scope, $http, $routeParams, $timeout, nbsR9mk, Commute) {
+                function loadSnap(){
+                    var date;
+                    date = (moment($scope.commute.selDate).isSame($scope.commute.stopDate, 'day'))?false:$scope.commute.selDate;
+                    $scope.r9mk.toDate(date).done(function(){
+                        $scope.commute.flatsStat = $scope.r9mk.flatsStat;
+                        $timeout(function(){ $scope.$apply(); });
+                    });
+                }
+                function checkSelectedDate(){//checks 'commute.selDate' for right interval and modifies if needed
+                    $scope.tempSelectDate = moment(new Date($scope.commute.selDate));
+                    //console.log($scope.tempSelectDate.toISOString());
+                    if($scope.tempSelectDate.isValid &&
+                        $scope.tempSelectDate.isAfter($scope.commute.startDate.clone().subtract('day', 1), 'day') &&
+                        $scope.tempSelectDate.isBefore($scope.commute.stopDate.clone().add('day', 1), 'day')){
+                        //$scope.commute.selDate = $scope.tempSelectDate.toDate();
+                        //leave the same
+                    }
+                    else if($scope.tempSelectDate.isValid &&
+                        $scope.tempSelectDate.isBefore($scope.commute.startDate.clone(), 'day')) {
+                        $scope.commute.selDate = $scope.commute.startDate.toDate();
+                    }
+                    else {
+                        $scope.commute.selDate = $scope.commute.stopDate.toDate();
+                    }
+                    $scope.tempSelectDate = undefined;
+                }
+
                 $scope.bId = $routeParams.bId;
                 $scope.commute = Commute;
                 $scope.hoveredFlat = { hovered:0 };
@@ -25,9 +52,10 @@ angular.module('nbsApp.controllers', [])
                     $scope.commute.stopDate = moment();
                 }
 
-                $scope.commute.selDate = false;
+                $scope.commute.selDate = ($routeParams.date)?$routeParams.date:new Date();
+                checkSelectedDate();
 
-                if($routeParams.date){
+                /*if($routeParams.date){
                     $scope.tempSelectDate = moment(new Date($routeParams.date));
                     if($scope.tempSelectDate.isValid &&
                         $scope.tempSelectDate.isAfter($scope.commute.startDate.clone().subtract('day', 1), 'day') &&
@@ -39,7 +67,10 @@ angular.module('nbsApp.controllers', [])
                             $scope.commute.selDate = $scope.commute.startDate.toDate();
                     }
                 }
-                if(!$scope.commute.selDate) {
+
+                $scope.tempSelectDate = false;*/
+
+                /*if(!$scope.commute.selDate) {
                     $scope.tempSelectDate = moment.utc();
                     if($scope.tempSelectDate.isSame($scope.commute.stopDate, 'day') ||
                         $scope.tempSelectDate.isBefore($scope.commute.stopDate, 'day')){
@@ -50,7 +81,8 @@ angular.module('nbsApp.controllers', [])
                     }
                 }
 
-                $scope.tempSelectDate = false;
+                */
+
 
                 $scope.setHoveredFlat = function(flId, popupPos){
                     var flat = { hovered:0, popupPos:0 };
@@ -65,16 +97,7 @@ angular.module('nbsApp.controllers', [])
                 };
 
                 $scope.r9mk.init($routeParams.bId)
-                .done(function(){
-                    if(moment($scope.commute.selDate).isSame($scope.commute.stopDate, 'day')){
-                        $scope.r9mk.toDate();
-                    }
-                    else {
-                        $scope.r9mk.toDate($scope.commute.selDate);
-                    }
-                    $scope.commute.flatsStat = $scope.r9mk.flatsStat;
-                    $scope.$apply();
-                })
+                .done(loadSnap)
                 .done(function(){
                     $scope.r9mk.loadPriceHistory()
                     .done(function(){
@@ -92,11 +115,11 @@ angular.module('nbsApp.controllers', [])
 
                 $scope.$watch('commute.selDate', function(val, prevVal){
                     if(val === prevVal) { return; }
-                    $scope.r9mk.toDate(val).done(function(){
-                        $timeout(function(){ $scope.$apply(); });
-                        });
-                    //$timeout(function(){$scope.$apply();});
-                    //console.log(val);
+                    var selDate = val;
+                    checkSelectedDate();
+                    if(moment(selDate).isSame($scope.commute.selDate, 'day')) {
+                        loadSnap();
+                    }
                 });
 
                 $scope.$on('$destroy', function () {

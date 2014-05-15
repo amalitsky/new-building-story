@@ -1,9 +1,13 @@
 function R9mkModel(){
     "use strict";
-    var self = this;
+    var self = this,
+        logFail = function(xhr, text, error){
+            console.log('R9mkModel: AJAX failed with message: "' + error + '".');
+        };
+
     this.flLoaded = false;
     this.flats = {};
-    this.flatsOnly = [];
+    this.snapsCache = {};
     this.flatsStat = [];
     this.priceStat = [];
     this.availFlatsQhist = [];
@@ -36,17 +40,14 @@ function R9mkModel(){
         this.bId = bId;
         return $.ajax({
                 url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_flats.json.gz",
-                dataType: "json"
+                dataType: "json",
+                context: self
             })
-            /*$.ajax({
-                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_recent.json.gz",
-                dataType: "json"
-            })*/
             .done(function(flats){
-                self.flats = flats;
-                self.flLoaded = true;
-                //self.loadSnap(dump[0]);
-                });
+                this.flats = flats;
+                this.flLoaded = true;
+                })
+            .fail(logFail);
         };
 
     this.loadPriceHistory = function(){
@@ -56,7 +57,8 @@ function R9mkModel(){
             context: self
         }).done(function(data){
             this.priceStat = data;
-        });
+        })
+        .fail(logFail);
     };
 
     this.loadAvailFlatsQhistory = function(){
@@ -66,49 +68,58 @@ function R9mkModel(){
             context: self
         }).done(function(data){
             this.availFlatsQhist = data;
-        });
+        })
+        .fail(logFail);
     };
 
 
     this.loadSnap = function(xhrObj){
-        this.flatsStatNum = { 1:0, 3:0 };
-        this.clearFlats();
+        function clearFlat(flat){
+            flat.status = undefined;
+            flat.price = undefined;
+            flat.updDate = undefined;
+            flat.startDate = undefined;
+            return flat;
+        }
+        var key,
+            updatedFlats = {},// flatId: true
+            flatsStatNum = { 1:0, 3:0 };
+
         xhrObj.forEach(function(flat){
             if(this.flats[flat.id] !== undefined){
+                updatedFlats[flat.id] = true;
                 this.flats[flat.id].price = +flat.price;
                 this.flats[flat.id].status = +flat.status;
                 this.flats[flat.id].updDate = +flat.updDate;
                 this.flats[flat.id].startDate = +flat.startDate;
-                this.flatsStatNum[this.flats[flat.id].status]++;
+                flatsStatNum[this.flats[flat.id].status]++;
             }
-        this.flatsStat = [
+
+        for (key in this.flats){
+            if (!updatedFlats[key] && this.flats.hasOwnProperty(key) && this.flats[key].status){
+                this.flats[key] = clearFlat(this.flats[key]);
+            }
+         }
+
+         this.flatsStat = [
             {
                 stat:1,
-                q:this.flatsStatNum[1],
+                q:flatsStatNum[1],
                 name:"в продаже"
             },
             {
                 stat:3,
-                q:this.flatsStatNum[3],
+                q:flatsStatNum[3],
                 name:"продано"
             },
             {
                 stat:0,
-                q:(this.buildings[this.bId].flatsQ - this.flatsStatNum[1] - this.flatsStatNum[3]),
-                name:"не было"
+                q:(this.buildings[this.bId].flatsQ - flatsStatNum[1] - flatsStatNum[3]),
+                name:"придержано"
             }
         ];
         }, this);
     };
-
-    this.clearFlats = function(){
-        var key;
-        for (key in this.flats){
-           if (this.flats.hasOwnProperty(key)) {
-               this.flats[key].status = 0;
-           }
-        }
-    }
 
     this.toDate = function(date){
         function dateToFileName(){
@@ -126,21 +137,35 @@ function R9mkModel(){
             y = date.getFullYear();
             return y + m + d;
             }
-        return $.ajax({
-            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_" + dateToFileName() + ".json.gz",
-            dataType: "json"
-        })
-        .done(function(data){
-            self.loadSnap(data);
-            });
-    }
+
+        var fileName = dateToFileName();
+
+        if (this.snapsCache[fileName]){
+            //console.log('took snap from cache: ' + fileName);
+            this.loadSnap(this.snapsCache[fileName]);
+            return $.Deferred().resolve();
+        }
+        else {
+            return $.ajax({
+                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_" + fileName + ".json.gz",
+                dataType: "json"
+            })
+            .done(function(data){
+                //console.log('loaded snap: ' + fileName);
+                self.snapsCache[fileName] = data;
+                self.loadSnap(data);
+                })
+            .fail(logFail);
+        }
+    };
 
     this.destroy = function(){
         this.flLoaded = false;
+        this.snapsCache = {};
+        this.flats = {};
         this.flatsStat = [];
         this.priceStat = [];
-        this.flats = [];
         this.availFlatsQhist = [];
-    }
+    };
 }
 

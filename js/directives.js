@@ -315,7 +315,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
         function link(scope, elem){
             scope.data = commute;
             function hoverText(roomsQ, num){
-                return num + " (" + ((roomsQ === "0")?"Ст.":roomsQ + "К") + ")";
+                return ((roomsQ === "0")?"студии":roomsQ + "-комнатные") + ": " + num;
             }
 
             var dateFormat = d3.time.format("%B"),
@@ -446,17 +446,22 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .attr("transform", function(d, i) { return "translate(0," + i * 16 + ")"; });
 
                 legend.append("rect")
-                    .attr("x", width - 30)
+                    .attr("x", width - 35)
                     .attr("width", 12)
                     .attr("height", 12)
-                    .style("fill", color);
+                    .style("fill", color)
+                    .append("svg:title")
+                    .text(function(d){
+                        return (d === '0')?'студии':d+'-комнатные';
+                    });
+                ;
 
                 legend.append("text")
                     .attr("x", width)
                     .attr("y", 6)
                     .attr("dy", ".35em")
                     .style("text-anchor", "end")
-                    .text(function(d) { return (d === '0')?'Ст':d+'К'; });
+                    .text(function(d) { return (d === '0')?'Ст':d+'-к'; });
             });
         }
         return {
