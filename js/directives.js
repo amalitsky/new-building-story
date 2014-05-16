@@ -336,7 +336,9 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 y = d3.scale.linear().rangeRound([height, 0]),
 
                 color = d3.scale.ordinal()
-                    .range(["#57B7FF", "#A19EFF", "#FFB252", "#8CDC66", "#FF616B"]),
+                    .range(["#99d3ff", "#bab8ff", "#FFBB66", "#bbeaa4", "#FF7a83"]),
+                   //.range(["#57B7FF", "#A19EFF", "#FFB252", "#8CDC66", "#FF616B"]),
+                   //.range(["#b9e1FF", "#e1e0ff", "#ffd299", "#d8f3cb", "#ffd0d3"]),
 
                 xAxis = d3.svg.axis()
                     .scale(x)

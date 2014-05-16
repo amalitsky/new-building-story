@@ -12,23 +12,27 @@ angular.module('nbsApp.controllers', [])
                         $timeout(function(){ $scope.$apply(); });
                     });
                 }
-                function checkSelectedDate(){//checks 'commute.selDate' for right interval and modifies if needed
-                    $scope.tempSelectDate = moment(new Date($scope.commute.selDate));
-                    //console.log($scope.tempSelectDate.toISOString());
-                    if($scope.tempSelectDate.isValid &&
-                        $scope.tempSelectDate.isAfter($scope.commute.startDate.clone().subtract('day', 1), 'day') &&
-                        $scope.tempSelectDate.isBefore($scope.commute.stopDate.clone().add('day', 1), 'day')){
-                        //$scope.commute.selDate = $scope.tempSelectDate.toDate();
-                        //leave the same
-                    }
-                    else if($scope.tempSelectDate.isValid &&
-                        $scope.tempSelectDate.isBefore($scope.commute.startDate.clone(), 'day')) {
-                        $scope.commute.selDate = $scope.commute.startDate.toDate();
+                function filterSelectedDate(){//checks 'commute.selDate' for being in right interval and modifies if needed
+                    var date = moment(new Date($scope.commute.selDate)),// Date type or string
+                        start = $scope.commute.startDate,//moment type
+                        stop = $scope.commute.stopDate;
+
+                    if(date.isValid){
+                        if(date.isAfter(stop, 'day')){
+                            $scope.commute.selDate = stop.toDate();
+                            return false;
+                        }
+                        else if(date.isBefore(start, 'day')) {
+                            $scope.commute.selDate = start.toDate();
+                            return false;
+                        }
                     }
                     else {
-                        $scope.commute.selDate = $scope.commute.stopDate.toDate();
+                        $scope.commute.selDate = stop.toDate();
+                        return false;
                     }
-                    $scope.tempSelectDate = undefined;
+                //returns true if selDate was not modified by filter
+                return true;
                 }
 
                 $scope.bId = $routeParams.bId;
@@ -53,36 +57,8 @@ angular.module('nbsApp.controllers', [])
                 }
 
                 $scope.commute.selDate = ($routeParams.date)?$routeParams.date:new Date();
-                checkSelectedDate();
 
-                /*if($routeParams.date){
-                    $scope.tempSelectDate = moment(new Date($routeParams.date));
-                    if($scope.tempSelectDate.isValid &&
-                        $scope.tempSelectDate.isAfter($scope.commute.startDate.clone().subtract('day', 1), 'day') &&
-                        $scope.tempSelectDate.isBefore($scope.commute.stopDate.clone().add('day', 1), 'day')){
-                            $scope.commute.selDate = $scope.tempSelectDate.toDate();
-                    }
-                    else if($scope.tempSelectDate.isValid &&
-                        $scope.tempSelectDate.isBefore($scope.commute.startDate.clone(), 'day')) {
-                            $scope.commute.selDate = $scope.commute.startDate.toDate();
-                    }
-                }
-
-                $scope.tempSelectDate = false;*/
-
-                /*if(!$scope.commute.selDate) {
-                    $scope.tempSelectDate = moment.utc();
-                    if($scope.tempSelectDate.isSame($scope.commute.stopDate, 'day') ||
-                        $scope.tempSelectDate.isBefore($scope.commute.stopDate, 'day')){
-                            $scope.commute.selDate = $scope.tempSelectDate.toDate();
-                    }
-                    else {
-                        $scope.commute.selDate = $scope.commute.stopDate.toDate();
-                    }
-                }
-
-                */
-
+                filterSelectedDate();
 
                 $scope.setHoveredFlat = function(flId, popupPos){
                     var flat = { hovered:0, popupPos:0 };
@@ -115,9 +91,7 @@ angular.module('nbsApp.controllers', [])
 
                 $scope.$watch('commute.selDate', function(val, prevVal){
                     if(val === prevVal) { return; }
-                    var selDate = val;
-                    checkSelectedDate();
-                    if(moment(selDate).isSame($scope.commute.selDate, 'day')) {
+                    if(filterSelectedDate()) {
                         loadSnap();
                     }
                 });
@@ -129,12 +103,10 @@ angular.module('nbsApp.controllers', [])
     .controller('DatepickerDemoCtrl', ['$scope', 'Commute', function($scope, Commute){
         $scope.commute = Commute;
         $scope.today = function() {
-            $scope.commute.selDate = new Date();
+            $scope.commute.selDate = $scope.commute.stopDate;
         };
         $scope.today();
-        /*$scope.$watch('dt', function(val) {
-            Commute.selDate = val;
-        });*/
+
 
         $scope.open = function($event) {
             $event.preventDefault();
@@ -153,3 +125,30 @@ angular.module('nbsApp.controllers', [])
         //$scope.minDate = $scope.commute.startDate;
         $scope.format = 'dd.MM.yyyy';
     }]);
+
+function AccordionDemoCtrl($scope) {
+    $scope.oneAtATime = true;
+
+    $scope.groups = [
+        {
+            title: 'Dynamic Group Header - 1',
+            content: 'Dynamic Group Body - 1'
+        },
+        {
+            title: 'Dynamic Group Header - 2',
+            content: 'Dynamic Group Body - 2'
+        }
+    ];
+
+    $scope.items = ['Item 1', 'Item 2', 'Item 3'];
+
+    $scope.addItem = function() {
+        var newItemNo = $scope.items.length + 1;
+        $scope.items.push('Item ' + newItemNo);
+    };
+
+    $scope.status = {
+        isFirstOpen: true,
+        isFirstDisabled: false
+    };
+}

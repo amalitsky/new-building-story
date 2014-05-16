@@ -14,8 +14,12 @@ angular.module('nbsApp', [
                 return 'partials/bd' + params.bId + '.html';
                 },
             controller: 'buildCtrl'
-        });
-        $routeProvider.otherwise({redirectTo: '/r9mk/3'});
+        })
+        .when('/about',{
+            templateUrl: 'partials/about.html',
+            controller: ''
+        })
+        .otherwise({redirectTo: '/r9mk/3'});
     }])
     .config(['$tooltipProvider', function($tooltipProvider){
         $tooltipProvider.options({

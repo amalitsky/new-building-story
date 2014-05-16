@@ -17,14 +17,14 @@ function R9mkModel(){
             nameRu: "Первый корпус ЖК Новокосино",
             flatsQ: 1177,
             startDate: '2014-02-05',
-            stopDate:undefined
+            stopDate: undefined
         },
         2:{
             name: "Novokosino, building 2",
             nameRu: "Второй корпус ЖК Новокосино",
             flatsQ: 864,
             startDate: '2014-02-05',
-            stopDate:undefined
+            stopDate: undefined
         },
         3:{
             name: "Novokosino, building 3",
