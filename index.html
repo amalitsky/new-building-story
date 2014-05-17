@@ -12,7 +12,7 @@
     <script src="bower_components/jquery/dist/jquery.js"></script>
 </head>
 <body>
-<div class="container">
+<div class="container" ng-controller="gui">
         <div class="navbar navbar-inverse navbar-static-top" role="navigation">
             <div class="container-fluid">
                 <div class="row">
@@ -26,21 +26,22 @@
                                 <a class="dropdown-toggle">ЖК Новокосино <b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu">
                                     <li class="dropdown-header">Корпуса</li>
-                                    <li><a ng-click="isOpen=false" href="#/r9mk/1">первый</a></li>
-                                    <li><a ng-click="isOpen=false" href="#/r9mk/2">второй</a></li>
-                                    <li><a  ng-click="isOpen=false" href="#/r9mk/3">третий</a></li>
+                                    <li><a ng-click="isOpen=false" ui-sref="r9mk.building({bId:1})">первый</a></li>
+                                    <li><a ng-click="isOpen=false" ui-sref="r9mk.building({bId:2})">второй</a></li>
+                                    <li><a ng-click="isOpen=false" ui-sref="r9mk.building({bId:3})">третий</a></li>
                                 </ul>
                             </li>
-                            <li><a href="#about">About</a></li>
+                            <li><a ui-sref="about">Справка</a></li>
+                            <!--<li><a ui-sref="r9mk.building">тестовая</a></li>-->
                         </ul>
 
                     </div>
                     <div class="col-md-4">
-                        <form class="navbar-form" ng-controller="DatepickerDemoCtrl">
+                        <form class="navbar-form" ng-controller="snapDatepicker" ng-hide="hideDatePicker">
                             <div class="input-group navbar-right nbsDateSelector">
 
                                 <input type="text" class="form-control navbar-right" style="width:8em"
-                                       datepicker-popup="{{format}}" ng-model="commute.selDate" is-open="opened"
+                                       datepicker-popup="dd.MM.yyyy" ng-model="commute.selDate" is-open="opened"
                                        max-date="commute.stopDate" min-date="commute.startDate" show-button-bar="0"
                                        datepicker-options="dateOptions"/>
                                   <span class="input-group-btn">
@@ -54,10 +55,10 @@
             </div>
         </div>
 
-    <div class="row" style="min-height: 500px">
-        <div class="col-lg-12" ng-view="building">&nbsp;</div>
+    <div class="container" ui-view>
+    <!--<div class="row" style="min-height: 500px">
+        <div class="col-lg-12" ui-view>&nbsp;</div>
     </div>
-
     <div class="row">
         <div class="col-lg-4 graph-availFlatsQ">
             <h3>История предложения</h3>
@@ -71,6 +72,7 @@
             <h3>Состояние продажи</h3>
             <div sale-status-chart></div>
         </div>
+    </div>-->
     </div>
 
     <div class="navbar-wrapper" style="position:fixed; bottom:0;background-color:#FFF">
@@ -85,7 +87,8 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <!--<script src="bower_components/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js"></script>-->
-<script src="bower_components/angular-route/angular-route.js"></script>
+<!--<script src="bower_components/angular-route/angular-route.js"></script>-->
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower_components/momentjs/moment.js"></script>
 <script src="bower_components/d3/d3.js"></script>
 

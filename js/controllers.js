@@ -2,8 +2,8 @@
 
 angular.module('nbsApp.controllers', [])
     .controller('buildCtrl',
-        ['$scope', '$http', '$routeParams', '$timeout', 'nbsR9mk', 'Commute',
-            function($scope, $http, $routeParams, $timeout, nbsR9mk, Commute) {
+        ['$scope', '$stateParams', '$timeout', 'nbsR9mk', 'Commute',
+            function($scope, $routeParams, $timeout, nbsR9mk, Commute) {
                 function loadSnap(){
                     var date;
                     date = (moment($scope.commute.selDate).isSame($scope.commute.stopDate, 'day'))?false:$scope.commute.selDate;
@@ -100,7 +100,7 @@ angular.module('nbsApp.controllers', [])
                     $scope.r9mk.destroy();
                 });
             }])
-    .controller('DatepickerDemoCtrl', ['$scope', 'Commute', function($scope, Commute){
+    .controller('snapDatepicker', ['$scope', 'Commute', function($scope, Commute){
         $scope.commute = Commute;
         $scope.today = function() {
             $scope.commute.selDate = $scope.commute.stopDate;
@@ -120,35 +120,15 @@ angular.module('nbsApp.controllers', [])
             showButtonBar: 0,
             maxMode:'day'
         };
+    }])
+    .controller('AboutAccordion', ['$scope', function ($scope) {
+        $scope.status = {
+            isFirstOpen: true
+        };
+    }])
+    .controller('gui', ['$scope', '$location', function(scope, $location){
 
-        //$scope.maxDate = $scope.commute.stopDate || new Date();
-        //$scope.minDate = $scope.commute.startDate;
-        $scope.format = 'dd.MM.yyyy';
+        scope.$on('$locationChangeSuccess', function(){
+            scope.hideDatePicker = $location.url() === '/about';
+        });
     }]);
-
-function AccordionDemoCtrl($scope) {
-    $scope.oneAtATime = true;
-
-    $scope.groups = [
-        {
-            title: 'Dynamic Group Header - 1',
-            content: 'Dynamic Group Body - 1'
-        },
-        {
-            title: 'Dynamic Group Header - 2',
-            content: 'Dynamic Group Body - 2'
-        }
-    ];
-
-    $scope.items = ['Item 1', 'Item 2', 'Item 3'];
-
-    $scope.addItem = function() {
-        var newItemNo = $scope.items.length + 1;
-        $scope.items.push('Item ' + newItemNo);
-    };
-
-    $scope.status = {
-        isFirstOpen: true,
-        isFirstDisabled: false
-    };
-}

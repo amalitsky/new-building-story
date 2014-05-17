@@ -1,6 +1,7 @@
 // Declare app level module which depends on filters, and services
 angular.module('nbsApp', [
-        'ngRoute',
+        //'ngRoute',
+        'ui.router',
         'ui.bootstrap',
         'nbsApp.controllers',
         'nbsApp.filters',
@@ -8,18 +9,31 @@ angular.module('nbsApp', [
         'nbsApp.directives',
         'ui.bootstrap'
     ])
-    .config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/r9mk/:bId/:date?',{
-            templateUrl: function (params) {
-                return 'partials/bd' + params.bId + '.html';
-                },
-            controller: 'buildCtrl'
-        })
-        .when('/about',{
-            templateUrl: 'partials/about.html',
-            controller: ''
-        })
-        .otherwise({redirectTo: '/r9mk/3'});
+    .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+        $stateProvider
+            .state('r9mk',{
+                url: '/r9mk',
+                templateUrl: 'partials/bd.html',
+                //controller: 'buildCtrl'
+            })
+            .state('r9mk.building', {
+                url: '/:bId',
+                views: {
+                    'building': {
+                        templateUrl: function (params) {
+                            return 'partials/bd' + params.bId + '.html';
+                        },
+                     controller: 'buildCtrl'
+                    }
+                }
+            })
+            .state('about', {
+                url: '/about',
+                templateUrl: 'partials/about.html'
+            });
+
+        $urlRouterProvider
+            .otherwise('/r9mk/3');
     }])
     .config(['$tooltipProvider', function($tooltipProvider){
         $tooltipProvider.options({
