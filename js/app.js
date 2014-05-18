@@ -7,17 +7,17 @@ angular.module('nbsApp', [
         'nbsApp.filters',
         'nbsApp.services',
         'nbsApp.directives',
-        'ui.bootstrap'
+        //'ui.bootstrap'
     ])
     .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('r9mk',{
-                url: '/r9mk',
+                url: '/r9mk/{bId:[1-3]}',
                 templateUrl: 'partials/bd.html',
-                //controller: 'buildCtrl'
+                controller: 'buildingWrapper'
             })
             .state('r9mk.building', {
-                url: '/:bId',
+                url: '/show',
                 views: {
                     'building': {
                         templateUrl: function (params) {
@@ -33,7 +33,7 @@ angular.module('nbsApp', [
             });
 
         $urlRouterProvider
-            .otherwise('/r9mk/3');
+            .otherwise('/r9mk/3/show');
     }])
     .config(['$tooltipProvider', function($tooltipProvider){
         $tooltipProvider.options({

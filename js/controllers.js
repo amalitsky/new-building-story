@@ -127,8 +127,15 @@ angular.module('nbsApp.controllers', [])
         };
     }])
     .controller('gui', ['$scope', '$location', function(scope, $location){
-
+        scope.currYear = (new Date()).getFullYear();
         scope.$on('$locationChangeSuccess', function(){
             scope.hideDatePicker = $location.url() === '/about';
         });
+    }])
+    .controller('buildingWrapper', ['$scope', '$stateParams', 'nbsR9mk', 'Commute', function(scope, params, r9mk, commute){
+        //scope.bId = params.bId;
+        scope.bHeader = r9mk.buildings[params.bId].nameRu;
+        scope.warning = !r9mk.buildings[params.bId].isConsistent;
+        scope.commute = commute;
+        //console.log(scope.bId);
     }]);
