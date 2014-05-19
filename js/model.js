@@ -10,6 +10,7 @@ function R9mkModel(){
     this.snapsCache = {};
     this.flatsStat = [];
     this.priceStat = [];
+    this.flatTypesStat = [];
     this.availFlatsQhist = [];
     this.buildings = {
         1:{
@@ -18,7 +19,8 @@ function R9mkModel(){
             flatsQ: 1177,
             startDate: '2014-02-05',
             stopDate: undefined,
-            isConsistent: false //show warning if building was not observed from early beginning
+            isConsistent: false, //show warning if building was not observed from early beginning
+            flatTypes: {0: 246, 1:557, 2:292, 3:82} //types of flat and it's quantity in the building
         },
         2:{
             name: "Novokosino, building 2",
@@ -26,7 +28,8 @@ function R9mkModel(){
             flatsQ: 864,
             startDate: '2014-02-05',
             stopDate: undefined,
-            isConsistent: false
+            isConsistent: false,
+            flatTypes: {0: 384, 1: 288, 2: 144, 3:48 }
         },
         3:{
             name: "Novokosino, building 3",
@@ -34,7 +37,8 @@ function R9mkModel(){
             flatsQ: 817,
             startDate: '2014-03-20',
             stopDate: undefined,
-            isConsistent: true
+            isConsistent: true,
+            flatTypes: {0: 326, 1:168, 2:154, 3:157, 4:12 }
         }
     };
 
@@ -83,9 +87,18 @@ function R9mkModel(){
             flat.startDate = undefined;
             return flat;
         }
-        var key,
+        var key, j,
             updatedFlats = {},// flatId: true
-            flatsStatNum = { 1:0, 3:0 };
+            flatsStatNum = { 1:0, 3:0 },
+            flatsTypesStat = {
+                0: {1:0, 3:0},
+                1: {1:0, 3:0},
+                2: {1:0, 3:0},
+                3: {1:0, 3:0},
+                4: {1:0, 3:0}
+            },
+            setStatusQ;
+
 
         xhrObj.forEach(function(flat){
             if(this.flats[flat.id] !== undefined){
@@ -95,6 +108,7 @@ function R9mkModel(){
                 this.flats[flat.id].updDate = +flat.updDate;
                 this.flats[flat.id].startDate = +flat.startDate;
                 flatsStatNum[this.flats[flat.id].status]++;
+                flatsTypesStat[this.flats[flat.id].type][this.flats[flat.id].status]++;
             }
 
         for (key in this.flats){
@@ -102,8 +116,9 @@ function R9mkModel(){
                 this.flats[key] = clearFlat(this.flats[key]);
             }
          }
+        }, this);
 
-         this.flatsStat = [
+        this.flatsStat = [
             {
                 stat:1,
                 q:flatsStatNum[1],
@@ -120,7 +135,32 @@ function R9mkModel(){
                 name:"придержано"
             }
         ];
-        }, this);
+        for (key in this.buildings[this.bId].flatTypes){
+            if (this.buildings[this.bId].flatTypes.hasOwnProperty(key)){
+                if(!flatsTypesStat[key]) {
+                    flatsTypesStat[key] = { 0: this.buildings[this.bId].flatTypes[key] };
+                }
+                else{
+                    setStatusQ = 0;
+                    for (j in flatsTypesStat[key]){
+                        if(flatsTypesStat[key].hasOwnProperty(j)){
+                            setStatusQ += flatsTypesStat[key][j];
+                        }
+                    }
+                }
+            flatsTypesStat[key][0] = this.buildings[this.bId].flatTypes[key] - setStatusQ;
+            }
+        }
+        this.flatTypesStat = [];
+        for (key in flatsTypesStat){
+            if (flatsTypesStat.hasOwnProperty(key)){
+                this.flatTypesStat.push({
+                    name: key,
+                    q: this.buildings[this.bId].flatTypes[key] || 0,
+                    values: flatsTypesStat[key]
+                });
+            }
+        }
     };
 
     this.toDate = function(date){
@@ -168,6 +208,7 @@ function R9mkModel(){
         this.flatsStat = [];
         this.priceStat = [];
         this.availFlatsQhist = [];
+        this.flatTypesStat = [];
     };
 }
 

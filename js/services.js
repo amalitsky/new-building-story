@@ -349,6 +349,7 @@ angular.module('nbsApp.services', [])
         {
             flatsStat: [], //graphs options
             priceStat: [],
+            flatTypesStat: [],
             availFlatsQhist: [],
             selDate: undefined, //date picker options
             startDate: undefined,

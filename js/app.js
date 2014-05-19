@@ -1,13 +1,10 @@
-// Declare app level module which depends on filters, and services
 angular.module('nbsApp', [
-        //'ngRoute',
         'ui.router',
         'ui.bootstrap',
         'nbsApp.controllers',
         'nbsApp.filters',
         'nbsApp.services',
-        'nbsApp.directives',
-        //'ui.bootstrap'
+        'nbsApp.directives'
     ])
     .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
         $stateProvider

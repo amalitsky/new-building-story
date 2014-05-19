@@ -79,6 +79,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .attr("transform", "translate(" + 75 + "," + height / 2 + ")");
 
             scope.$watch('data.flatsStat', function(data){
+                //console.log(data);
                 if(data.length === 0) { return; }
                 flatQ = countFlats(data);
                 svg.selectAll('*').remove();
@@ -125,6 +126,152 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                             .text(d.name);
                     });
 
+            });
+        }
+        return {
+            restrict: 'A',
+            scope: { },
+            link:link
+        };
+    }])
+    .directive('saleStatusChart2', ['Commute', function (commute) {
+        function link(scope, elem){
+
+            scope.data = commute;
+            /*dataset2 = [
+                {
+                    name: "Cт",
+                    q: 326,
+                    values:{"0":154,"1":134,"3":38}
+                },
+                {
+                    name: "1-к",
+                    q: 168,
+                    values:{"0":61,"1":35,"3":72}
+                },
+                {
+                    name: "2-к",
+                    q: 154,
+                    values:{"0":88,"1":39,"3":27}
+                },
+                {
+                    name: "3-к",
+                    q: 157,
+                    values: {"0":54,"1":76,"3":27}
+                },
+                {
+                    name: "4-к",
+                    q: 12,
+                    values: {"0":10,"1":0,"3":2}
+                }
+                ],*/
+
+            var arr  = [],
+                saleStatText = { 0:"придержано", 1:"в продаже", 3:"продано" },
+                flatQ,
+                width = 250,
+                height = 170,
+                radius = Math.min(width, height) / 2,
+                color = d3.scale.ordinal()
+                    .range(["#57B7FF", "#A19EFF", "#FFB252", "#8CDC66", "#FF616B"]),
+                color2 = d3.scale.ordinal().range(["yellow", "#25da29"]),
+                arc = d3.svg.arc().outerRadius(radius).innerRadius(0.2 * radius),
+                arc2 = d3.svg.arc().outerRadius(radius).innerRadius(0.8 * radius),
+                legend,
+                svg = d3.select(elem[0]).append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", "translate(" + 100 + "," + height / 2 + ")"),
+                pie = d3.layout.pie().sort(null).value(function(d) { return d.q; }),
+                g;
+
+            scope.$watch('data.flatTypesStat', function(data, prevData){
+                if(data.length === 0) { return; }
+                console.log(data);
+                svg.selectAll('*').remove();
+                arr = [];
+                flatQ = d3.sum(data, function(val) { return val.q; });
+                data.forEach(function(elem){
+                    var trans = [], key;
+                    for (key in elem.values){
+                        trans.push({
+                            text: saleStatText[key] + " " + Math.floor(elem.values[key]*100/elem.q) + "% " + elem.name + " квартир",
+                            q:elem.values[key]
+                        });
+                    }
+                    arr = arr.concat(trans.reverse());
+                });
+
+                g = svg.selectAll(".arc")
+                    .data(pie(data))
+                    .enter().append("g")
+                    .attr("class", "arc");
+
+                g.append("path").attr("d", arc)
+                    .style("fill", function(d) { return color(d.data.name); });
+
+                g.append("text")
+                    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+                    .attr("fill","white")
+                    .attr("class","pieChartLabels")
+                    .style("text-anchor", "middle")
+                    .text(function(d) {
+                        var res = Math.floor(d.data.q*100/flatQ);
+                        return (res>8)?res + "%":'';
+                    });
+
+                g.append("svg:title")
+                    .text(function(d){
+                        return "всего " + d.data.name + " квартир: " + d.data.q;
+                    });
+
+                g = svg.selectAll(".arc2")
+                    .data(pie(arr))
+                    .enter().append("g")
+                    .attr("class", "arc2");
+
+                g.append("path").attr("d", arc2)
+                    .attr("fill", function(d, i) {
+                        var res;
+                        if((i % 3) === 2){
+                            res = color(i/3 + 2);
+                        }
+                        else {res = color2(i); }
+                        return res;
+                    })
+                    .attr("stroke", function(d, i){
+                        if(i%3 !== 2) { return 'white'; }
+                        else { return ''; }
+                    });
+
+                g.append('svg:title')
+                    .text(function(d) {
+                        return d.data.text;
+                    });
+
+                legend = svg.append("g")
+                    .attr("class","legend")
+                    .selectAll("g").data(data.reverse())
+                    .enter().append('g')
+                    .each(function(d, i){
+                        var g = d3.select(this);
+                        if(d.q === 0 ) return '';
+                        g.append("rect")
+                            .attr("x", 110)
+                            .attr("y", -50 + i*25)
+                            .attr("width", 12)
+                            .attr("height", 12)
+                            .style("fill",color(d.name));
+
+                        g.append("text")
+                            .attr("x", 110 + 18)
+                            .attr("y", -40 + i*25)
+                            .attr("height", 30)
+                            .attr("width", 100)
+                            .style("fill",'black')
+                            .text(d.name);
+                    });
             });
         }
         return {
@@ -456,7 +603,6 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .text(function(d){
                         return (d === '0')?'студии':d+'-комнатные';
                     });
-                ;
 
                 legend.append("text")
                     .attr("x", width)

@@ -78,6 +78,7 @@ angular.module('nbsApp.controllers', [])
                     $scope.r9mk.loadPriceHistory()
                     .done(function(){
                         $scope.commute.priceStat = $scope.r9mk.priceStat;
+                        $scope.commute.flatTypesStat = $scope.r9mk.flatTypesStat;
                         $scope.$apply();
                     });
                 })
@@ -93,6 +94,7 @@ angular.module('nbsApp.controllers', [])
                     if(val === prevVal) { return; }
                     if(filterSelectedDate()) {
                         loadSnap();
+                        //$scope.commute.flatTypesStat = $scope.r9mk.flatTypesStat;
                     }
                 });
 
