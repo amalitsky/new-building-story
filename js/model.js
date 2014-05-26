@@ -45,7 +45,7 @@ function R9mkModel(){
     this.init = function(bId){
         this.bId = bId;
         return $.ajax({
-                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_flats.json.gz",
+                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_flats.json",
                 dataType: "json",
                 context: self
             })
@@ -58,7 +58,7 @@ function R9mkModel(){
 
     this.loadPriceHistory = function(){
         return $.ajax({
-            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_price_hist.json.gz",
+            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_price_hist.json",
             dataType: "json",
             context: self
         }).done(function(data){
@@ -69,7 +69,7 @@ function R9mkModel(){
 
     this.loadAvailFlatsQhistory = function(){
         return $.ajax({
-            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_availFlatsQ_hist.json.gz",
+            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_availFlatsQ_hist.json",
             dataType: "json",
             context: self
         }).done(function(data){
@@ -155,7 +155,7 @@ function R9mkModel(){
         for (key in flatsTypesStat){
             if (flatsTypesStat.hasOwnProperty(key)){
                 this.flatTypesStat.push({
-                    name: key,
+                    name: (+key === 0)?"Cт":(key + "-к"),
                     q: this.buildings[this.bId].flatTypes[key] || 0,
                     values: flatsTypesStat[key]
                 });
@@ -189,7 +189,7 @@ function R9mkModel(){
         }
         else {
             return $.ajax({
-                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_" + fileName + ".json.gz",
+                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_" + fileName + ".json",
                 dataType: "json"
             })
             .done(function(data){

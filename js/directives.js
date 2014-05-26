@@ -165,18 +165,14 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     values: {"0":10,"1":0,"3":2}
                 }
                 ],*/
-
             var arr  = [],
                 saleStatText = { 0:"придержано", 1:"в продаже", 3:"продано" },
                 flatQ,
                 width = 250,
                 height = 170,
+                color, color2,
+                arc, arc2,
                 radius = Math.min(width, height) / 2,
-                color = d3.scale.ordinal()
-                    .range(["#57B7FF", "#A19EFF", "#FFB252", "#8CDC66", "#FF616B"]),
-                color2 = d3.scale.ordinal().range(["yellow", "#25da29"]),
-                arc = d3.svg.arc().outerRadius(radius).innerRadius(0.2 * radius),
-                arc2 = d3.svg.arc().outerRadius(radius).innerRadius(0.8 * radius),
                 legend,
                 svg = d3.select(elem[0]).append("svg")
                     .attr("width", width)
@@ -185,10 +181,14 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .attr("transform", "translate(" + 100 + "," + height / 2 + ")"),
                 pie = d3.layout.pie().sort(null).value(function(d) { return d.q; }),
                 g;
-
+                
             scope.$watch('data.flatTypesStat', function(data, prevData){
-                if(data.length === 0) { return; }
-                console.log(data);
+                if(data.length === 0 || data === prevData) { return; }
+                color = d3.scale.ordinal()
+                    .range(["#57B7FF", "#A19EFF", "#FFB252", "#8CDC66", "#FF616B"]);
+                color2 = d3.scale.ordinal().range(["yellow", "#25da29"]);
+                arc = d3.svg.arc().outerRadius(radius).innerRadius(0.2 * radius);
+                arc2 = d3.svg.arc().outerRadius(radius).innerRadius(0.8 * radius);
                 svg.selectAll('*').remove();
                 arr = [];
                 flatQ = d3.sum(data, function(val) { return val.q; });
@@ -196,7 +196,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     var trans = [], key;
                     for (key in elem.values){
                         trans.push({
-                            text: saleStatText[key] + " " + Math.floor(elem.values[key]*100/elem.q) + "% " + elem.name + " квартир",
+                            text: saleStatText[key] + " " + Math.floor(elem.values[key]*100/elem.q) + "% " + elem.name,
                             q:elem.values[key]
                         });
                     }
@@ -223,7 +223,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
 
                 g.append("svg:title")
                     .text(function(d){
-                        return "всего " + d.data.name + " квартир: " + d.data.q;
+                        return "всего " + d.data.name + ": " + d.data.q;
                     });
 
                 g = svg.selectAll(".arc2")
@@ -256,7 +256,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .enter().append('g')
                     .each(function(d, i){
                         var g = d3.select(this);
-                        if(d.q === 0 ) return '';
+                        if(d.q === 0 ) { return ''; }
                         g.append("rect")
                             .attr("x", 110)
                             .attr("y", -50 + i*25)
@@ -271,6 +271,10 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                             .attr("width", 100)
                             .style("fill",'black')
                             .text(d.name);
+                        g.append("svg:title")
+                            .text(function(d){
+                                return (d.name === '0')?'студии': d.name + '-комнатные';
+                        });
                     });
             });
         }
@@ -514,6 +518,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
 
             scope.$watch('data.availFlatsQhist', function(data){
                 if(!data || data.length === 0) { return; }
+                //console.log(data);
                 periods = {};
                 roomsQ = {};
 
