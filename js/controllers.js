@@ -8,6 +8,7 @@ angular.module('nbsApp.controllers', [])
                     var date;
                     date = (moment($scope.commute.selDate).isSame($scope.commute.stopDate, 'day'))?false:$scope.commute.selDate;
                     $scope.r9mk.toDate(date).done(function(){
+                        $scope.commute.flatTypesStat = $scope.r9mk.flatTypesStat;
                         $scope.commute.flatsStat = $scope.r9mk.flatsStat;
                         $timeout(function(){ $scope.$apply(); });
                     });
@@ -79,7 +80,7 @@ angular.module('nbsApp.controllers', [])
                     .done(function(){
                         $scope.commute.priceStat = $scope.r9mk.priceStat;
                         $scope.commute.flatTypesStat = $scope.r9mk.flatTypesStat;
-                        $scope.$apply();
+                        $scope.$apply();//not sure if needed
                     });
                 })
                 .done(function(){
@@ -94,7 +95,6 @@ angular.module('nbsApp.controllers', [])
                     if(val === prevVal) { return; }
                     if(filterSelectedDate()) {
                         loadSnap();
-                        //$scope.commute.flatTypesStat = $scope.r9mk.flatTypesStat;
                     }
                 });
 

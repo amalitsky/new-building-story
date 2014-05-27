@@ -45,7 +45,7 @@ function R9mkModel(){
     this.init = function(bId){
         this.bId = bId;
         return $.ajax({
-                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_flats.json",
+                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_flats.json.gz",
                 dataType: "json",
                 context: self
             })
@@ -58,7 +58,7 @@ function R9mkModel(){
 
     this.loadPriceHistory = function(){
         return $.ajax({
-            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_price_hist.json",
+            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_price_hist.json.gz",
             dataType: "json",
             context: self
         }).done(function(data){
@@ -69,7 +69,7 @@ function R9mkModel(){
 
     this.loadAvailFlatsQhistory = function(){
         return $.ajax({
-            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_availFlatsQ_hist.json",
+            url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_availFlatsQ_hist.json.gz",
             dataType: "json",
             context: self
         }).done(function(data){
@@ -189,7 +189,7 @@ function R9mkModel(){
         }
         else {
             return $.ajax({
-                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_" + fileName + ".json",
+                url:"jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_" + fileName + ".json.gz",
                 dataType: "json"
             })
             .done(function(data){

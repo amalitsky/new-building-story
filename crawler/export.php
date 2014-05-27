@@ -31,20 +31,17 @@ if ($db -> connect_errno) {
 $db -> query("SET time_zone = '+0:00'");
 $bIds = array(1, 2, 3);
 
-/*
- * $startDays = array(//data is ready for export on UTC 10pm
+/*$startDays = array(//data is ready for export on UTC 10pm
     new DateTime('2014-02-05 22:00:00'),
     new DateTime('2014-02-05 22:00:00'),
     new DateTime('2014-03-20 22:00:00')
 );
-$now = time();
-
-for ($tstamp = $startDays[$i] -> format('U'); $tstamp < $now; $tstamp += 86400){
-        exportDateSnapJSON($db, $bIds[$i], $tstamp);
-    }
-*/
+$now = time();*/
 
 for ($i = 0; $i < count($bIds); $i++){
+    /*for ($tstamp = $startDays[$i] -> format('U'); $tstamp < $now; $tstamp += 86400){
+        exportDateSnapJSON($db, $bIds[$i], $tstamp);
+    }*/
     exportDateSnapJSON($db, $bIds[$i]);
     //exportAvMeterPriceJSON($db, $bIds[$i]);
     //exportAvailFlatsQuantityHistoryJSON($db, $bIds[$i]);
