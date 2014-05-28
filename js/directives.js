@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('nbsApp.directives', ['d3'])
+angular.module('nbsApp.directives', ['ui.bootstrap'])
     .directive('nbsFlat', ['$position', '$timeout', function($position, $timeout) {
         function link(scope, elem, attr){
             var overTimeout;
@@ -54,7 +54,7 @@ angular.module('nbsApp.directives', ['d3'])
             templateUrl: 'partials/flatPopover.html'
         };
     })
-    .directive('saleStatusChart', ['d3Service', 'Commute', function (d3, commute) {
+    .directive('saleStatusChart', ['Commute', function (commute) {
         function link(scope, elem){
             function countFlats(data){
                 var key, res = 0;
@@ -133,7 +133,130 @@ angular.module('nbsApp.directives', ['d3'])
             link:link
         };
     }])
-    .directive('priceHistoryChart', ['d3Service', 'Commute', function(d3, commute){
+    .directive('saleStatusChart2', ['Commute', function (commute) {
+        function link(scope, elem){
+            scope.data = commute;
+
+            var arr  = [],
+                saleStatText = { 0:"придержано", 1:"в продаже", 3:"продано" },
+                flatQ,
+                width = 250,
+                height = 170,
+                color, color2,
+                arc, arc2,
+                radius = Math.min(width, height) / 2,
+                legend,
+                svg = d3.select(elem[0]).append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", "translate(" + 100 + "," + height / 2 + ")"),
+                pie = d3.layout.pie().sort(null).value(function(d) { return d.q; }),
+                g;
+                
+            scope.$watch('data.flatTypesStat', function(data, prevData){
+                if(data.length === 0 || data === prevData) { return; }
+                color = d3.scale.ordinal()
+                    .range(["#57B7FF", "#A19EFF", "#FFB252", "#8CDC66", "#FF616B"]);
+                color2 = d3.scale.ordinal().range(["yellow", "#25da29"]);
+                arc = d3.svg.arc().outerRadius(radius).innerRadius(0.2 * radius);
+                arc2 = d3.svg.arc().outerRadius(radius).innerRadius(0.8 * radius);
+                svg.selectAll('*').remove();
+                arr = [];
+                flatQ = d3.sum(data, function(val) { return val.q; });
+                data.forEach(function(elem){
+                    var trans = [], key;
+                    for (key in elem.values){
+                        trans.push({
+                            text: saleStatText[key] + " " + Math.floor(elem.values[key]*100/elem.q) + "% " + elem.name,
+                            q:elem.values[key]
+                        });
+                    }
+                    arr = arr.concat(trans.reverse());
+                });
+
+                g = svg.selectAll(".arc")
+                    .data(pie(data))
+                    .enter().append("g")
+                    .attr("class", "arc");
+
+                g.append("path").attr("d", arc)
+                    .style("fill", function(d) { return color(d.data.name); });
+
+                g.append("text")
+                    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+                    .attr("fill","white")
+                    .attr("class","pieChartLabels")
+                    .style("text-anchor", "middle")
+                    .text(function(d) {
+                        var res = Math.floor(d.data.q*100/flatQ);
+                        return (res>8)?res + "%":'';
+                    });
+
+                g.append("svg:title")
+                    .text(function(d){
+                        return "всего " + d.data.name + ": " + d.data.q;
+                    });
+
+                g = svg.selectAll(".arc2")
+                    .data(pie(arr))
+                    .enter().append("g")
+                    .attr("class", "arc2");
+
+                g.append("path").attr("d", arc2)
+                    .attr("fill", function(d, i) {
+                        var res;
+                        if((i % 3) === 2){
+                            res = color(i/3 + 2);
+                        }
+                        else {res = color2(i); }
+                        return res;
+                    })
+                    .attr("stroke", function(d, i){
+                        if(i%3 !== 2) { return 'white'; }
+                        else { return ''; }
+                    });
+
+                g.append('svg:title')
+                    .text(function(d) {
+                        return d.data.text;
+                    });
+
+                legend = svg.append("g")
+                    .attr("class","legend")
+                    .selectAll("g").data(data.reverse())
+                    .enter().append('g')
+                    .each(function(d, i){
+                        var g = d3.select(this);
+                        if(d.q === 0 ) { return ''; }
+                        g.append("rect")
+                            .attr("x", 110)
+                            .attr("y", -50 + i*25)
+                            .attr("width", 12)
+                            .attr("height", 12)
+                            .style("fill",color(d.name));
+
+                        g.append("text")
+                            .attr("x", 110 + 18)
+                            .attr("y", -40 + i*25)
+                            .attr("height", 30)
+                            .attr("width", 100)
+                            .style("fill",'black')
+                            .text(d.name);
+                        g.append("svg:title")
+                            .text(function(d){
+                                return (d.name === '0')?'студии': d.name + '-комнатные';
+                        });
+                    });
+            });
+        }
+        return {
+            restrict: 'A',
+            scope: { },
+            link:link
+        };
+    }])
+    .directive('priceHistoryChart', ['Commute', function(commute){
         function link(scope, elem){
             scope.data = commute;
             var margin = {top: 10, right: 30, bottom: 20, left: 40},
@@ -141,7 +264,7 @@ angular.module('nbsApp.directives', ['d3'])
                 height = 170 - margin.top - margin.bottom,
                 dateFormat = d3.time.format("%d.%m"),
                 parseDate = d3.time.format("%Y-%m-%d").parse,
-                x = d3.time.scale().range([0, width]).nice(),
+                x = d3.time.scale.utc().range([0, width]),
                 y = d3.scale.linear().range([height, 0]).nice(),
                 flType,
                 periods = {},// {"201401":true; }
@@ -156,7 +279,7 @@ angular.module('nbsApp.directives', ['d3'])
                     .orient("bottom")
                     .tickSize(-height, 0)
                     .tickPadding(7)
-                    .ticks(5)
+                    .ticks(d3.time.week, 2)
                     .tickFormat(dateFormat),
 
                 yAxis = d3.svg.axis()
@@ -183,8 +306,6 @@ angular.module('nbsApp.directives', ['d3'])
 
             div.append("div").attr("class","tooltip-arrow");
             div.append("div").attr("class","tooltip-inner");
-
-            /* data = JSON.parse('[{"rooms":"1","week":"201405","price4meter":"108417","flatsQ":"17"}]') */
 
             scope.$watch('data.priceStat', function(data){
                 if(!data || data.length === 0) { return; }
@@ -311,11 +432,11 @@ angular.module('nbsApp.directives', ['d3'])
             link:link
         };
     }])
-    .directive('availFlatsQChart', ['d3Service', 'Commute', function(d3, commute){
+    .directive('availFlatsQChart', ['Commute', function(commute){
         function link(scope, elem){
             scope.data = commute;
             function hoverText(roomsQ, num){
-                return num + " (" + ((roomsQ === "0")?"Ст.":roomsQ + "К") + ")";
+                return ((roomsQ === "0")?"студии":roomsQ + "-комнатные") + ": " + num;
             }
 
             var dateFormat = d3.time.format("%B"),
@@ -336,7 +457,7 @@ angular.module('nbsApp.directives', ['d3'])
                 y = d3.scale.linear().rangeRound([height, 0]),
 
                 color = d3.scale.ordinal()
-                    .range(["#57B7FF", "#A19EFF", "#FFB252", "#8CDC66", "#FF616B"]),
+                    .range(["#99d3ff", "#bab8ff", "#FFBB66", "#bbeaa4", "#FF7a83"]),
 
                 xAxis = d3.svg.axis()
                     .scale(x)
@@ -446,17 +567,21 @@ angular.module('nbsApp.directives', ['d3'])
                     .attr("transform", function(d, i) { return "translate(0," + i * 16 + ")"; });
 
                 legend.append("rect")
-                    .attr("x", width - 30)
+                    .attr("x", width - 35)
                     .attr("width", 12)
                     .attr("height", 12)
-                    .style("fill", color);
+                    .style("fill", color)
+                    .append("svg:title")
+                    .text(function(d){
+                        return (d === '0')?'студии':d+'-комнатные';
+                    });
 
                 legend.append("text")
                     .attr("x", width)
                     .attr("y", 6)
                     .attr("dy", ".35em")
                     .style("text-anchor", "end")
-                    .text(function(d) { return (d === '0')?'Ст':d+'К'; });
+                    .text(function(d) { return (d === '0')?'Ст':d+'-к'; });
             });
         }
         return {

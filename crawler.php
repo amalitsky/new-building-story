@@ -33,6 +33,7 @@ $db = mysqli_init();
 $db -> real_connect($nbsCrConf['dbServer'], $nbsCrConf['dbLogin'], $nbsCrConf['dbPassword'], $nbsCrConf['dbName']);
 if ($db -> connect_errno) {
 	echo "<p>Error: Failed to connect to MySQL: (".$db->connect_errno.") ".$db->connect_error ."</p>\r\n"; }
+$db->query("SET time_zone = '+0:00'");
 for ($i = 0; $i < count($buildings); $i++){
     crawlerR9mk($db, $buildings[$i][1], $buildings[$i][0]);
 }

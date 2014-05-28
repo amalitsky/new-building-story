@@ -2,10 +2,10 @@
 @import "/../bower_components/bootstrap/less/variables.less";
 @import "/../bower_components/eonasdan-bootstrap-datetimepicker/src/less/bootstrap-datetimepicker.less";
 @import "variables.less";
-@import "/css/bdTable.css";
+@import "bdTable.css";
 
 body {
-  padding-bottom:50px;
+  padding:20px 0 50px 0;
 }
 
 .navbar-inverse {
@@ -22,6 +22,21 @@ body {
 }
 
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+//footer
+.navbar-wrapper.nbsFooter {
+  position:fixed;
+  bottom:0;
+  background-color:#FFF
+}
+
+.navbar-wrapper.nbsFooter > .navbar{
+  margin-bottom:.75em;
+}
+
+.alert.nbsBuilding{
+  padding:.75em;
+}
 
 // Flat information popovers
 
@@ -60,12 +75,16 @@ body {
 }
 
 /* flat sales pie chart */
-div.graph-sales .arc path { stroke: #fff; }
+div.graph-sales .arc path { stroke: #ffffff; }
 
 div.graph-sales .pieChartLabels{
   font-family: Georgia;
   font-weight: bold;
   font-size:1em;
+}
+
+div.graph-sales .legend{
+  font-size:12px
 }
 
 /* flat price history chart */
@@ -117,3 +136,21 @@ div.graph-availFlatsQ .axis path,
 div.graph-availFlatsQ .axis line{
   stroke: #999;
 }
+
+/* date picker in header */
+div.nbsDateSelector .dropdown-menu{
+  min-width: 18em;
+}
+
+div.nbsDateSelector .dropdown-menu table {
+  width:100%
+}
+
+div.nbsDateSelector .dropdown-menu button{
+  border:none;
+}
+
+accordion {
+  font-size:large;
+}
+accordion h4 { margin:0 }

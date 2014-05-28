@@ -111,9 +111,6 @@ angular.module('nbsApp.services', [])
                             var popupTimeout;
                             var watchTimeout;
                             var appendToBody = angular.isDefined( options.appendToBody ) ? options.appendToBody : false;
-                            var triggers = getTriggers( undefined );
-                            var hasRegisteredTriggers = false;
-                            var hasEnableExp = angular.isDefined(attrs[prefix+'Enable']);
                             var positionTooltip = function (){
                                 var position,
                                     ttWidth,
@@ -177,15 +174,6 @@ angular.module('nbsApp.services', [])
                             scope.tt_content = type;
                             scope.tt_placement = options.placement;
                             scope.tt_popupDelay = options.popupDelay;
-
-                            /*function toggleTooltipBind () {
-                                console.log('isOpen:' + scope.tt_isOpen);
-                                if ( ! scope.tt_isOpen ) {
-                                    showTooltipBind();
-                                } else {
-                                    hideTooltipBind();
-                                }
-                            }*/
 
                             // Show the tooltip with delay if specified, otherwise show it immediately
                             function showTooltipBind() {
@@ -274,56 +262,6 @@ angular.module('nbsApp.services', [])
                                     }
                                 }
                             });
-
-                             /**
-                             * Observe the relevant attributes.
-                             */
-                            //attrs.$observe( type, function ( val ) {
-                            //if (!val && scope.tt_isOpen ) { hide(); }});
-
-                            /*attrs.$observe( prefix+'Title', function ( val ) {
-                                scope.tt_title = val;
-                            });*/
-
-                            //attrs.$observe( prefix+'Placement', function ( val ) {
-                            //});
-
-                            //attrs.$observe( prefix+'PopupDelay', function ( val ) {
-                            //var delay = parseInt( prefix+'PopupDelay', 10 );
-                            //});
-
-
-                            /*var unregisterTriggers = function() {
-                                if (hasRegisteredTriggers) {
-                                    element.unbind( triggers.show, showTooltipBind );
-                                    element.unbind( triggers.hide, hideTooltipBind );
-                                }
-                            };*/
-                            /*
-                            attrs.$observe( prefix+'Trigger', function ( val ) {
-                                unregisterTriggers();
-
-                                triggers = getTriggers( val );
-
-                                if ( triggers.show === triggers.hide ) {
-                                    element.bind( triggers.show, toggleTooltipBind );
-                                } else {
-                                    element.bind( triggers.show, showTooltipBind );
-                                    element.bind( triggers.hide, hideTooltipBind );
-                                }
-
-                                hasRegisteredTriggers = true;
-                            });*/
-
-                            //var animation = scope.$eval(attrs[prefix + 'Animation']);
-
-                            /*attrs.$observe( prefix+'AppendToBody', function ( val ) {
-                                appendToBody = angular.isDefined( val ) ? $parse( val )( scope ) : appendToBody;
-                            });*/
-
-                            // if a tooltip is attached to <body> we need to remove it on
-                            // location change as its parent scope will probably not be destroyed
-                            // by the change.
                             if ( appendToBody ) {
                                 scope.$on('$locationChangeSuccess', function closeTooltipOnLocationChangeSuccess () {
                                     if ( scope.tt_isOpen ) {
@@ -347,8 +285,12 @@ angular.module('nbsApp.services', [])
     })
     .value('Commute',
         {
-            flatsStat: [],
+            flatsStat: [], //graphs options
             priceStat: [],
-            availFlatsQhist: []
+            flatTypesStat: [],
+            availFlatsQhist: [],
+            selDate: undefined, //date picker options
+            startDate: undefined,
+            stopDate: undefined
         }
     );

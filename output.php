@@ -102,10 +102,30 @@ function saveLog($text){
  * @return bool
  */
 
-function exportSnapJSON($db, $bId){
+function deprExportSnapJSON($db, $bId){
     $query = "SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY flatId) ORDER BY flatId;";
     return exportQuery2JSON($db, $query, $bId, "dump_recent");
 }
+
+/**
+ * Saves snapshot (flat statuses and prices) of building to given date to JSON and GZIPed JSON file
+ *
+ * @param object $db MYSQLi connector to database
+ * @param integer $bId Internal building ID
+ * @param integer|null Date of actuality
+ * @return bool
+ */
+
+function exportDateSnapJSON($db, $bId, $date = NULL){
+    $fileName = ($date ? date('Ymd', $date):'recent');
+
+    $query = "SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate,  UNIX_TIMESTAMP(tmp.startDate) as startDate FROM `snapshots` AS s INNER JOIN (SELECT MAX(snapId) as maxSnapId, MIN(snapDate) as startDate FROM `snapshots` WHERE bId='$bId'"
+    .($date ? " AND snapDate <= '".date('Y-m-d 22:00:00', $date)."'":'')
+    ." GROUP BY flatId) AS tmp ON tmp.maxSnapId = s.snapId ORDER BY id;";
+
+    return exportQuery2JSON($db, $query, $bId, 'dump_'.$fileName);
+}
+
 
 /**
  *
@@ -148,12 +168,12 @@ function exportQuery2JSON($db, $query, $bId, $fileName){
 
     $str = json_encode($fromdb);
 
-    if(!file_put_contents(dirname(__FILE__)."/jsdb/bd".$bId."_".$fileName.".json", $str)) {
+    if(!file_put_contents(dirname(__FILE__)."/jsdb/bd".$bId."/bd".$bId."_".$fileName.".json", $str)) {
         echo "<p class='error'>Error: JSON export file ($fileName) for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
         return false;
     }
 
-    if(!file_put_contents("compress.zlib://".dirname(__FILE__)."/jsdb/bd".$bId."_".$fileName.".json.gz", $str)) {
+    if(!file_put_contents("compress.zlib://".dirname(__FILE__)."/jsdb/bd".$bId."/bd".$bId."_".$fileName.".json.gz", $str)) {
         echo "<p class='error'>Error: JSON GZ export file ($fileName) for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
         return false;
     }

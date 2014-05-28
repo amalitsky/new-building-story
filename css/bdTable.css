@@ -1,6 +1,6 @@
 ﻿table.building{
     border-collapse:collapse;
-    margin:2em auto;
+    margin:0.4em auto 1em auto;
 }
 
 table.building td.section, table.building td.floors {
@@ -55,13 +55,12 @@ table.section td.flat img{
     visibility: hidden;
     width:13px; height:11px;
     padding:0;
-    background-color: rgba(255, 255, 255, 0.25);
 }
 
 table.section td.flat.notAvail img{ }
 table.section td.flat.sold img{
     visibility:visible;
-    background-color:#ff0;
+    background-color:#ffff00;
 }
 table.section td.flat.avail img{
     visibility:visible;

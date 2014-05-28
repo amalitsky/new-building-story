@@ -4,7 +4,10 @@
 /dumps/
 /bower_components/
 /.idea/
+/css/styles.css
 /tests/temp.html
 /phpinfo.php
 .htaccess
 jquery.js
+*.colt
+/css/styles.css

@@ -152,8 +152,8 @@ function crawlerR9mk($db, $link, $bId){
         saveSiteDump($table -> C14N(), $bId);
         updateSnapDB($db, array_merge($snaps["sold"], $snaps["newOnSale"], $snaps["prevOnSaleUpdPrice"]), $bId);
         saveBackupSnapDB($db, $fromWeb, $bId);
-        exportSnapJSON($db, $bId);
+        exportDateSnapJSON($db, $bId);
     }
-    echo "<p class='result'>".date("Y-m-d H:i:s T ")."<b>".count($fromWeb)."</b> flats were found by parser on page <i>".$link."</i> for building $bId.<br>\r\n".count($fromdb)." flats were loaded from last snapshot. <b>$updQ</b> records will be saved: $soldQ as sold, $newOnSaleQ as just put up on sale, $prevOnSaleUpdPriceQ as with changed price.</p>\r\n";
+    echo "<p class='result'>".date("Y-m-d H:i:s T")." <b>".count($fromWeb)."</b> flats were found by parser on page <i>".$link."</i> for building $bId.<br>\r\n".count($fromdb)." flats were loaded from last snapshot. <b>$updQ</b> records will be saved: $soldQ as sold, $newOnSaleQ as just put up on sale, $prevOnSaleUpdPriceQ as with changed price.</p>\r\n";
     return true;
 }
