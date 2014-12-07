@@ -307,7 +307,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .orient("bottom")
                     .tickSize(-height, 0)
                     .tickPadding(7)
-                    .ticks(5)
+                    .ticks(6)
                     .tickFormat(dateFormat),
 
                 yAxis = d3.svg.axis()
@@ -441,7 +441,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                         return "translate(" + x(d.value.week) + "," + y(d.value.price) + ")";
                     })
                     .attr("x", ".2em")
-                    .attr("dy", function(d){
+                    /*.attr("dy", function(d){
                         var res = 0.3;
                         if(d.name === '3') {
                             res = 0.8;
@@ -452,7 +452,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                         else if(d.name === '4'){
                             res = -0.1;
                         }
-                        return res + "em";})
+                        return res + "em";})*/
                     .text(function(d) { return (d.name === '0')?'Ст':d.name + "К"; });
             });
         }
@@ -469,7 +469,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 return ((roomsQ === "0")?"студии":roomsQ + "-комнатные") + ": " + num;
             }
 
-            var dateFormat = d3.time.format("%B"),
+            var dateFormat = d3.time.format("%b"),
                 parseDate = d3.time.format("%Y%m%d").parse,
                 roomsQ = {},
                 periods = {},
@@ -600,7 +600,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .attr("transform", function(d, i) { return "translate(0," + i * 16 + ")"; });
 
                 legend.append("rect")
-                    .attr("x", width - 35)
+                    .attr("x", width - 5)
                     .attr("width", 12)
                     .attr("height", 12)
                     .style("fill", color)
@@ -610,7 +610,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     });
 
                 legend.append("text")
-                    .attr("x", width)
+                    .attr("x", width + 30)
                     .attr("y", 6)
                     .attr("dy", ".35em")
                     .style("text-anchor", "end")
