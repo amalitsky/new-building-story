@@ -177,7 +177,7 @@ function R9mkModel(){
             if (m < 10) { m = '0' + m; }
 
             y = date.getFullYear();
-            return y + m + d;
+            return '' + y + m + d;
             }
 
         var fileName = dateToFileName();
