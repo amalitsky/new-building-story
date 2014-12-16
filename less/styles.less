@@ -2,155 +2,257 @@
 @import "/../bower_components/bootstrap/less/variables.less";
 @import "/../bower_components/eonasdan-bootstrap-datetimepicker/src/less/bootstrap-datetimepicker.less";
 @import "variables.less";
-@import "bdTable.css";
+@import "bdTable.less";
 
 body {
-  padding:20px 0 50px 0;
+    padding: 20px 0 50px 0;
 }
 
 .navbar-inverse {
-  border-radius: @navbar-border-radius;
-  #gradient.vertical(#c73d00; #900; 25%; 85%);
+    border-radius: @navbar-border-radius;
+    #gradient.vertical(#c73d00; #900; 25%; 85%);
 }
 
 .navbar-default {
-  border-radius: (@navbar-border-radius * 2);
+    border-radius: (@navbar-border-radius * 2);
 }
 
 .btn-inverse {
-  .button-variant(lighten(@navbar-inverse-color, 25%); lighten(@navbar-inverse-bg, 10%); @navbar-inverse-border);
+    .button-variant(lighten(@navbar-inverse-color, 25%); lighten(@navbar-inverse-bg, 10%); @navbar-inverse-border);
 }
 
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}
 
 //footer
 .navbar-wrapper.nbsFooter {
-  position:fixed;
-  bottom:0;
-  background-color:#FFF
+    position: fixed;
+    bottom: 0;
+    background-color: #FFF;
+
+    & > .navbar {
+        margin-bottom: .75em;
+    }
 }
 
-.navbar-wrapper.nbsFooter > .navbar{
-  margin-bottom:.75em;
-}
 
-.alert.nbsBuilding{
-  padding:.75em;
+.alert.nbsBuilding {
+    padding: .75em;
 }
 
 // Flat information popovers
 
-.popover p {
-  margin:0.1em 0;
-  //border:1px solid red;
-}
+div.popover {
+    min-width: @popover-min-width;
 
-.popover-title {
-  white-space: nowrap;
-  }
+    & > div.popover-inner {
 
-.label-notAvail{
-  &:extend(.label-default);
-}
+        & > .popover-title {
+            white-space: nowrap;
 
-.label-avail{
-  &:extend(.label-success);
-}
+            & > span.label {
+                display: block;
+                position: absolute;
+                top: .5em;
+                right: .5em;
+                font-size: 1em;
+                font-weight: normal;
+                color: #000;
 
-.label-sold{
-  &:extend(.label-warning);
+                &.label-notAvail {
+                    background-color: @hold;
+                }
+                &.label-avail {
+                    background-color: @available;
+                }
+                &.label-sold {
+                    background-color: @sold;
+                }
+            }
+        }
+
+        & > div.popover-content{
+            & > p {
+                margin:0;
+            }
+        }
+    }
 }
 
 /* hand made rouble symbol */
 .rouble {
-  display: inline-block;
-  position: relative;
+    display: inline-block;
+    position: relative;
+
+    &:before {
+        display: block;
+        content: "–";
+        position: absolute;
+        top: 0.12em;
+    }
 }
 
-.rouble:before {
-  display: block;
-  content: "–";
-  position: absolute;
-  top: 0.12em;
+/* CHARTS */
+//properties and mixIns
+@chartBackground: #CCC;
+
+.flatStatusColors() {
+    &.available {
+        fill: @available;
+    }
+    &.sold {
+        fill: @sold;
+    }
+    &.hold {
+        fill: @hold;
+    }
 }
 
-/* flat sales pie chart */
-div.graph-sales .arc path { stroke: #ffffff; }
-
-div.graph-sales .pieChartLabels{
-  font-family: Georgia;
-  font-weight: bold;
-  font-size:1em;
+.flatTypeColors() {
+    &.flat0br{
+        fill: @flat0br;
+    }
+    &.flat1br{
+        fill: @flat1br;
+    }
+    &.flat2br{
+        fill: @flat2br;
+    }
+    &.flat3br{
+        fill: @flat3br;
+    }
+    &.flat4br{
+        fill: @flat4br;
+    }
 }
 
-div.graph-sales .legend{
-  font-size:12px
+.flatTypeColorsStroke() {
+    &.flat0br{
+        stroke: @flat0br;
+    }
+    &.flat1br{
+        stroke: @flat1br;
+    }
+    &.flat2br{
+        stroke: @flat2br;
+    }
+    &.flat3br{
+        stroke: @flat3br;
+    }
+    &.flat4br{
+        stroke: @flat4br;
+    }
 }
 
-/* flat price history chart */
-div.graph-price{ font-size:12px; }
 
-div.graph-price .axis path, .axis line {
-  fill: none;
-  shape-rendering: crispEdges;
+/* both pie charts */
+div[sale-status-chart] > svg, div[sale-status-chart2] > svg {
+    g.chart{
+        & > circle{
+            &.background {
+                fill: @chartBackground;
+            }
+            &.inner-background{
+                fill:#FFF;
+            }
+        }
+
+        text.pieChartLabels {
+            font-family: Georgia;
+            font-size: 1.1em;
+            fill: #000;
+            text-anchor: middle;
+            stroke:none;
+        }
+
+        g.arc-flat-type {
+            .flatTypeColors();
+
+            text{
+                fill:#FFF;
+            }
+        }
+
+        g.arc-sale-type{
+            .flatStatusColors();
+
+            //for fancy chart makes it transparent
+            &.hold.inner{
+                    fill:none;
+                }
+            }
+        }
+
+    g.legend {
+        font-size: 12px;
+
+        rect {
+            stroke:@chartBackground;
+            .flatStatusColors();
+            .flatTypeColors();
+        }
+    }
 }
 
-div.graph-price .line {
-  fill: none;
-  stroke-width: 2px;
+div[price-history-chart] > svg{
+    font-size: 12px;
+
+    path.line {//actual graphic curves
+        fill: none;
+        stroke-width: 2;
+        .flatTypeColorsStroke();
+    }
+
+    g.axis {
+        & > path{//axes lines
+            shape-rendering: crispEdges;
+            stroke: @chartBackground;
+        }
+
+        & > g.tick > line {//grid
+            stroke: #EEE;
+        }
+    }
 }
 
-div.graph-price .grid .tick {
-  stroke-width: 1px;
-  stroke: #dddddd;
-}
+/* available flats historical & quantity graph */
+div[avail-flats-q-chart] > svg{
+    font-size: 12px;
 
-div.graph-price .grid path { stroke-width: 1px; }
+    rect{
+        .flatTypeColors();
+    }
 
-div.graph-price .axis path { stroke:#999; }
-
-div.graph-price .y.axis line {
-  fill: none;
-  stroke: #eee;
-}
-
-/* available flats quantity graph */
-div.graph-availFlatsQ{
-  font-size:12px;
-}
-div.graph-availFlatsQ .axis path,
-div.graph-availFlatsQ .axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-div.graph-availFlatsQ .bar {
-  fill: steelblue;
-}
-
-div.graph-availFlatsQ .tick {
-}
-
-div.graph-availFlatsQ .axis path,
-div.graph-availFlatsQ .axis line{
-  stroke: #999;
+    g.axis > path {
+        stroke: @chartBackground;
+        shape-rendering: crispEdges;
+    }
+    g.legend{
+        rect{
+            stroke:@chartBackground;
+            .flatTypeColors();
+        }
+    }
 }
 
 /* date picker in header */
-div.nbsDateSelector .dropdown-menu{
-  min-width: 18em;
-}
+div.nbsDateSelector ul.dropdown-menu {
+    min-width: 18em;
 
-div.nbsDateSelector .dropdown-menu table {
-  width:100%
-}
+    table {
+        width: 100%
+    }
 
-div.nbsDateSelector .dropdown-menu button{
-  border:none;
+    button {
+        border: none;
+    }
 }
 
 accordion {
-  font-size:large;
+    font-size: large;
+
+    h4{
+        margin: 0;
+    }
 }
-accordion h4 { margin:0 }
