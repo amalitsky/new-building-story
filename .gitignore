@@ -10,3 +10,5 @@
 .htaccess
 jquery.js
 *.colt
+yaxy-config.txt
+.DS_Store
