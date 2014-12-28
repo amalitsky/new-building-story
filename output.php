@@ -93,20 +93,6 @@ function saveLog($text){
     }
     return true;
 };
-
-/**
- * Saves last snapshot to JSON and GZIPed JSON file
- *
- * @param object $db MYSQLi connector to database
- * @param string $bId Internal building ID
- * @return bool
- */
-
-function deprExportSnapJSON($db, $bId){
-    $query = "SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate FROM snapshots WHERE snapId in (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY flatId) ORDER BY flatId;";
-    return exportQuery2JSON($db, $query, $bId, "dump_recent");
-}
-
 /**
  * Saves snapshot (flat statuses and prices) of building to given date to JSON and GZIPed JSON file
  *

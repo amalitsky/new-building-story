@@ -16,7 +16,7 @@
  * @return array|bool
  */
 function r9mkLoadSnapFromDB($db, $bId){
-    if(!($res = $db -> query("SELECT $bId AS bId, extFlatId, 1 AS status, flPrice AS price FROM snapshots WHERE snapId IN (SELECT MAX(snapId) FROM snapshots WHERE bId=$bId GROUP BY extFlatId) AND flStatus='1' ORDER BY extFlatId;"))){
+    if(!($res = $db -> query("SELECT d.bId, d.extFlatId, 1 AS status, d.flPrice AS price FROM (SELECT MAX(a.snapId) as snapId FROM snapshots AS a WHERE a.bId=$bId GROUP BY a.flatId) as b JOIN snapshots AS d ON b.snapId = d.snapId WHERE d.flStatus=1 ORDER BY d.extFlatId;"))){
         echo "<p class='error'>Error: db SELECT query for building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
         return false;
     }
