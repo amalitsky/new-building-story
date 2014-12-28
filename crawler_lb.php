@@ -135,7 +135,6 @@ function r9mkSnapsComparePrepare($db, $web){
  * @return bool
  */
 function crawlerR9mk($db, $link, $bId){
-    $hour = date("H");
     $getReqContext = stream_context_create( array('http' => array( 'method' => 'GET',
         'header' => "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n".
             "Accept-Encoding: gzip, deflate\r\n"."Accept-Language:	ru-ru,en-us;q=0.8,ru;q=0.5,en;q=0.3\r\n"."Connection: keep-alive\r\n"."Referer: http://novokosino.ndv.ru/sale/\r\n"."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0")));

@@ -105,11 +105,25 @@ function saveLog($text){
 function exportDateSnapJSON($db, $bId, $date = NULL){
     $fileName = ($date ? date('Ymd', $date):'recent');
 
-    $query = "SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate,  UNIX_TIMESTAMP(tmp.startDate) as startDate FROM `snapshots` AS s INNER JOIN (SELECT MAX(snapId) as maxSnapId, MIN(snapDate) as startDate FROM `snapshots` WHERE bId='$bId'"
+    $query = "SELECT flatId as id, flStatus as status, flPrice as price, UNIX_TIMESTAMP(snapDate) as updDate, UNIX_TIMESTAMP(tmp.startDate) as startDate FROM `snapshots` AS s INNER JOIN (SELECT MAX(snapId) as maxSnapId, MIN(snapDate) as startDate FROM `snapshots` WHERE bId='$bId'"
     .($date ? " AND snapDate <= '".date('Y-m-d 22:00:00', $date)."'":'')
     ." GROUP BY flatId) AS tmp ON tmp.maxSnapId = s.snapId ORDER BY id;";
 
-    return exportQuery2JSON($db, $query, $bId, 'dump_'.$fileName);
+    return exportQuery2JSON($db, $query, $bId, 'bd'.$bId.'_dump_'.$fileName);
+}
+
+/**
+ *
+ *
+ * @param object $db MYSQLi connector to database
+ * @param integer $bId Internal building ID
+ * @param integer $flatId Internal flatId in corresponding building
+ * @return bool
+ */
+
+function exportFlatHistoryJSON($db, $bId, $flatId){
+    $query = "SELECT flStatus AS status, flPrice AS price, UNIX_TIMESTAMP(snapDate) AS date FROM snapshots WHERE flatId = '$flatId' AND bId='$bId' ORDER BY snapId;";
+    return exportQuery2JSON($db, $query, $bId, "flats/$flatId");
 }
 
 
@@ -120,7 +134,7 @@ function exportDateSnapJSON($db, $bId, $date = NULL){
  */
 function exportAvMeterPriceJSON($db, $bId){
     $query = "SELECT f.rooms AS rooms, DATE(s.snapDate) AS period, ROUND(AVG(s.flPrice/f.square)) AS price FROM `snapbackup` AS s JOIN `flats` AS f ON (s.flatId=f.id AND s.bId=f.bId) WHERE s.bId='$bId' GROUP BY period, rooms ORDER BY period ASC, rooms;";
-    return exportQuery2JSON($db, $query, $bId, "price_hist");
+    return exportQuery2JSON($db, $query, $bId, 'bd'.$bId."_price_hist");
 }
 
 /**
@@ -130,7 +144,7 @@ function exportAvMeterPriceJSON($db, $bId){
  */
 function exportAvailFlatsQuantityHistoryJSON($db, $bId){
     $query = "SELECT f.rooms AS rooms, DATE_FORMAT(s.snapDate, '%Y%m') AS period, COUNT(DISTINCT f.id) AS flatsQ FROM `snapbackup` AS s JOIN `flats` AS f ON (s.bId=f.bId AND s.flatId=f.id) WHERE s.bId='$bId' GROUP BY period, rooms ORDER BY period ASC, rooms;";
-    return exportQuery2JSON($db, $query, $bId, "availFlatsQ_hist");
+    return exportQuery2JSON($db, $query, $bId, 'bd'.$bId."_availFlatsQ_hist");
 }
 
 function exportQuery2JSON($db, $query, $bId, $fileName){
@@ -154,12 +168,12 @@ function exportQuery2JSON($db, $query, $bId, $fileName){
 
     $str = json_encode($fromdb);
 
-    if(!file_put_contents(dirname(__FILE__)."/jsdb/bd".$bId."/bd".$bId."_".$fileName.".json", $str)) {
+    /*if(!file_put_contents(dirname(__FILE__)."/jsdb/bd".$bId."/".$fileName.".json", $str)) {
         echo "<p class='error'>Error: JSON export file ($fileName) for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
         return false;
-    }
+    }*/
 
-    if(!file_put_contents("compress.zlib://".dirname(__FILE__)."/jsdb/bd".$bId."/bd".$bId."_".$fileName.".json.gz", $str)) {
+    if(!file_put_contents("compress.zlib://".dirname(__FILE__)."/jsdb/bd".$bId."/".$fileName.".json.gz", $str)) {
         echo "<p class='error'>Error: JSON GZ export file ($fileName) for building $bId wasn't saved. [".__FUNCTION__."]</p>\r\n";
         return false;
     }

@@ -26,6 +26,40 @@ function r9mkLoadSnapFromDB($db, $bId){
 }
 
 /**
+ * Findes all flats updated between from and till dates.
+ *
+ * @param object $db MYSQLi connection to database
+ * @param integer $bId Internal building ID
+ * @param integer $from unixtime
+ * @param integer $till unixtime
+ * @return array|bool
+ */
+function getListOfUpdatedFlats($db, $bId, $from = NULL, $till = NULL){
+    $query = "SELECT DISTINCT flatId FROM snapshots WHERE bId = $bId "
+        .($from ? " AND snapDate >= '".date('Y-m-d 22:00:00', $from)."'":'')
+        .($till ? " AND snapDate <= '".date('Y-m-d 22:00:00', $till)."'":'')
+        ." ORDER BY flatId;";
+
+    if(!($res = $db -> query($query))){
+        echo "<p class='error'>Error: db query for list of updated flats (from: '".$from."' & till: '".$till."') of building $bId failed: (".$db->errno.") ".$db->error.". [".__FUNCTION__."]</p>\r\n";
+        return false;
+    }
+    for ($list = array(); $tmp = $res -> fetch_assoc();) {
+        $list[] = $tmp;
+    }
+    $res -> close();
+    unset($tmp);
+
+    if(!empty($list)){
+        return $list;
+    }
+    else {
+        echo "<p class='warn'>Warn: Empty result returned from DB on fetching list of updated flats (from: '".$from."' & till: '".$till."') for building $bId. [".__FUNCTION__."]</p>\r\n";
+        return false;
+    }
+}
+
+/**
  * Saves selected flats to database
  *
  * @param object $db MYSQLi connection to database
