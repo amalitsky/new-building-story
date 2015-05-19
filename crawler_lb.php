@@ -61,7 +61,7 @@ function r9mkExtractFlatsOnSale($tableObj, $bId){
         echo "<p class='error'>Error: Expected TABLE element is broken for building ".$bId.". [".__FUNCTION__."]</p>\r\n";
         return null;
     }
-    $expTdQ = array(1 => 1378, 2 => 981, 3 => 1024);
+    $expTdQ = array(1 => 1378, 2 => 981, 3 => 1035);
     $flatsOnSale = array();
     $tdQ = $tableObj -> getElementsByTagName('td') -> length;
     if($tdQ !== $expTdQ[$bId]){
@@ -81,7 +81,7 @@ function r9mkExtractFlatsOnSale($tableObj, $bId){
     }
     foreach($tdObjs as $tdObj) {
         $tdText = $tdObj -> C14N();
-        if( preg_match("~(*UTF8)<td class=\"free buildroom room_[1-4] set_[1-4]_\\d{2,3}-\\d{1,2}_(\\d{7,8})\"><a href=\"\\?id=(\\d{6})&amp;build=17(08|09|10)\">[^<]{2}</a></td>~i", $tdText, $matches)){
+        if( preg_match("~(*UTF8)<td class=\"free buildroom room_[1-4] set_[1-4]_\\d{2,3}-\\d{1,2}_(\\d{7,8})\" data-room-id=\"\\d{6}\"><a href=\"\\?id=(\\d{6})&amp;build=17(08|09|10)\">[^<]{2}</a></td>~i", $tdText, $matches)){
             if($matches[3] - $bId !== 7) {
                 echo "<p class='error'>Error: Unexpected bId (17".$matches[3].") was found while parsing TDs for building ".$bId.". [".__FUNCTION__."]</p>\r\n";
                 return null;
@@ -90,7 +90,7 @@ function r9mkExtractFlatsOnSale($tableObj, $bId){
                 'bId' => $bId, 'extFlatId' => intval($matches[2]),
                 'status' => 1, 'price' => intval($matches[1]));
         }
-        elseif( preg_match("~(*UTF8)<td class=\"fix buildroom room_[1-4] set_[1-4]_\\d{2,3}-\\d{1,2}_(\\d{7,8})\">[^<]{2}</td>~i", $tdText, $matches)){
+        elseif( preg_match("~(*UTF8)<td class=\"fix buildroom room_[1-4] set_[1-4]_\\d{2,3}-\\d{1,2}_(\\d{7,8})\" data-room-id=\"\\d{6}\">[^<]{2}</td>~i", $tdText, $matches)){
             $flatsFixedQ++;
         }
     }

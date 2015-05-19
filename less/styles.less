@@ -36,12 +36,15 @@ body {
     }
 }
 
-
 .alert.nbsBuilding {
     padding: .75em;
 }
 
 // Flat information popovers
+
+nbs-popover{
+    position:absolute;
+}
 
 div.popover {
     min-width: @popover-min-width;
@@ -72,9 +75,42 @@ div.popover {
             }
         }
 
-        & > div.popover-content{
+        & > div.popover-content {
+                padding: 10px 5px 10px 10px;
             & > p {
-                margin:0;
+                margin: 0;
+            }
+            & > h4{
+                font-size:1.25em;
+                margin:.2em 0;
+            }
+            & > table {//sales periods
+                margin-top:.5em;
+                border-collapse: collapse;
+                border-spacing: 0;
+                table-layout: fixed;
+                width: 100%;
+                max-height: 300px;
+
+                tr {
+                    & > th{
+                        border-bottom: 1px solid #CCCCCC;
+                        padding:0 5px;
+                        &:nth-child(1){
+                            width:40%;
+                        }
+                        &:nth-child(2){
+                            width:59%;
+                        }
+                    }
+                    & > td{
+                        padding:0 5px;
+                        vertical-align: top;
+                    }
+                    &:not(:last-child) > td{
+                        border-bottom: 1px solid #CCCCCC;
+                    }
+                }
             }
         }
     }
@@ -110,51 +146,50 @@ div.popover {
 }
 
 .flatTypeColors() {
-    &.flat0br{
+    &.flat0br {
         fill: @flat0br;
     }
-    &.flat1br{
+    &.flat1br {
         fill: @flat1br;
     }
-    &.flat2br{
+    &.flat2br {
         fill: @flat2br;
     }
-    &.flat3br{
+    &.flat3br {
         fill: @flat3br;
     }
-    &.flat4br{
+    &.flat4br {
         fill: @flat4br;
     }
 }
 
 .flatTypeColorsStroke() {
-    &.flat0br{
+    &.flat0br {
         stroke: @flat0br;
     }
-    &.flat1br{
+    &.flat1br {
         stroke: @flat1br;
     }
-    &.flat2br{
+    &.flat2br {
         stroke: @flat2br;
     }
-    &.flat3br{
+    &.flat3br {
         stroke: @flat3br;
     }
-    &.flat4br{
+    &.flat4br {
         stroke: @flat4br;
     }
 }
 
-
 /* both pie charts */
 div[sale-status-chart] > svg, div[sale-status-chart2] > svg {
-    g.chart{
-        & > circle{
+    g.chart {
+        & > circle {
             &.background {
                 fill: @chartBackground;
             }
-            &.inner-background{
-                fill:#FFF;
+            &.inner-background {
+                fill: #FFF;
             }
         }
 
@@ -163,64 +198,67 @@ div[sale-status-chart] > svg, div[sale-status-chart2] > svg {
             font-size: 1.1em;
             fill: #000;
             text-anchor: middle;
-            stroke:none;
+            stroke: none;
         }
 
         g.arc-flat-type {
             .flatTypeColors();
 
-            text{
-                fill:#FFF;
+            text {
+                fill: #FFF;
             }
         }
 
-        g.arc-sale-type{
+        g.arc-sale-type {
             .flatStatusColors();
 
             //for fancy chart makes it transparent
-            &.hold.inner{
-                    fill:none;
-                }
+            &.hold.inner {
+                fill: none;
             }
         }
+    }
 
     g.legend {
         font-size: 12px;
 
         rect {
-            stroke:@chartBackground;
+            stroke: @chartBackground;
             .flatStatusColors();
             .flatTypeColors();
         }
     }
 }
 
-div[price-history-chart] > svg{
+div[price-history-chart] > svg {
     font-size: 12px;
 
-    path.line {//actual graphic curves
+    path.line {
+        //actual graphic curves
         fill: none;
         stroke-width: 2;
         .flatTypeColorsStroke();
     }
 
     g.axis {
-        & > path{//axes lines
+        & > path {
+            //axes lines
             shape-rendering: crispEdges;
             stroke: @chartBackground;
         }
 
-        & > g.tick > line {//grid
+        & > g.tick > line {
+            //grid
             stroke: #EEE;
         }
     }
 }
 
 /* available flats historical & quantity graph */
-div[avail-flats-q-chart] > svg{
+div[avail-flats-q-chart] > svg {
     font-size: 12px;
 
-    rect{
+    rect {
         .flatTypeColors();
     }
 
@@ -228,9 +266,9 @@ div[avail-flats-q-chart] > svg{
         stroke: @chartBackground;
         shape-rendering: crispEdges;
     }
-    g.legend{
-        rect{
-            stroke:@chartBackground;
+    g.legend {
+        rect {
+            stroke: @chartBackground;
             .flatTypeColors();
         }
     }
@@ -252,7 +290,76 @@ div.nbsDateSelector ul.dropdown-menu {
 accordion {
     font-size: large;
 
-    h4{
+    h4 {
         margin: 0;
+    }
+}
+//popover
+
+//Popover.js factory
+body > div.popover{
+    position:fixed;
+    z-index:1001;
+    border:1px solid #CCC;
+    background-color: #FFF;
+    color: #000;
+    border-radius:5px;
+}
+
+body > div.popoverCarat{
+    position: fixed;
+    width:0;
+    height:0;
+    z-index:1002;
+
+    .boxArrow(){//triangle arrow mixIn
+        position:absolute;
+        width:0; height:0;
+        border:10px solid transparent;
+        content:' ';
+    }
+
+    &:before, &:after {
+        .boxArrow();
+    }
+
+    &.top {
+        &:before {
+            top:1px;
+            border-top-color: #CCC;
+        }
+        &:after {
+            border-top-color: #FFF;
+        }
+    }
+
+    &.bottom {
+        &:before {
+            top:-1px;
+            border-bottom-color: #CCC;
+        }
+        &:after {
+            border-bottom-color: #FFF;
+        }
+    }
+
+    &.right {
+        &:before {
+            left:-1px;
+            border-right-color: #CCC;
+        }
+        &:after {
+            border-right-color: #FFF;
+        }
+    }
+
+    &.left{
+        &:before {
+            left:1px;
+            border-left-color: #CCC;
+        }
+        &:after {
+            border-left-color: #FFF;
+        }
     }
 }

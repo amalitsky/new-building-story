@@ -31,12 +31,4 @@ angular.module('nbsApp', [
 
         $urlRouterProvider
             .otherwise('/r9mk/3/show');
-    }])
-    .config(['$tooltipProvider', function($tooltipProvider){
-        $tooltipProvider.options({
-            placement: 'top',
-            animation: true,
-            popupDelay: 200,
-            appendToBody: true
-            });
-        }]);
+    }]);

@@ -1,47 +1,89 @@
 'use strict';
 
 angular.module('nbsApp.directives', ['ui.bootstrap'])
-    .directive('nbsFlat', ['$position', '$timeout', function ($position, $timeout) {
+    .directive('nbsFlat', ['$compile', '$timeout', '$templateCache', 'popover', function ($compile, $timeout, $templateCache, PopoverClass) {
         function link(scope, elem, attr) {
-            var overTimeout;
+            var
+                overTimeout,
+                popoverTemplate, popoverConfig, popover,
+                flatN = +attr.nbsFlat;
+
+            popoverTemplate = $templateCache.get('partials/flatPopover.html:popover');
+
+            popoverConfig = {
+                className: 'flatInfo',
+                repositioning: true,
+                carat: true,
+                position: 'right',
+                hide:{
+                    parentMouseOut: true
+                }
+            };
+
+            popover = new PopoverClass(popoverConfig);
+
+            popover.hide = function(){
+                var self = this;
+                PopoverClass.prototype.hide.call(this);
+                $timeout(function(){
+                    self.remove();
+                });
+            };
+
+            /*var historyDebug = function(flat, type){
+                var str, format = 'DD/MM/YY';
+                if(type) {
+                    str = flat.full_history.reduce(function (base, row) {
+                        return base + moment.unix(row.date).format(format) + ' - ' + (row.status === 1 ? 'onSale' : 'sold') + ' (' + row.price + ')' + ' < ';
+                    }, '');
+                }
+                else{
+                    str = flat.history_displ.reduce(function (base, row) {
+                        return base + moment.unix(row.startDate).format(format) + ' - ' + (row.endDate ? moment.unix(row.endDate).format(format) : 'now') + '(' + row.prices.length + ')' + ' < ';
+                    }, '');
+                }
+                return str;
+            };*/
 
             elem.mouseover(function (event) {
                 if (event.relatedTarget && (event.target.isEqualNode(event.relatedTarget.parentNode) ||
-                    event.relatedTarget.isEqualNode(event.target.parentNode))
-                ) {
+                    event.relatedTarget.isEqualNode(event.target.parentNode))) {
                     return;
                 }
-                var position = $position.offset($(event.target));
-                if (overTimeout) {
-                    $timeout.cancel(overTimeout);
+
+                if(scope.r9mk.flats[flatN]){
+                    scope.r9mk.flats[flatN].loadHistory();
+
+                    if (overTimeout) {
+                        $timeout.cancel(overTimeout);
+                    }
+                    overTimeout = $timeout(function () {
+                        popover.config.html = $compile(popoverTemplate)(scope);
+                        popover.init(elem);
+                        popover.show();
+                    }, 99);
                 }
-                overTimeout = $timeout(function () {
-                    scope.setHoveredFlat(flatN, position);
-                });
+                //console.log('Flat %s: displ_hist: %s, full_hist: %s', flatN, historyDebug(scope.flat, 1), historyDebug(scope.flat));
             });
 
             elem.mouseout(function (event) {
+                //console.log(event.toElement);
                 if (event.relatedTarget && (event.target.isEqualNode(event.relatedTarget.parentNode) ||
-                    event.relatedTarget.isEqualNode(event.target.parentNode))
-                ) {
+                    event.relatedTarget.isEqualNode(event.target.parentNode))) {
                     return;
                 }
                 if (overTimeout) {
                     $timeout.cancel(overTimeout);
+                    overTimeout = undefined;
                 }
-                //if(scope.hoveredFlat.hovered){
-                scope.setHoveredFlat(undefined);
-                //}
             });
-
-            var flatN = attr.nbsFlat;
 
             scope.$watch('r9mk.flats[' + flatN + ']',
                 function (flat) {
                     if (typeof flat !== 'undefined') {
                         scope.flat = flat;
                     }
-                });
+                }, true);
         }
 
         return {
@@ -49,22 +91,6 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
             link: link
         };
     }])
-    .directive('nbsPopover', ['$nbsTooltip', function ($tooltip) {
-        return $tooltip('nbsPopover', 'nbsPopover', 'mouseenter');
-    }])
-    .directive('nbsPopoverPopup', function () {
-        return {
-            restrict: 'EA',
-            replace: true,
-            scope: {
-                flat: '=',
-                placement: '@',
-                animation: '&',
-                isOpen: '&'
-            },
-            templateUrl: 'partials/flatPopover.html'
-        };
-    })
     //ordinary pie chart
     .directive('saleStatusChart', ['Commute', function (commute) {
         function link(scope, elem) {

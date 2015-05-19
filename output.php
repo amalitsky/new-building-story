@@ -122,7 +122,7 @@ function exportDateSnapJSON($db, $bId, $date = NULL){
  */
 
 function exportFlatHistoryJSON($db, $bId, $flatId){
-    $query = "SELECT flStatus AS status, flPrice AS price, UNIX_TIMESTAMP(snapDate) AS date FROM snapshots WHERE flatId = '$flatId' AND bId='$bId' ORDER BY snapId;";
+    $query = "SELECT flStatus AS status, flPrice AS price, UNIX_TIMESTAMP(snapDate) AS date FROM snapshots WHERE flatId = '$flatId' AND bId='$bId' ORDER BY snapId DESC;";
     return exportQuery2JSON($db, $query, $bId, "flats/$flatId");
 }
 
