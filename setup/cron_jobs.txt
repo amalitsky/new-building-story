@@ -1,0 +1,6 @@
+/home/91597/data/backups/bcr_backup.sh
+
+php5 -c /php.ini -f /public_html/nbs/crawler.php >/dev/null 2>&1
+php5 -c /php.ini -f /public_html/nbs/crawler/export.php >/dev/null 2>&1
+
+

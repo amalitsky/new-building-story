@@ -28,7 +28,7 @@ function compareFlats($a, $b){ return strcmp(implode('-', $a), implode('-', $b) 
  * @return DOMNode|null
  */
 function r9mkLoadFileAndGetTable($link, $requestContext = null){
-    if(!(@$file = file_get_contents($link, false, $requestContext))){
+    if(!(@$file = file_get_contents("compress.zlib://".$link, false, $requestContext))){
         echo "<p class='error'>".date("Y-m-d H:i:s T")." Error: File on address <i>".$link."</i> can't be even loaded. [".__FUNCTION__."]</p>\r\n";
         return null;
     };
@@ -61,13 +61,14 @@ function r9mkExtractFlatsOnSale($tableObj, $bId){
         echo "<p class='error'>Error: Expected TABLE element is broken for building ".$bId.". [".__FUNCTION__."]</p>\r\n";
         return null;
     }
-    $expTdQ = array(1 => 1378, 2 => 981, 3 => 1035);
     $flatsOnSale = array();
+    //skip this check now as number of TDs varies (broken on their side)
+    /*expTdQ = array(1 => 1378, 2 => 981, 3 => 1035);
     $tdQ = $tableObj -> getElementsByTagName('td') -> length;
-    if($tdQ !== $expTdQ[$bId]){
+    if($bId !== 2 && $tdQ !== $expTdQ[$bId]){
         echo "<p class='error'>Error: Number of TD elements in TABLE is wrong (".$tdQ." instead of ".$expTdQ[$bId]."), building ".$bId.". [".__FUNCTION__."]</p>\r\n";
         return null;
-    }
+    }*/
     $flatsFixedQ = 0;
     $dom = new DOMDocument();
     $tableText = $tableObj -> C14N();
@@ -137,7 +138,9 @@ function r9mkSnapsComparePrepare($db, $web){
 function crawlerR9mk($db, $link, $bId){
     $getReqContext = stream_context_create( array('http' => array( 'method' => 'GET',
         'header' => "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n".
-            "Accept-Encoding: gzip, deflate\r\n"."Accept-Language:	ru-ru,en-us;q=0.8,ru;q=0.5,en;q=0.3\r\n"."Connection: keep-alive\r\n"."Referer: http://novokosino.ndv.ru/sale/\r\n"."User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0")));
+            "Accept-Encoding: gzip, deflate\r\n"."Accept-Language:	ru-ru,en-us;q=0.8,ru;q=0.5,en;q=0.3\r\n".
+            "Connection: keep-alive\r\n"."Referer: http://novokosino.ndv.ru/sale/\r\n".
+            "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0")));
     $table = r9mkLoadFileAndGetTable($link, $getReqContext);
     $fromWeb = r9mkExtractFlatsOnSale($table, $bId);
     if(!$fromWeb) { return false; }

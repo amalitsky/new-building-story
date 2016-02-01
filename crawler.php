@@ -11,7 +11,6 @@
  */
 date_default_timezone_set("UTC");
 $currHour = date("G");
-$currMinute = date("i");
 $nbsCrConf = array();
 require_once dirname(__FILE__)."/nbs_conf.php";
 if($nbsCrConf['stealthMode']){
@@ -65,7 +64,8 @@ $db -> close();
 
 $output = ob_get_contents();
 $ifErrors = stripos($output , 'error') || stripos($output, 'warning');
-if($ifErrors !== false || ($currHour == 20 && $currMinute >= 45)){
+$currMinute = date("i");
+if($ifErrors !== false || ($currHour == 20 && $currMinute >= 30 && $currMinute < 45)){
     sendMailNotice($output, $ifErrors, $nbsCrConf['pearMail'], $nbsCrConf['serverName']);
 };
 
