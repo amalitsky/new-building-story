@@ -1,5 +1,7 @@
 'use strict';
 
+import moment from 'moment';
+
 angular.module('nbsApp.controllers', [])
     .controller('buildCtrl', ['$scope', '$stateParams', 'nbsR9mk', 'Commute',
         function($scope, $stateParams, nbsR9mk, Commute) {

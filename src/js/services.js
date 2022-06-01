@@ -1,4 +1,7 @@
-"use strict";
+import _ from 'lodash';
+import moment from 'moment';
+import * as $ from 'jquery';
+
 
 angular.module('nbsApp.services', [])
     .factory('logAjaxFail', function(){
@@ -69,13 +72,13 @@ angular.module('nbsApp.services', [])
 
             //status undefined means that there is no history for this flat
             if(typeof this.salesInfo.status !== 'undefined' && !self.salesInfo.cleanHistory) {
-                return $http.get("jsdb/bd" + self.bId + "/flats/" + self.config.id + ".json.gz")
-                    .success(function (data) {
+                return $http.get("https://nbs-static.amalitsky.com/json/bd" + self.bId + "/flats/" + self.config.id + ".json")
+                    .then(function ({ data }) {
                         //TODO remove reverse - update server
                         self.salesInfo.cleanHistory = self.proccessHistoryAfterLoad(data.reverse());
                         self.salesInfo.fullHistory = data.reverse();
                     })
-                    .error(logAjaxFail('flat.loadHistory'));
+                    .catch(logAjaxFail('flat.loadHistory'));
             }
             else{
                 return $q.when(true);//should be immediately resolved
@@ -186,33 +189,34 @@ angular.module('nbsApp.services', [])
             var self = this;
 
             this.bId = bId;
-            return $http.get("jsdb/bd" + self.bId + "/bd" + self.bId + "_flats.json.gz")
-                .success(function(flats){
+            return $http.get("https://nbs-static.amalitsky.com/json/bd" + self.bId + "/bd" + self.bId + "_flats.json")
+                .then(function({data: flats}){
                     //console.log('creation of new flats');
                     _.each(flats, function(flatConfig){
                         self.flats[flatConfig.id] = new Flat({ data: flatConfig, bId: self.bId });
                     });
                     self.flLoaded = true;
+                    return true;
                 })
-                .error(logFail);
+                .catch(logFail);
         };
 
         this.loadPriceHistory = function(){
             var self = this;
-            return $http.get("jsdb/bd" + self.bId + "/bd" + self.bId + "_price_hist.json.gz")
-                .success(function(data){
+            return $http.get("https://nbs-static.amalitsky.com/json/bd" + self.bId + "/bd" + self.bId + "_price_hist.json")
+                .then(function({ data }){
                     self.priceStat = data;
                 })
-                .error(logFail);
+                .catch(logFail);
         };
 
         this.loadAvailFlatsQhistory = function(){
             var self = this;
-            return $http.get("jsdb/bd" + this.bId + "/bd" + this.bId + "_availFlatsQ_hist.json.gz")
-                .success(function(data){
+            return $http.get("https://nbs-static.amalitsky.com/json/bd" + this.bId + "/bd" + this.bId + "_availFlatsQ_hist.json")
+                .then(function({ data }){
                     self.availFlatsQhist = data;
                 })
-                .error(logFail);
+                .catch(logFail);
         };
         //we load current statuses for provided date - need to empty all sales date and update with new
         this.loadSnap = function(data){
@@ -311,18 +315,18 @@ angular.module('nbsApp.services', [])
                 fileName = dateToFileName();
 
             if (this.snapsCache[fileName]){
-                //console.log('took snap from cache: ' + fileName);
+                console.log('took snap from cache: ' + fileName);
                 this.loadSnap(this.snapsCache[fileName]);
                 return $q.when(true);
             }
             else {
-                return $http.get("jsdb/bd" + this.bId + "/bd" + this.bId + "_dump_" + fileName + ".json.gz")
-                    .success(function(data){
-                        //console.log('loaded snap: ' + fileName);
+                return $http.get("https://nbs-static.amalitsky.com/json/bd" + this.bId + "/bd" + this.bId + "_dump_" + fileName + ".json")
+                    .then(function({ data }){
+                        // console.log('loaded snap: ' + fileName);
                         self.snapsCache[fileName] = data;
                         self.loadSnap(data);
                     })
-                    .error(logFail);
+                    .catch(logFail);
             }
         };
 
@@ -454,7 +458,7 @@ angular.module('nbsApp.services', [])
             function isNotVisible (elm, parent){
                 var
                     elmOffset = elm.offset(),
-                    parentOffset = parent.offset() || { top: $(window).scrollTop() },//for document element
+                    parentOffset = parent.scrollTop() || { top: $(document).scrollTop() },//for document element
                     elmHeight = elm.outerHeight(),
                     parentHeight = parent.outerHeight();
 

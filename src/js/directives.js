@@ -1,5 +1,12 @@
 'use strict';
 
+import { scaleLinear, scaleOrdinal, scaleTime, scaleBand } from 'd3-scale';
+import { timeFormat as d3TimeFormat, timeParse as d3TimeParse } from 'd3-time-format';
+import { select as d3Select, pointer as d3Pointer } from 'd3-selection';
+import { pie as d3Pie, arc as d3Arc, line as d3Line } from 'd3-shape';
+import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from 'd3-axis';
+import { extent as d3Extent, min as d3Min, max as d3Max } from 'd3-array';
+
 angular.module('nbsApp.directives', ['ui.bootstrap'])
     .directive('nbsFlat', ['$compile', '$timeout', '$templateCache', 'popover', function ($compile, $timeout, $templateCache, PopoverClass) {
         function link(scope, elem, attr) {
@@ -34,18 +41,18 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 var str, format = 'DD/MM/YY';
                 if(type) {
                     str = flat.full_history.reduce(function (base, row) {
-                        return base + moment.unix(row.date).format(format) + ' - ' + (row.status === 1 ? 'onSale' : 'sold') + ' (' + row.price + ')' + ' < ';
+                        return base + moment.unix(row.date).d3TimeFormat(format) + ' - ' + (row.status === 1 ? 'onSale' : 'sold') + ' (' + row.price + ')' + ' < ';
                     }, '');
                 }
                 else{
                     str = flat.history_displ.reduce(function (base, row) {
-                        return base + moment.unix(row.startDate).format(format) + ' - ' + (row.endDate ? moment.unix(row.endDate).format(format) : 'now') + '(' + row.prices.length + ')' + ' < ';
+                        return base + moment.unix(row.startDate).d3TimeFormat(format) + ' - ' + (row.endDate ? moment.unix(row.endDate).d3TimeFormat(format) : 'now') + '(' + row.prices.length + ')' + ' < ';
                     }, '');
                 }
                 return str;
             };*/
 
-            elem.mouseover(function (event) {
+            elem.on('mouseover', function (event) {
                 if (event.relatedTarget && (event.target.isEqualNode(event.relatedTarget.parentNode) ||
                     event.relatedTarget.isEqualNode(event.target.parentNode))) {
                     return;
@@ -66,7 +73,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 //console.log('Flat %s: displ_hist: %s, full_hist: %s', flatN, historyDebug(scope.flat, 1), historyDebug(scope.flat));
             });
 
-            elem.mouseout(function (event) {
+            elem.on('mouseout', function (event) {
                 //console.log(event.toElement);
                 if (event.relatedTarget && (event.target.isEqualNode(event.relatedTarget.parentNode) ||
                     event.relatedTarget.isEqualNode(event.target.parentNode))) {
@@ -111,42 +118,35 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
             scope.data = commute;
 
             radius = Math.min(width, height) / 2;
-            className = d3.scale.ordinal().range(['available', 'sold', 'hold']);
-            arc = d3.svg.arc().outerRadius(radius - 2).innerRadius(Math.round((radius - 2) *.2));
+            className = scaleOrdinal().range(['available', 'sold', 'hold']);
+            arc = d3Arc().outerRadius(radius - 2).innerRadius(Math.round((radius - 2) *.2));
 
-            svg = d3.select(elem[0]).append('svg')
-                .attr({'width': width, 'height': height})
+            svg = d3Select(elem[0]).append('svg')
+                .attr('width', width)
+                .attr('height', height)
                 .append('g')
                 .attr('transform', 'translate(' + 80 + ',' + height / 2 + ')');
 
             chart = svg.append('g')
-                .attr({
-                    'class': 'chart',
-                    'transform': 'translate(' + Math.floor(width/10) + ')'
-                });
+                .classed('chart', true)
+                .attr('transform', 'translate(' + Math.floor(width/10) + ')');
 
-            pie = d3.layout.pie().sort(null)
+            pie = d3Pie().sort(null)
                 .value(function (d) { return d.q; });
 
             chart
                 .append('circle')
-                .attr({
-                    r: radius - 1,
-                    'class': 'background'
-                });
+                .classed('background', true)
+                .attr('r', radius - 1);
 
             chart
                 .append('circle')
-                .attr({
-                    r: Math.round((radius - 2) * 0.2) - 1,
-                    'class': 'inner-background'
-                });
+                .classed('inner-background', true)
+                .attr('r', Math.round((radius - 2) * 0.2) - 1);
 
             legend = svg.append('g')
-                .attr({
-                    'class': 'legend',
-                    'transform': 'translate(140, -35)'
-                });
+                .classed('legend', true)
+                .attr('transform', 'translate(140, -35)');
 
             scope.$watch('data.flatsStat', function (data) {
                 if (!data || !data.length) { return; }
@@ -157,7 +157,8 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 g = chart
                     .selectAll('.arc-sale-type')
                     .data(pie(data))
-                    .enter().append('g')
+                    .enter()
+                    .append('g')
                     .attr('class', function (d) {
                         return 'arc-sale-type ' + className(d.data.name);
                     });
@@ -165,11 +166,9 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 g.append('path').attr('d', arc);
 
                 g.append('text')
-                    .attr({
-                        'transform': function (d) {
-                            return "translate(" + arc.centroid(d) + ")";
-                        },
-                        'class': 'pieChartLabels'
+                    .classed('pieChartLabels', true)
+                    .attr('transform', function(d) {
+                        return "translate(" + arc.centroid(d) + ")";
                     })
                     .text(function (d) {
                         var res = Math.round(d.data.q * 100 / flatQ);
@@ -177,28 +176,26 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     });
 
                 legend
-                    .selectAll('g').data(data)
-                    .enter().append('g')
+                    .selectAll('g')
+                    .data(data)
+                    .enter()
+                    .append('g')
                     .each(function (d, i) {
-                        var g = d3.select(this);
+                        var g = d3Select(this);
 
                         g.append('rect')
-                            .attr({
-                                'x': 0,
-                                'y': 0 + i * 25,
-                                'width': 12,
-                                'height': 12,
-                                'class': className(d.name)
-                            });
+                          .attr('x', 0)
+                          .attr('y', i * 25)
+                          .attr('width', 12)
+                          .attr('height', 12)
+                          .classed(className(d.name), true);
 
                         g.append('text')
-                            .attr({
-                                'x': 18,
-                                'y': 9 + i * 25,
-                                'height': 30,
-                                'width': 100
-                            })
-                            .text(d.name);
+                          .attr('x', 18)
+                          .attr('y', 9 + i * 25)
+                          .attr('height', 30)
+                          .attr('width', 100)
+                          .text(d.name);
                     });
             });
         }
@@ -250,52 +247,43 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
 
             scope.data = commute;
 
-            flatType = d3.scale.ordinal()
+            flatType = scaleOrdinal()
                 .range(['flat0br', 'flat1br', 'flat2br', 'flat3br', 'flat4br']);
 
-            saleStatus = d3.scale.ordinal().range(['sold', 'available', 'hold']);
+            saleStatus = scaleOrdinal().range(['sold', 'available', 'hold']);
 
             radius = Math.min(width, height) / 2;
 
-            arc = d3.svg.arc().outerRadius(radius - 1).innerRadius(0.2 * (radius - 0));
-            arc2 = d3.svg.arc().outerRadius(radius - 1).innerRadius(0.8 * (radius - 0));
+            arc = d3Arc().outerRadius(radius - 1).innerRadius(0.2 * (radius - 0));
+            arc2 = d3Arc().outerRadius(radius - 1).innerRadius(0.8 * (radius - 0));
 
-            pie = d3.layout.pie().sort(null).value(function (d) {
+            pie = d3Pie().sort(null).value(function (d) {
                 return d.q;
             });
 
-            svg = d3.select(elem[0]).append("svg")
-                .attr({
-                    'width': width,
-                    'height': height
-                })
+            svg = d3Select(elem[0]).append("svg")
+                .attr('width', width)
+                .attr('height', height)
                 .append("g")
                 .attr("transform", "translate(" + 100 + "," + height / 2 + ")");
 
             chart = svg.append('g')
-                .attr({
-                    'class': 'chart',
-                    'transform': 'translate(' + Math.floor(width/10) + ')'
-                });
+              .classed('chart', true)
+              .attr('transform', 'translate(' + Math.floor(width/10) + ')');
 
             chart
                 .append('circle')
-                .attr({
-                    r: radius,
-                    'class': 'background'
-                });
+                .classed('background', true)
+                .attr('r', radius);
 
             chart
                 .append('circle')
-                .attr({
-                    r: Math.round((radius - 2) * 0.2) - 1,
-                    'class': 'inner-background'
-                });
+                .classed('inner-background', true)
+                .attr('r', Math.round((radius - 2) * 0.2) - 1);
 
-            legend = svg.append('g').attr({
-                'class': 'legend',
-                'transform': 'translate(140, -70)'
-            });
+            legend = svg.append('g')
+              .classed('legend', true)
+              .attr('transform', 'translate(140, -70)');
 
             scope.$watch('data.flatTypesStat', function (data, prevData) {
                 if (!data || !data.length || data === prevData) {
@@ -306,9 +294,11 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
 
                 arr = [];
 
-                flatQ = d3.sum(data, function (val) {
+                /*flatQ = d3.sum(data, function (val) {
                     return val.q;
-                });
+                });*/
+
+                flatQ = data.reduce((total, { q: quantity }) => total + quantity, 0);
 
                 data.forEach(function (elem) {
                     var trans = [], key;
@@ -331,12 +321,10 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 g.append('path').attr('d', arc);
 
                 g.append('text')
-                    .attr({
-                        'transform': function (d) {
+                  .classed('pieChartLabels white', true)
+                    .attr('transform', function (d) {
                             return 'translate(' + arc.centroid(d) + ')';
-                        },
-                        'class': 'pieChartLabels white'
-                    })
+                        })
                     .text(function (d) {
                         var res = Math.floor(d.data.q * 100 / flatQ);
                         return (res > 8) ? res + "%" : '';
@@ -365,27 +353,23 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .selectAll('g').data(data.reverse())
                     .enter().append('g')
                     .each(function (d, i) {
-                        var g = d3.select(this);
+                        var g = d3Select(this);
                         if (d.q === 0) {
                             return '';
                         }
                         g.append('rect')
-                            .attr({
-                                'x': 0,
-                                'y': i * 25,
-                                'width': 12,
-                                'height': 12,
-                                'class': flatType(d.name)
-                            });
+                          .classed(flatType(d.name), true)
+                          .attr('x', 0)
+                          .attr('y', i * 25)
+                          .attr('width', 12)
+                          .attr('height', 12);
 
                         g.append("text")
-                            .attr({
-                                'x': 18,
-                                'y': 10 + i * 25,
-                                'height': 30,
-                                'width': 100
-                            })
-                            .text(d.name);
+                          .attr('x', 18)
+                          .attr('y', 10 + i * 25)
+                          .attr('height', 30)
+                          .attr('width', 100)
+                          .text(d.name);
 
                         g.append("svg:title")
                             .text(function (d) {
@@ -413,32 +397,30 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
             scope.data = commute;
 
             margin = {top: 10, right: 30, bottom: 20, left: 40};
-            width = 360 - margin.left - margin.right;
+            width = elem.width() - margin.left - margin.right;
             height = 170 - margin.top - margin.bottom;
-            parseDate = d3.time.format("%Y-%m-%d").parse;
-            x = d3.time.scale().range([0, width]).nice();
-            y = d3.scale.linear().range([height, 0]).nice();
+            parseDate = d3TimeParse("%Y-%m-%d");
+            x = scaleTime().range([0, width]).nice();
+            y = scaleLinear().range([height, 0]).nice();
 
-            flatType = d3.scale.ordinal()
+            flatType = scaleOrdinal()
                 .range(['flat0br', 'flat1br', 'flat2br', 'flat3br', 'flat4br']);
 
-            xAxis = d3.svg.axis()
+            xAxis = d3AxisBottom()
                 .scale(x)
-                .orient("bottom")
                 .tickSize(-height, 0)
                 .tickPadding(7)
                 .ticks(6)
-                .tickFormat(d3.time.format("%b"));
+                .tickFormat(d3TimeFormat("%b"));
 
-            yAxis = d3.svg.axis()
+            yAxis = d3AxisLeft()
                 .scale(y)
-                .orient("left")
                 .tickPadding(7)
                 .tickSize(-width, 0)
                 .ticks(5);
 
-            line = d3.svg.line()
-                .interpolate("basis")
+            line = d3Line()
+                //.interpolate("basis")
                 .x(function (d) {
                     return x(d.week);
                 })
@@ -446,16 +428,15 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     return y(d.price);
                 });
 
-            svg = d3.select(elem[0]).append("svg")
-                .attr({
-                    "width": width + margin.left + margin.right,
-                    "height": height + margin.top + margin.bottom
-                })
+            svg = d3Select(elem[0])
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            div = d3.select(elem[0]).append("div")
-                .classed({'tooltip': true, 'top': true})
+            div = d3Select(elem[0]).append("div")
+                .classed('tooltip top', true)
                 .style("opacity", 0);
 
             div.append("div").attr("class", "tooltip-arrow");
@@ -482,7 +463,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     }
                 });
 
-                flatType.domain(d3.keys(roomsQ));
+                flatType.domain(Object.keys(roomsQ));
 
                 data2 = flatType.domain().map(function (roomsQ) {
                     return {
@@ -500,37 +481,33 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     };
                 });
 
-                x.domain(d3.extent(d3.values(periods)));
+                x.domain(d3Extent(Object.values(periods)));
 
                 y.domain([
-                    d3.min(data2, function (c) {
-                        return d3.min(c.values, function (v) {
+                    d3Min(data2, function (c) {
+                        return d3Min(c.values, function (v) {
                             return v.price;
                         });
                     }) * 0.99,
-                    d3.max(data2, function (c) {
-                        return d3.max(c.values, function (v) {
+                    d3Max(data2, function (c) {
+                        return d3Max(c.values, function (v) {
                             return v.price;
                         });
                     }) * 1.01
                 ]);
 
                 svg.append("g")
-                    .attr({
-                        "class": "x axis",
-                        "transform": "translate(0," + height + ")"
-                    })
+                    .classed('x axis', true)
+                    .attr("transform", "translate(0," + height + ")")
                     .call(xAxis);
 
                 svg.append("g")
                     .attr("class", "y axis")
                     .call(yAxis)
                     .append("text")
-                    .attr({
-                        "transform": "rotate(-90)",
-                        "y": 6,
-                        "dy": ".71em"
-                    })
+                    .attr('transform', "rotate(-90)")
+                    .attr('y', 6)
+                    .attr("dy", ".71em")
                     .style("text-anchor", "end")
                     .text("т.руб/м2");
 
@@ -547,30 +524,28 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .attr("class", function (d) {
                         return 'line ' + flatType(d.name);
                     })
-                    .on("mouseover", function () {
-                        var m = d3.mouse(this);
-                        d3.select(this).style("stroke-width", "3.5");
+                    .on("mouseover", function (event) {
+                        var m = d3Pointer(event);
 
-                        div[0][0].children[1].innerHTML =
-                            d3.time.format("%e %b")(x.invert(m[0])) +
-                            "</br>" + Math.round(y.invert(m[1])) + ' 000 р/м<sup>2</sup>';
+                        d3Select(this).style("stroke-width", "3.5");
+
+                        div.selectChild('.tooltip-inner').html(
+                            d3TimeFormat("%e %b %y")(x.invert(m[0])) +
+                            "</br>" + Math.round(y.invert(m[1])) + ' 000 р/м<sup>2</sup>');
 
                         div.style("left", m[0] + 12 + "px")
                             .style("top", m[1] + 14 + "px");
 
-                        div.transition()
-                            .duration(200)
-                            .style("opacity", 0.9);
+                        div.style("opacity", 0.9);
                     })
                     .on("mouseout", function () {
-                        d3.select(this).style("stroke-width", "2");
-                        div.transition()
-                            .duration(200)
-                            .style("opacity", 0)
-                            .each('end', function () {
-                                div.style("left", -100 + "px")
-                                    .style("top", -100 + "px");
-                            });
+                        d3Select(this)
+                          .style("stroke-width", "2");
+
+                        div
+                          .style("opacity", 0)
+                          .style("left", -100 + "px")
+                          .style("top", -100 + "px");
                     });
 
                 flType.append("text")
@@ -613,38 +588,37 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
 
             scope.data = commute;
 
-            dateFormat = d3.time.format("%b");
-            parseDate = d3.time.format("%Y%m%d").parse;
+            dateFormat = d3TimeFormat("%b");
+            parseDate = d3TimeParse("%Y%m%d");
 
-            div = d3.select(elem[0]).append("div")//tooltip
-                .classed({'tooltip': true, 'top': true})
+            div = d3Select(elem[0]).append("div")//tooltip
+                //.classed({'tooltip': true, 'top': true})
                 .style("opacity", 0);
 
+
             margin = {top: 10, right: 30, bottom: 20, left: 40};
-            width = 360 - margin.left - margin.right;
+            width = elem.width() - margin.left - margin.right;
             height = 170 - margin.top - margin.bottom;
 
-            x = d3.scale.ordinal().rangeRoundBands([0, width], 0.5);
-            y = d3.scale.linear().rangeRound([height, 0]);
+            x = scaleBand().range([0, width]).padding(0.25);
+            y = scaleLinear().rangeRound([height, 0]);
 
-            flatType = d3.scale.ordinal()
+            flatType = scaleOrdinal()
                 .range(['flat0br', 'flat1br', 'flat2br', 'flat3br', 'flat4br']);
 
-            xAxis = d3.svg.axis()
+            xAxis = d3AxisBottom()
                 .scale(x)
-                .orient("bottom")
                 .ticks(5)
                 .tickSize(0, 0, 0)
                 .tickPadding(5)
                 .tickFormat(dateFormat);
 
-            yAxis = d3.svg.axis()
+            yAxis = d3AxisLeft()
                 .scale(y)
-                .orient("left")
                 .tickSize(4, 0, 0)
                 .ticks(5);
 
-            svg = d3.select(elem[0]).append("svg")
+            svg = d3Select(elem[0]).append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
@@ -653,10 +627,9 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
             div.append("div").attr("class", "tooltip-arrow");
             div.append("div").attr("class", "tooltip-inner");
 
-            legend = svg.append('g').attr({
-                'class': 'legend',
-                'transform': 'translate(285)'
-            });
+            legend = svg.append('g')
+              .classed('legend', true)
+              .attr('transform', `translate(${ width - 30 })`);
 
             /* data = [{"rooms":"1","period":"201405","flatsQ":"17"}] */
 
@@ -664,7 +637,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 if (!data || data.length === 0) {
                     return;
                 }
-                //console.log(data);
+                // console.log(data);
                 periods = {};
                 roomsQ = {};
 
@@ -679,9 +652,9 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     }
                 });
 
-                flatType.domain(d3.keys(roomsQ));
+                flatType.domain(Object.keys(roomsQ));
 
-                data = d3.keys(periods).map(function (period) {
+                data = Object.keys(periods).map(function (period) {
                     var res = {types: []}, y0 = 0;
                     flatType.domain().forEach(function (roomsQ) {
                         var needle = data.filter(function (entity) {
@@ -706,7 +679,8 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 x.domain(data.map(function (d) {
                     return d.period;
                 }));
-                y.domain([0, d3.max(data, function (d) {
+
+                y.domain([0, d3Max(data, function (d) {
                     return d.total;
                 })]);
 
@@ -738,7 +712,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                         return d.types;
                     })
                     .enter().append("rect")
-                    .attr("width", x.rangeBand())
+                    .attr("width", x.bandwidth())
                     .attr("y", function (d) {
                         return y(d.y1);
                     })
@@ -757,27 +731,23 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     .data(flatType.domain().slice().reverse())
                     .enter().append("g")
                     .each(function(d, i){
-                        var g = d3.select(this);
+                        var g = d3Select(this);
 
                         g.append('rect')
-                            .attr({
-                                'x': 0,
-                                'y': i * 25,
-                                'width': 12,
-                                'height': 12,
-                                'class': flatType(d)
-                            });
+                          .attr('x', 0)
+                          .attr('y', i * 25)
+                          .attr('width', 12)
+                          .attr('height', 12)
+                          .classed(flatType(d), true);
 
                         g.append("text")
-                            .attr({
-                                'x': 18,
-                                'y': 10 + i * 25,
-                                'height': 30,
-                                'width': 100
-                            })
-                            .text(function (d) {
-                                return (d === '0') ? 'Ст' : d + '-к';
-                            });
+                          .attr('x', 18)
+                          .attr('y', 10 + i * 25)
+                          .attr('height', 30)
+                          .attr('width', 100)
+                          .text(function (d) {
+                            return (d === '0') ? 'Ст' : d + '-к';
+                          });
 
                         g.append("svg:title")
                             .text(function (d) {

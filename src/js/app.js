@@ -1,12 +1,18 @@
-angular.module('nbsApp', [
+import './controllers.js';
+import './directives.js';
+import './filters.js';
+import './services.js';
+
+export const nbsApp = angular.module('nbsApp', [
         'ui.router',
         'ui.bootstrap',
         'nbsApp.controllers',
         'nbsApp.filters',
         'nbsApp.services',
         'nbsApp.directives'
-    ])
-    .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    ]);
+
+nbsApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
         $stateProvider
             .state('r9mk',{
                 url: '/r9mk/{bId:[1-3]}',
