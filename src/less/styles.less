@@ -1,8 +1,9 @@
-@import "../node_modules/bootstrap/less/bootstrap.less";
-@import "../node_modules/bootstrap/less/variables.less";
-@import "../node_modules/eonasdan-bootstrap-datetimepicker/src/less/bootstrap-datetimepicker.less";
-@import "variables.less";
+@import "bootstrap/less/bootstrap.less";
+@import "angular-ui-bootstrap/src/position/position.css";
+
+@import "../css/justified-nav.css";
 @import "bdTable.less";
+@import "variables.less";
 
 body {
     padding: 20px 0 50px 0;
@@ -10,15 +11,11 @@ body {
 
 .navbar-inverse {
     border-radius: @navbar-border-radius;
-    #gradient.vertical(#c73d00; #900; 25%; 85%);
+    background: linear-gradient(#c73d00 25%, #900 85%);
 }
 
 .navbar-default {
     border-radius: (@navbar-border-radius * 2);
-}
-
-.btn-inverse {
-    .button-variant(lighten(@navbar-inverse-color, 25%); lighten(@navbar-inverse-bg, 10%); @navbar-inverse-border);
 }
 
 .nav, .pagination, .carousel, .panel-title a {
@@ -38,6 +35,17 @@ body {
 
 .alert.nbsBuilding {
     padding: .75em;
+}
+
+.DateSelect-Wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: @navbar-height;
+}
+
+.DateSelect-Input {
+    width: 13rem;
 }
 
 // Flat information popovers
@@ -138,7 +146,7 @@ div.popover {
         fill: @available;
     }
     &.sold {
-        fill: @sold;
+fill: @sold;
     }
     &.hold {
         fill: @hold;
@@ -274,20 +282,8 @@ div[avail-flats-q-chart] > svg {
     }
 }
 
-/* date picker in header */
-div.nbsDateSelector ul.dropdown-menu {
-    min-width: 18em;
 
-    table {
-        width: 100%
-    }
-
-    button {
-        border: none;
-    }
-}
-
-accordion {
+uib-accordion {
     font-size: large;
 
     h4 {

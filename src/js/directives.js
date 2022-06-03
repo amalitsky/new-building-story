@@ -1,5 +1,11 @@
 'use strict';
 
+import accordion from 'angular-ui-bootstrap/src/accordion';
+
+// no css version since with-css fails the vite build: https://github.com/vitejs/vite/issues/5308
+// css is imported in styles
+import dropdown from 'angular-ui-bootstrap/src/dropdown/index-nocss';
+
 import { scaleLinear, scaleOrdinal, scaleTime, scaleBand } from 'd3-scale';
 import { timeFormat as d3TimeFormat, timeParse as d3TimeParse } from 'd3-time-format';
 import { select as d3Select, pointer as d3Pointer } from 'd3-selection';
@@ -7,15 +13,16 @@ import { pie as d3Pie, arc as d3Arc, line as d3Line } from 'd3-shape';
 import { axisBottom as d3AxisBottom, axisLeft as d3AxisLeft } from 'd3-axis';
 import { extent as d3Extent, min as d3Min, max as d3Max } from 'd3-array';
 
-angular.module('nbsApp.directives', ['ui.bootstrap'])
-    .directive('nbsFlat', ['$compile', '$timeout', '$templateCache', 'popover', function ($compile, $timeout, $templateCache, PopoverClass) {
+angular.module('nbsApp.directives', [accordion, dropdown])
+    .directive('nbsFlat', ['$compile', '$timeout', '$templateCache', 'popover', 'nbsR9mk',
+        function ($compile, $timeout, $templateCache, PopoverClass, nbsR9mk) {
         function link(scope, elem, attr) {
             var
                 overTimeout,
                 popoverTemplate, popoverConfig, popover,
                 flatN = +attr.nbsFlat;
 
-            popoverTemplate = $templateCache.get('partials/flatPopover.html:popover');
+            popoverTemplate = $templateCache.get('flatPopover');
 
             popoverConfig = {
                 className: 'flatInfo',
@@ -58,8 +65,8 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                     return;
                 }
 
-                if(scope.r9mk.flats[flatN]){
-                    scope.r9mk.flats[flatN].loadHistory();
+                if (nbsR9mk.flats[flatN]){
+                    nbsR9mk.flats[flatN].loadHistory();
 
                     if (overTimeout) {
                         $timeout.cancel(overTimeout);
@@ -85,7 +92,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
                 }
             });
 
-            scope.$watch('r9mk.flats[' + flatN + ']',
+            scope.$watch(() => nbsR9mk.flats[flatN],
                 function (flat) {
                     if (typeof flat !== 'undefined') {
                         scope.flat = flat;
@@ -95,7 +102,7 @@ angular.module('nbsApp.directives', ['ui.bootstrap'])
 
         return {
             scope: true,
-            link: link
+            link,
         };
     }])
     //ordinary pie chart

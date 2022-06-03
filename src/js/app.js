@@ -1,40 +1,29 @@
-import './controllers.js';
+import uiRouterModuleName from '@uirouter/angularjs';
+
+import { nbsAppConfig } from './app-config';
+import { buildingController, buildingWrapperController, guiController } from './controllers.js';
+
 import './directives.js';
 import './filters.js';
 import './services.js';
 
-export const nbsApp = angular.module('nbsApp', [
-        'ui.router',
-        'ui.bootstrap',
-        'nbsApp.controllers',
-        'nbsApp.filters',
-        'nbsApp.services',
-        'nbsApp.directives'
-    ]);
+export const appName = 'nbsApp';
 
-nbsApp.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-        $stateProvider
-            .state('r9mk',{
-                url: '/r9mk/{bId:[1-3]}',
-                templateUrl: 'partials/bd.html',
-                controller: 'buildingWrapper'
-            })
-            .state('r9mk.building', {
-                url: '/show',
-                views: {
-                    'building': {
-                        templateUrl: function (params) {
-                            return 'partials/bd' + params.bId + '.html';
-                        },
-                     controller: 'buildCtrl'
-                    }
-                }
-            })
-            .state('about', {
-                url: '/about',
-                templateUrl: 'partials/about.html'
-            });
+const nbsApp = angular.module(appName, [
+  uiRouterModuleName,
+  'nbsApp.filters',
+  'nbsApp.services',
+  'nbsApp.directives'
+]);
 
-        $urlRouterProvider
-            .otherwise('/r9mk/3/show');
-    }]);
+nbsApp.config(nbsAppConfig);
+
+const controllers = [
+  buildingController,
+  buildingWrapperController,
+  guiController,
+]
+
+controllers.forEach(controller => {
+  nbsApp.controller(controller.$name, controller);
+});
