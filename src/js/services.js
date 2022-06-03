@@ -1,7 +1,12 @@
-import _ from 'lodash';
-import moment from 'moment';
+import {
+    each,
+    map,
+    reduce,
+    throttle,
+    some,
+    uniqBy,
+} from 'lodash-es';
 import * as $ from 'jquery';
-
 
 angular.module('nbsApp.services', [])
     .factory('logAjaxFail', function(){
@@ -54,7 +59,8 @@ angular.module('nbsApp.services', [])
 
         flat.prototype.cleanSalesInfo = function(){
             var self = this;
-            _.each(this.salesInfo, function(property, key){
+
+            each(this.salesInfo, function(property, key){
                 delete self.salesInfo[key];
             });
         };
@@ -75,7 +81,7 @@ angular.module('nbsApp.services', [])
                 return $http.get("https://nbs-static.amalitsky.com/json/bd" + self.bId + "/flats/" + self.config.id + ".json")
                     .then(function ({ data }) {
                         //TODO remove reverse - update server
-                        self.salesInfo.cleanHistory = self.proccessHistoryAfterLoad(data.reverse());
+                        self.salesInfo.cleanHistory = self.processHistoryAfterLoad(data.reverse());
                         self.salesInfo.fullHistory = data.reverse();
                     })
                     .catch(logAjaxFail('flat.loadHistory'));
@@ -85,8 +91,11 @@ angular.module('nbsApp.services', [])
             }
         };
 
-        flat.prototype.proccessHistoryAfterLoad = function(arr){
-            var lastPeriodKey, lastSoldKey;
+        flat.prototype.processHistoryAfterLoad = function(arr){
+            let lastPeriodKey;
+            let lastSoldKey;
+
+            let lastPeriodStart;
 
             arr.forEach(function(val, key, arr){
                 val.status = +val.status;
@@ -97,33 +106,33 @@ angular.module('nbsApp.services', [])
                     date: val.date
                 }];
 
-                //need to filter out periods when flat was hidden(sold) less than for N days
-                if(val.status === 3 && (typeof lastPeriodKey === 'undefined' ||
-                    moment.unix(val.date).startOf('day').add(3, 'days')
-                        .isBefore(moment.unix(arr[lastPeriodKey].startDate).startOf('day')))) {
+                // need to filter out periods when flat was hidden(sold) less than for N days
+                if (val.status === 3 &&
+                  (!lastPeriodKey || lastPeriodStart - val.date > 84600 * 3)
+                ) {
                     lastSoldKey = key;
-                }
-                else{//onSale
-                    if(typeof lastPeriodKey === 'undefined' || typeof lastSoldKey !== 'undefined'){
+                    lastPeriodStart = val.date;
+                } else { //onSale
+                    if (typeof lastPeriodKey === 'undefined' || typeof lastSoldKey !== 'undefined') {
                         lastPeriodKey = key;
                         val.display = true;
                         val.startDate = val.date;
                         if(typeof lastSoldKey !== 'undefined'){
                             val.endDate = arr[lastSoldKey].date;
                         }
-                    }
-                    else{//shift start to earlier date if we have few following onSale statuses
+                    } else { //shift start to earlier date if we have few following onSale statuses
                         arr[lastPeriodKey].startDate = val.date;
                         arr[lastPeriodKey].prices.push({//save price of filtered out snapshot in previous item
                             price: val.price,
                             date: val.date
                         });
                     }
+
                     lastSoldKey = undefined;
                 }
             });
 
-            arr = _.filter(arr, function(row){ return row.display; });
+            arr = arr.filter(row => row.display);
 
             arr.forEach(function(row){
                 delete row.status;
@@ -131,9 +140,7 @@ angular.module('nbsApp.services', [])
                 delete row.price;
                 delete row.display;
 
-                row.prices = _.uniq(row.prices, false, function(price){
-                    return price.price;
-                });
+                row.prices = uniqBy(row.prices, price => price.price);
             });
             //console.log(arr);
             return arr;
@@ -161,16 +168,16 @@ angular.module('nbsApp.services', [])
                 nameRu: "Первый корпус ЖК Новокосино",
                 flatsQ: 1177,
                 startDate: '2014-02-05',
-                stopDate: undefined,
+                stopDate: '2017-01-07',
                 isConsistent: false, //show warning if building was not observed from early beginning
-                flatTypes: {0: 246, 1:557, 2:292, 3:82} //types of flat and it's quantity in the building
+                flatTypes: {0: 246, 1:557, 2:292, 3:82 } //types of flat and it's quantity in the building
             },
             2:{
                 name: "Novokosino, building 2",
                 nameRu: "Второй корпус ЖК Новокосино",
                 flatsQ: 864,
                 startDate: '2014-02-05',
-                stopDate: undefined,
+                stopDate: '2017-01-07',
                 isConsistent: false,
                 flatTypes: {0: 384, 1: 288, 2: 144, 3:48 }
             },
@@ -179,7 +186,7 @@ angular.module('nbsApp.services', [])
                 nameRu: "Третий корпус ЖК Новокосино",
                 flatsQ: 817,
                 startDate: '2014-03-20',
-                stopDate: undefined,
+                stopDate: '2017-01-07',
                 isConsistent: true,
                 flatTypes: {0: 326, 1:168, 2:154, 3:157, 4:12 }
             }
@@ -192,7 +199,7 @@ angular.module('nbsApp.services', [])
             return $http.get("https://nbs-static.amalitsky.com/json/bd" + self.bId + "/bd" + self.bId + "_flats.json")
                 .then(function({data: flats}){
                     //console.log('creation of new flats');
-                    _.each(flats, function(flatConfig){
+                    each(flats, function(flatConfig){
                         self.flats[flatConfig.id] = new Flat({ data: flatConfig, bId: self.bId });
                     });
                     self.flLoaded = true;
@@ -243,7 +250,7 @@ angular.module('nbsApp.services', [])
                 flatsTypesStat[self.flats[flat.id].config.type][self.flats[flat.id].salesInfo.status]++;
             });
 
-            _.each(self.flats, function(flat, key){
+            each(self.flats, function(flat, key){
                 if (!updatedFlats[key]){
                     flat.cleanSalesInfo();
                 }
@@ -267,7 +274,7 @@ angular.module('nbsApp.services', [])
                 }
             ];
 
-            _.each(this.buildings[this.bId].flatTypes, function(quantity, type){
+            each(this.buildings[this.bId].flatTypes, function(quantity, type){
                 type = +type;
                 var haveHistory = 0;
                 if(!flatsTypesStat[type]) {
@@ -275,7 +282,7 @@ angular.module('nbsApp.services', [])
                     flatsTypesStat[type] = { 0: quantity };
                 }
                 else{
-                    haveHistory = _.reduce(flatsTypesStat[type], function(base, quantity){
+                    haveHistory = reduce(flatsTypesStat[type], function(base, quantity){
                         return base + quantity;
                     }, 0);
                 }
@@ -284,7 +291,7 @@ angular.module('nbsApp.services', [])
 
             this.flatTypesStat = [];
 
-            this.flatTypesStat = _.map(flatsTypesStat, function(statObj, type){
+            this.flatTypesStat = map(flatsTypesStat, function(statObj, type){
                 return {
                     name: (type === 0) ? "Cт" : (type + "-к"),
                     q: self.buildings[self.bId].flatTypes[type] || 0,
@@ -295,19 +302,31 @@ angular.module('nbsApp.services', [])
 
         this.toDate = function(date){
             function dateToFileName(){
-                if(!date) { return 'recent'; }
-                if(!(date instanceof Date)){
+                if (!date) {
+                    return 'recent';
+                }
+
+                if (!(date instanceof Date)) {
                     date = new Date(date);
                 }
-                var d, m, y;
+
+                let d, m, y;
+
                 d = date.getDate();
-                if (d < 10) { d = '0' + d;}
+
+                if (d < 10) {
+                    d = '0' + d;
+                }
 
                 m = date.getMonth() + 1;
-                if (m < 10) { m = '0' + m; }
+
+                if (m < 10) {
+                    m = '0' + m;
+                }
 
                 y = date.getFullYear();
-                return '' + y + m + d;
+
+                return `${ y }${ m }${ d }`;
             }
 
             var
@@ -340,7 +359,7 @@ angular.module('nbsApp.services', [])
             this.availFlatsQhist = [];
             this.flatTypesStat = [];
 
-            _.each(this.flats, function(flat, id){
+            each(this.flats, function(flat, id){
                 flat.destroy();
                 delete self.flats[id];
             });
@@ -390,7 +409,7 @@ angular.module('nbsApp.services', [])
             }
 
             //if parent was hidden by scroll event, let's hide popover
-            this._onScrollListener = _.throttle(function(event){
+            this._onScrollListener = throttle(function(event){
                 if(!self.isParentVisible($(event.target))){
                     self.hide();
                 }
@@ -471,7 +490,7 @@ angular.module('nbsApp.services', [])
                 res = isNotVisible(this.parent, target);
             }
             else {//check all scrollable parents
-                res = _.any(this.scrollableParents, function (parent) {
+                res = some(this.scrollableParents, function (parent) {
                     return isNotVisible(self.parent, parent);
                 });
             }
@@ -601,7 +620,7 @@ angular.module('nbsApp.services', [])
 
             //console.log('popover position top: %i, bottom: %i, window.scrollTop: %i', popPos.top, popPos.bottom, window.scrollTop);
 
-            _.each(popPos, function(val, key){
+            each(popPos, function(val, key){
                 //check position to be inside inside viewport with set margins
                 if(key === 'left' || key === 'right'){
                     val = clipValue(margin, $(window).width() - popover.width - margin, val);

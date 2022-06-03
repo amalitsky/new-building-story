@@ -1,125 +1,133 @@
-'use strict';
+export function buildingController($scope, $stateParams, nbsR9mk, Commute) {
+    function loadSnap() {
+        const { stopDate, selDate: selectedDate } = $scope.commute;
 
-import moment from 'moment';
+        // had moment wrapper
+        const date = selectedDate > stopDate ? false : selectedDate;
 
-angular.module('nbsApp.controllers', [])
-    .controller('buildCtrl', ['$scope', '$stateParams', 'nbsR9mk', 'Commute',
-        function($scope, $stateParams, nbsR9mk, Commute) {
-            function loadSnap(){
-                var date;
-                date = moment($scope.commute.selDate).isSame($scope.commute.stopDate, 'day') ? false : $scope.commute.selDate;
-                return $scope.r9mk.toDate(date).then(function(){
-                    $scope.commute.flatTypesStat = $scope.r9mk.flatTypesStat;
-                    $scope.commute.flatsStat = $scope.r9mk.flatsStat;
-                });
-            }
-            function filterSelectedDate(){//checks 'commute.selDate' for being in right interval and modifies if needed
-                var date = moment(new Date($scope.commute.selDate)),// Date type or string
-                    start = $scope.commute.startDate,//moment type
-                    stop = $scope.commute.stopDate;
+        return nbsR9mk.toDate(date)
+          .then(() => {
+              $scope.commute.flatTypesStat = nbsR9mk.flatTypesStat;
+              $scope.commute.flatsStat = nbsR9mk.flatsStat;
+          });
+    }
 
-                if(date.isValid){
-                    if(date.isAfter(stop, 'day')){
-                        $scope.commute.selDate = stop.toDate();
-                        return false;
-                    }
-                    else if(date.isBefore(start, 'day')) {
-                        $scope.commute.selDate = start.toDate();
-                        return false;
-                    }
-                }
-                else {
-                    $scope.commute.selDate = stop.toDate();
-                    return false;
-                }
-            //returns true if selDate was not modified by filter
-            return true;
-            }
+    // checks 'commute.selDate' for being in the right interval and modifies if needed
+    function filterSelectedDate() {
+        const date = new Date($scope.commute.selDate); // Date type or string
 
-            $scope.bId = $stateParams.bId;
-            $scope.commute = Commute;
+        const { startDate, stopDate } = $scope.commute; //moment type
 
-            $scope.r9mk = nbsR9mk;
-            $scope.header = $scope.r9mk.buildings[$scope.bId].nameRu;
+        if (!date) {
+          throw Error('Wrong date');
+        }
 
-            if($scope.r9mk.buildings[$scope.bId].startDate){
-                $scope.commute.startDate = moment($scope.r9mk.buildings[$scope.bId].startDate);
-            }
-            else {
-                $scope.commute.startDate = moment();
-            }
+        if (date > stopDate) {
+            $scope.commute.selDate = new Date(stopDate);
 
-            if($scope.r9mk.buildings[$scope.bId].stopDate){
-                $scope.commute.stopDate = moment($scope.r9mk.buildings[$scope.bId].stopDate);
-            }
-            else {//i'd like to show local 'today' day active for any timezone if !stopDate
-                $scope.commute.stopDate = moment();
-            }
+            return false;
+        } else if (date < startDate) {
+            $scope.commute.selDate = new Date(startDate);
 
-            $scope.commute.selDate = ($stateParams.date)?$stateParams.date : moment();
+            return false;
+        }
 
-            filterSelectedDate();
+        // returns true if selDate was not modified by filter
+        return true;
+    }
 
-            $scope.r9mk.init($stateParams.bId)
-                .then(loadSnap)
-                .then(function(){
-                    $scope.r9mk.loadPriceHistory()
-                        .then(function(){
-                            $scope.commute.priceStat = $scope.r9mk.priceStat;
-                            $scope.commute.flatTypesStat = $scope.r9mk.flatTypesStat;
-                        });
-                })
-                .then(function(){
-                    $scope.r9mk.loadAvailFlatsQhistory()
-                        .then(function(){
-                            $scope.commute.availFlatsQhist = $scope.r9mk.availFlatsQhist;
-                        });
-                });
+    const buildingId = $scope.bId = $stateParams.bId;
+    const buildingSpec = nbsR9mk.buildings[buildingId];
 
-            $scope.$watch('commute.selDate', function(val, prevVal){
-                if(val === prevVal) { return; }
-                if(filterSelectedDate()) {
-                    loadSnap();
-                }
+    $scope.commute = Commute;
+
+    $scope.header = buildingSpec.nameRu;
+
+    if (buildingSpec.startDate) {
+        $scope.commute.startDate = new Date(buildingSpec.startDate);
+    } else {
+        throw Error(`No start date for the building "${ buildingId }"`);
+    }
+
+    if (buildingSpec.stopDate) {
+        $scope.commute.stopDate = new Date(buildingSpec.stopDate);
+    }
+    else { //i'd like to show local 'today' day active for any timezone if !stopDate
+        $scope.commute.stopDate = new Date();
+    }
+
+    // had moment wrapper
+    $scope.commute.selDate = $stateParams.date || new Date();
+
+    filterSelectedDate();
+
+    nbsR9mk.init($stateParams.bId)
+      .then(loadSnap)
+      .then(() => {
+          nbsR9mk.loadPriceHistory()
+            .then(() => {
+                $scope.commute.priceStat = nbsR9mk.priceStat;
+                $scope.commute.flatTypesStat = nbsR9mk.flatTypesStat;
             });
-
-            $scope.$on('$destroy', function () {
-                $scope.r9mk.destroy();
+      })
+      .then(() => {
+          nbsR9mk.loadAvailFlatsQhistory()
+            .then(() => {
+                $scope.commute.availFlatsQhist = nbsR9mk.availFlatsQhist;
             });
-        }])
-    .controller('snapDatepicker', ['$scope', 'Commute', function($scope, Commute){
-        $scope.commute = Commute;
+      });
 
-        $scope.$watch('commute.stopDate', function(stopDate) {
-            $scope.commute.selDate = +stopDate;
-        });
+    $scope.$watch('commute.selDate', function(val, prevVal){
+        if (val === prevVal) { return; }
 
-        $scope.open = function($event) {
-            $event.preventDefault();
-            $event.stopPropagation();
-            $scope.opened = true;
-        };
+        if (filterSelectedDate()) {
+            loadSnap();
+        }
+    });
 
-        $scope.dateOptions = {
-            showWeeks:0,
-            startingDay: 1,
-            showButtonBar: 0,
-            maxMode:'day'
-        };
-    }])
-    .controller('AboutAccordion', ['$scope', function ($scope) {
-        $scope.status = {
-            isFirstOpen: true
-        };
-    }])
-    .controller('gui', ['$scope', '$location', function(scope, $location){
-        scope.currYear = moment().format('YYYY');
-        scope.$on('$locationChangeSuccess', function(){
-            scope.hideDatePicker = $location.url() === '/about';
-        });
-    }])
-    .controller('buildingWrapper', ['$scope', '$stateParams', 'nbsR9mk', 'Commute', function(scope, params, r9mk, commute){
-        scope.bHeader = r9mk.buildings[params.bId].nameRu;
-        scope.warning = !r9mk.buildings[params.bId].isConsistent;
-        scope.commute = commute;
-    }]);
+    $scope.$on('$destroy', function () {
+        nbsR9mk.destroy();
+    });
+}
+
+buildingController.$inject = [
+  '$scope',
+  '$stateParams',
+  'nbsR9mk',
+  'Commute',
+];
+
+buildingController.$name = 'buildingController';
+
+export function guiController(scope, $location, commute) {
+  scope.commute = commute;
+
+  scope.currYear = (new Date()).getFullYear();
+
+  scope.$on('$locationChangeSuccess', function(){
+    scope.hideDatePicker = $location.url() === '/about';
+  });
+}
+
+guiController.$inject = [
+  '$scope',
+  '$location',
+  'Commute',
+];
+
+guiController.$name = 'guiController';
+
+export function buildingWrapperController(scope, params, r9mk, commute) {
+  scope.bHeader = r9mk.buildings[params.bId].nameRu;
+  scope.warning = !r9mk.buildings[params.bId].isConsistent;
+  scope.commute = commute;
+}
+
+buildingWrapperController.$inject = [
+  '$scope',
+  '$stateParams',
+  'nbsR9mk',
+  'Commute',
+];
+
+buildingWrapperController.$name = 'buildingWrapperController';
