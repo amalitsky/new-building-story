@@ -6,7 +6,8 @@ import {
     some,
     uniqBy,
 } from 'lodash-es';
-import * as $ from 'jquery';
+
+import $ from 'jquery';
 
 angular.module('nbsApp.services', [])
     .factory('logAjaxFail', function(){

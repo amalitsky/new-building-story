@@ -5,7 +5,10 @@
   "main": "js/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "vite serve src --host"
+    "serve": "vite serve --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "deploy": "netlify deploy"
   },
   "repository": {
     "type": "git",
@@ -37,6 +40,8 @@
   },
   "devDependencies": {
     "less": "^4.1.2",
-    "vite": "^2.9.9"
+    "netlify-cli": "^10.4.0",
+    "vite": "^2.9.9",
+    "vite-plugin-static-copy": "^0.5.0"
   }
 }

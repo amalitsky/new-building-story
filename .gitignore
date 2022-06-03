@@ -1,10 +1,8 @@
 /logs/
 /apLogs/
-/jsdb/
-/dumps
-/bower_components
 /node_modules
 /.idea
 .htaccess
 yaxy-config.txt
 .DS_Store
+build/
