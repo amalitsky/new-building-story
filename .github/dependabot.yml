@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "12:00"
+      timezone: "America/Los_Angeles"
+    reviewers:
+      - "amalitsky"
+    labels:
+      - "dependencies"
+      - "dependabot"
+    open-pull-requests-limit: 7

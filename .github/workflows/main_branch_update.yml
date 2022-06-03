@@ -1,0 +1,80 @@
+name: Main Update
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  node_version: ${{ secrets.NODE_VERSION }}
+
+concurrency: main_update
+
+jobs:
+  setup:
+    name: NPM install & cache
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set nodeJs version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: node_modules cache
+        id: node-modules-cache
+        uses: actions/cache@v3
+        env:
+          cache_name: node-modules-npm
+          cache_key: ${{ env.node_version }}-${{ hashFiles('package-lock.json') }}
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ env.cache_name }}-${{ env.cache_key }}
+          restore-keys: ${{ runner.os }}-${{ env.cache_name }}-
+
+      - name: NPM install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+  build:
+    name: Build & Deploy
+
+    runs-on: ubuntu-latest
+
+    needs: setup
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set nodeJs version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        env:
+          cache_name: node-modules-npm
+          cache_key: ${{ env.node_version }}-${{ hashFiles('package-lock.json') }}
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ env.cache_name }}-${{ env.cache_key }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Staging deploy
+        run: npm run deploy -- --prod --message "$DEPLOY_MESSAGE"
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          DEPLOY_MESSAGE: Production update by ${{ github.sha }} merge into main branch

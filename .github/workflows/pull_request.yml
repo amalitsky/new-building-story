@@ -1,0 +1,95 @@
+name: PR Update
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  node_version: ${{ secrets.NODE_VERSION }}
+  pr_id: ${{ github.event.number }}
+
+concurrency:
+  group: pr-update-${{ github.event.number }}
+  cancel-in-progress: true
+
+jobs:
+  setup:
+    name: NPM install & cache
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set nodeJs version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: node_modules cache
+        id: node-modules-cache
+        uses: actions/cache@v3
+        env:
+          cache_name: node-modules-npm
+          cache_key: ${{ env.node_version }}-${{ hashFiles('package-lock.json') }}
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ env.cache_name }}-${{ env.cache_key }}
+          restore-keys: ${{ runner.os }}-${{ env.cache_name }}-
+
+      - name: NPM install
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+  build:
+    name: Build & Deploy
+
+    runs-on: ubuntu-latest
+
+    needs: setup
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set nodeJs version
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node_version }}
+
+      - name: Restore node_modules from cache
+        uses: actions/cache@v3
+        env:
+          cache_name: node-modules-npm
+          cache_key: ${{ env.node_version }}-${{ hashFiles('package-lock.json') }}
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ env.cache_name }}-${{ env.cache_key }}
+
+      - name: Build
+        run: npm run build
+
+      - name: Staging deploy
+        run: npm run deploy -- --alias "pr$pr_id" --message "$DEPLOY_MESSAGE"
+        env:
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          DEPLOY_MESSAGE: PR ${{ github.event.number }} ${{ github.event.pull_request.title }} (${{ github.sha }})
+
+      - name: Add PR status completed
+        uses: teamniteo/pull_request_status_action@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          repository: ${{ github.repository }}
+          state: success
+          pr_number: ${{ env.pr_id }}
+          context: Staging Website
+          description: Deployed to Netlify
+          target_url: https://pr${{ env.pr_id }}--amlab-nbs.netlify.app
+
