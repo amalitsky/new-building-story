@@ -36,7 +36,8 @@
     "bootstrap": "^3.4.1",
     "d3": "^7.4.4",
     "jquery": "^3.6.0",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "rollup": "2.74.x"
   },
   "devDependencies": {
     "less": "^4.1.2",

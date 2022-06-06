@@ -12,3 +12,8 @@ updates:
       - "dependencies"
       - "dependabot"
     open-pull-requests-limit: 7
+    ignore:
+      - dependency-name: "bootstrap"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "rollup"
+        update-types: ["version-update:semver-major"]
