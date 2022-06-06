@@ -4,8 +4,14 @@
     </div>
 </div>
 <div class="row">
-    <div ng-if="warning" class="alert alert-warning col-lg-12 nbsBuilding">
-        <strong>Недостаточно данных.</strong> Сохранение информации началось почти через год после старта продаж.
+    <div
+        ng-if="warningMessages.length"
+        class="alert alert-warning col-lg-12 nbsBuilding">
+            <p
+                ng-repeat="message in warningMessages">
+                {{ message }}
+                <br ng-if="!$last"/>
+            </p>
     </div>
 </div>
 <div class="row" style="poistion:relative;float:none;">
