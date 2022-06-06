@@ -118,8 +118,26 @@ guiController.$inject = [
 guiController.$name = 'guiController';
 
 export function buildingWrapperController(scope, params, r9mk, commute) {
-  scope.bHeader = r9mk.buildings[params.bId].nameRu;
-  scope.warning = !r9mk.buildings[params.bId].isConsistent;
+  const buildingData = r9mk.buildings[params.bId];
+
+  scope.bHeader = buildingData.nameRu;
+
+  const warningMessages = [];
+
+  if (!buildingData.isConsistent) {
+    warningMessages.push(
+      'Данные не полн ы. Сохранение информации началось почти через год после старта продаж.'
+    );
+  }
+
+  if (buildingData.stopDate) {
+    warningMessages.push(
+      `Сбор данных остановлен ${buildingData.stopDate}.`,
+    );
+  }
+
+  scope.warningMessages = warningMessages;
+
   scope.commute = commute;
 }
 

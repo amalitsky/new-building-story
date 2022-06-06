@@ -16,4 +16,3 @@ updates:
       - dependency-name: "bootstrap"
         update-types: ["version-update:semver-major"]
       - dependency-name: "rollup"
-        update-types: ["version-update:semver-major"]
